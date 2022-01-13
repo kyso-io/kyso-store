@@ -4,7 +4,7 @@ import httpClient from '../../services/http-client';
 import { NormalizedResponse } from '../../types/normalized-response';
 import { Team } from '../../types/team';
 
-export const fetchUsersTeamAction = createAsyncThunk('team/fetchUsersTeam', async (teamName: string) => {
+export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamName: string) => {
   try {
     const url = `/teams/${teamName}`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.get(url, {
@@ -15,8 +15,8 @@ export const fetchUsersTeamAction = createAsyncThunk('team/fetchUsersTeam', asyn
     } else {
       return null;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    console.error(`${e.response.status} ${e?.response.statusText}`);
     return null;
   }
 });

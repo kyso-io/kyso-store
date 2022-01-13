@@ -1,1 +1,1 @@
-# kyso-cli
+# kyso-store
