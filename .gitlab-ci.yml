@@ -6,6 +6,6 @@ stages:
 deploy-to-private-registry:
   stage: deploy 
   script:
-    - npm config set @kyso:registry //gitlab.kyso.io/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+    - npm config set @kyso-io:registry //gitlab.kyso.io/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
     - npm config set //gitlab.kyso.io/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:authToken=${CI_JOB_TOKEN}
     - npm publish
