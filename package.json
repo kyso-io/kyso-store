@@ -17,7 +17,7 @@
     "url": "https://gitlab.kyso.io/kyso-io/libs/kyso-store.git"
   },
   "publishConfig": {
-    "@kyso:registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
+    "@kyso-io:registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
   },
   "devDependencies": {
     "@types/node": "^17.0.8",
