@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux'
 import { configureStore } from '@reduxjs/toolkit';
 import auth from './auth/auth-slice';
 import discussions from './discussions/discussions-slice';
@@ -5,6 +6,15 @@ import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
+
+export const reducer = combineReducers({
+  auth,
+  discussions,
+  reports,
+  repos,
+  team,
+  user,
+})
 
 export const store = configureStore({
   reducer: {
