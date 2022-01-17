@@ -3,6 +3,7 @@ import { BaseModel } from './base';
 import { UserAccount } from './user-account';
 
 export type User = {
+  id: string;
   email: string;
   username: string;
   nickname: string;

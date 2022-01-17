@@ -3,6 +3,7 @@ import { BaseModel } from './base';
 import { KysoRole } from './kyso-role';
 
 export type Team = {
+  id: string;
   name: string;
   avatar_url: string;
   bio: string;
