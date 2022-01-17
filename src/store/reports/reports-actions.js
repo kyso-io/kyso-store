@@ -55,9 +55,9 @@ exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createRepo
                         reports = paths.map(function (path) { return ({
                             src: {
                                 provider: repos_1.provider,
-                                owner: repos_1.active.owner,
-                                name: repos_1.active.name,
-                                default_branch: repos_1.active.default_branch,
+                                // owner: repos.active!.owner,
+                                // name: repos.active!.name,
+                                // default_branch: repos.active!.default_branch,
                                 path: path
                             }
                         }); });
@@ -65,10 +65,7 @@ exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createRepo
                     else {
                         reports = {
                             src: {
-                                provider: repos_1.provider,
-                                owner: repos_1.active.owner,
-                                name: repos_1.active.name,
-                                default_branch: repos_1.active.default_branch
+                                provider: repos_1.provider
                             }
                         };
                     }
@@ -271,21 +268,23 @@ exports.fetchReposTreeAction = (0, toolkit_1.createAsyncThunk)('reports/fetchTre
     });
 }); });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-exports.fetchReportCommentsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReportComments', function (_, _a) {
-    var getState = _a.getState;
+exports.fetchReportCommentsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReportComments', function (payload, _a) {
+    var getState = _a.getState, dispatch = _a.dispatch;
     return __awaiter(void 0, void 0, void 0, function () {
-        var reports, url, axiosResponse, _b;
-        var _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var url, axiosResponse, _b;
+        var _c, _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0:
-                    _d.trys.push([0, 2, , 3]);
-                    reports = getState().reports;
-                    url = "/reports/".concat(reports.active.user_id, "/").concat(reports.active.name, "/comments");
+                    _e.trys.push([0, 2, , 3]);
+                    url = "/reports/".concat(payload.owner, "/").concat(payload.reportName, "/comments");
                     return [4 /*yield*/, http_client_1["default"].get(url)];
                 case 1:
-                    axiosResponse = _d.sent();
-                    if ((_c = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _c === void 0 ? void 0 : _c.data) {
+                    axiosResponse = _e.sent();
+                    if ((_c = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _c === void 0 ? void 0 : _c.relations) {
+                        // dispatch({'relations/fetch', payload: axiosResponse?.data?.relations })
+                    }
+                    if ((_d = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _d === void 0 ? void 0 : _d.data) {
                         return [2 /*return*/, axiosResponse.data.data];
                     }
                     else {
@@ -293,7 +292,7 @@ exports.fetchReportCommentsAction = (0, toolkit_1.createAsyncThunk)('reports/fet
                     }
                     return [3 /*break*/, 3];
                 case 2:
-                    _b = _d.sent();
+                    _b = _e.sent();
                     return [2 /*return*/, null];
                 case 3: return [2 /*return*/];
             }

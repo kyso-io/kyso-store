@@ -36,18 +36,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.populate = void 0;
+exports.play = void 0;
 var dotenv = require('dotenv');
 dotenv.config({
     path: "".concat(__dirname, "/../.env")
 });
 var store_1 = require("./store");
-var populate = function (store) { return __awaiter(void 0, void 0, void 0, function () {
+var play = function () { return __awaiter(void 0, void 0, void 0, function () {
     var getState, dispatch;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                getState = store.getState, dispatch = store.dispatch;
+                getState = store_1.store.getState, dispatch = store_1.store.dispatch;
                 return [4 /*yield*/, dispatch((0, store_1.loginAction)({ username: 'kylo@kyso.io', password: 'n0tiene', provider: 'kyso' }))];
             case 1:
                 _a.sent();
@@ -60,13 +60,19 @@ var populate = function (store) { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, dispatch((0, store_1.refreshUserAction)())];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.fetchReportsAction)())];
+                return [4 /*yield*/, dispatch((0, store_1.fetchReportAction)({ owner: 'rey', reportName: 'reys-report' }))];
             case 5:
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.fetchReportsAction)())];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.fetchReportCommentsAction)({ owner: 'rey', reportName: 'reys-report' }))];
+            case 7:
                 _a.sent();
                 console.log(getState().reports);
                 return [2 /*return*/];
         }
     });
 }); };
-exports.populate = populate;
-(0, exports.populate)(store_1.store);
+exports.play = play;
+(0, exports.play)();

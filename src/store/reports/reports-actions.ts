@@ -14,9 +14,9 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       reports = paths.map((path: any) => ({
         src: {
           provider: repos.provider,
-          owner: repos.active!.owner,
-          name: repos.active!.name,
-          default_branch: repos.active!.default_branch,
+          // owner: repos.active!.owner,
+          // name: repos.active!.name,
+          // default_branch: repos.active!.default_branch,
           path,
         },
       }));
@@ -24,9 +24,9 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       reports = {
         src: {
           provider: repos.provider,
-          owner: repos.active!.owner,
-          name: repos.active!.name,
-          default_branch: repos.active!.default_branch,
+          // owner: repos.active!.owner,
+          // name: repos.active!.name,
+          // default_branch: repos.active!.default_branch,
         },
       };
     }
@@ -145,11 +145,15 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (_, { getState }) => {
+export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
   try {
-    const { reports } = getState() as RootState;
-    const url = `/reports/${reports.active!.user_id}/${reports.active!.name}/comments`;
+    const url = `/reports/${payload.owner}/${payload.reportName}/comments`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
+
+    if (axiosResponse?.data?.relations) {
+      // dispatch({'relations/fetch', payload: axiosResponse?.data?.relations })
+    }
+
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {

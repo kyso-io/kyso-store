@@ -4,19 +4,30 @@ dotenv.config({
   path: `${__dirname}/../.env`,
 });
 
-import { store, loginAction, fetchReportsAction, refreshUserAction, setOrganization, setTeam } from './store'
+import { 
+  store, 
+  loginAction, 
+  fetchReportAction, 
+  fetchReportsAction, 
+  fetchReportCommentsAction, 
+  refreshUserAction, 
+  setOrganization, 
+  setTeam 
+} from './store'
 
-export const populate = async (store: any) => {
+export const play = async () => {
   const { getState, dispatch } = store
-  
+
   await dispatch(loginAction({ username: 'kylo@kyso.io', password: 'n0tiene', provider: 'kyso' }))
   await dispatch(setOrganization('darkside'))
   await dispatch(setTeam('private-team'))
   await dispatch(refreshUserAction())
 
+  await dispatch(fetchReportAction({ owner: 'rey', reportName: 'reys-report' }))
   await dispatch(fetchReportsAction())
-
+  await dispatch(fetchReportCommentsAction({ owner: 'rey', reportName: 'reys-report' }))
+  
   console.log(getState().reports)
 }
 
-populate(store)
+play()

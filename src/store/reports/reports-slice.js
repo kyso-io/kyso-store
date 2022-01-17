@@ -1,17 +1,29 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var _a;
 exports.__esModule = true;
 exports.setTagsQuery = exports.setSearchQuery = exports.setPageAndLimit = exports.setCurrentBranch = exports.setReports = void 0;
 var toolkit_1 = require("@reduxjs/toolkit");
+var list_to_key_val_1 = require("../../helpers/list-to-key-val");
 var reports_actions_1 = require("./reports-actions");
 var initialState = {
-    active: null,
+    activeId: null,
+    allIds: null,
+    entities: {},
     branches: [],
-    comments: [],
+    comment_ids: [],
     commits: [],
     currentBranch: null,
-    list: [],
-    relations: {},
     limit: 20,
     page: 1,
     pinnedReport: null,
@@ -25,10 +37,8 @@ var reportsSlice = (0, toolkit_1.createSlice)({
     initialState: initialState,
     reducers: {
         setReports: function (state, action) {
-            state.list = action.payload;
-        },
-        setRelations: function (state, action) {
-            state.relations = action.payload;
+            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload.data));
+            state.allIds = action.payload.data.map(function (entity) { return entity.id; });
         },
         setPinnedReport: function (state, action) {
             state.pinnedReport = action.payload;
@@ -48,7 +58,7 @@ var reportsSlice = (0, toolkit_1.createSlice)({
             state.tagsQuery = action.payload;
         },
         setReport: function (state, action) {
-            state.active = action.payload;
+            state.activeId = action.payload.id;
         },
         setBranches: function (state, action) {
             state.branches = action.payload;
@@ -63,21 +73,23 @@ var reportsSlice = (0, toolkit_1.createSlice)({
             state.currentBranch = action.payload;
         },
         setReportsComments: function (state, action) {
-            state.comments = action.payload;
+            state.comment_ids = action.payload.map(function (entity) { return entity.id; });
         }
     },
     extraReducers: function (builder) {
         builder.addCase(reports_actions_1.createReportAction.fulfilled, function (state, action) {
-            state.active = action.payload;
+            state.activeId = action.payload.id;
         });
         builder.addCase(reports_actions_1.fetchReportAction.fulfilled, function (state, action) {
-            state.active = action.payload;
+            var _a;
+            state.activeId = action.payload.id;
+            state.entities = __assign(__assign({}, state.entities), (_a = {}, _a[action.payload.id] = action.payload, _a));
         });
         builder.addCase(reports_actions_1.updateReportAction.fulfilled, function (state, action) {
-            state.active = action.payload;
+            state.activeId = action.payload.id;
         });
         builder.addCase(reports_actions_1.pinReportAction.fulfilled, function (state, action) {
-            state.active = action.payload;
+            state.activeId = action.payload.id;
         });
         builder.addCase(reports_actions_1.fetchBranchesAction.fulfilled, function (state, action) {
             state.branches = action.payload;
@@ -89,14 +101,14 @@ var reportsSlice = (0, toolkit_1.createSlice)({
             state.tree = action.payload;
         });
         builder.addCase(reports_actions_1.fetchReportCommentsAction.fulfilled, function (state, action) {
-            state.comments = action.payload;
+            state.comment_ids = action.payload.map(function (entity) { return entity.id; });
         });
         builder.addCase(reports_actions_1.deleteReportAction.fulfilled, function (state) {
-            state.active = null;
+            state.activeId = null;
         });
         builder.addCase(reports_actions_1.fetchReportsAction.fulfilled, function (state, action) {
-            state.list = action.payload.data;
-            state.relations = action.payload.relations;
+            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload.data));
+            state.allIds = action.payload.data.map(function (entity) { return entity.id; });
         });
         builder.addCase(reports_actions_1.fetchPinnedReportAction.fulfilled, function (state, action) {
             state.pinnedReport = action.payload;
