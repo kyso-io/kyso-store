@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,30 +36,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.loginAction = void 0;
-var toolkit_1 = require("@reduxjs/toolkit");
-var http_client_1 = require("../../services/http-client");
-exports.loginAction = (0, toolkit_1.createAsyncThunk)('auth/login', function (credentials) { return __awaiter(void 0, void 0, void 0, function () {
-    var axiosResponse, e_1;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+exports.populate = void 0;
+var dotenv = require('dotenv');
+dotenv.config({
+    path: "".concat(__dirname, "/../.env")
+});
+var store_1 = require("./store");
+var populate = function (store) { return __awaiter(void 0, void 0, void 0, function () {
+    var getState, dispatch;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, http_client_1["default"].post('/auth/login', __assign({}, credentials))];
+                getState = store.getState, dispatch = store.dispatch;
+                return [4 /*yield*/, dispatch((0, store_1.loginAction)({ username: 'kylo@kyso.io', password: 'n0tiene', provider: 'kyso' }))];
             case 1:
-                axiosResponse = _b.sent();
-                if ((_a = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _a === void 0 ? void 0 : _a.data) {
-                    return [2 /*return*/, axiosResponse.data.data];
-                }
-                else {
-                    return [2 /*return*/, null];
-                }
-                return [3 /*break*/, 3];
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.setOrganization)('darkside'))];
             case 2:
-                e_1 = _b.sent();
-                return [2 /*return*/, null];
-            case 3: return [2 /*return*/];
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.setTeam)('private-team'))];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.refreshUserAction)())];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, dispatch((0, store_1.fetchReportsAction)())];
+            case 5:
+                _a.sent();
+                console.log(getState().reports);
+                return [2 /*return*/];
         }
     });
-}); });
+}); };
+exports.populate = populate;
+(0, exports.populate)(store_1.store);

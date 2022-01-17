@@ -23,6 +23,7 @@ export type ReportsState = {
   commits: any[];
   currentBranch: null;
   list: Report[];
+  relations: object;
   limit: number;
   page: number;
   pinnedReport: Report | null;
@@ -39,6 +40,7 @@ const initialState: ReportsState = {
   commits: [],
   currentBranch: null,
   list: [],
+  relations: {},
   limit: 20,
   page: 1,
   pinnedReport: null,
@@ -54,6 +56,9 @@ const reportsSlice = createSlice({
   reducers: {
     setReports: (state: ReportsState, action: ActionWithPayload<Report[]>) => {
       state.list = action.payload!;
+    },
+    setRelations: (state: ReportsState, action) => {
+      state.relations = action.payload!;
     },
     setPinnedReport: (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;
@@ -118,8 +123,9 @@ const reportsSlice = createSlice({
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
       state.active = null;
     });
-    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report[]>) => {
-      state.list = action.payload!;
+    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
+      state.list = action.payload.data;
+      state.relations = action.payload.relations;
     });
     builder.addCase(fetchPinnedReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;

@@ -11,6 +11,14 @@ httpClient.interceptors.request.use(function (config) {
     if (token) {
         config.headers.Authorization = "Bearer ".concat(token);
     }
+    var team = store_1.store.getState().auth.team;
+    if (team) {
+        config.headers['x-kyso-team'] = team;
+    }
+    var organization = store_1.store.getState().auth.organization;
+    if (organization) {
+        config.headers['x-kyso-organization'] = organization;
+    }
     return config;
 });
 httpClient.interceptors.response.use(function (response) {

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.fetchFileContentsAction = exports.fetchPinnedReportAction = exports.fetchReportsAction = exports.deleteReportAction = exports.fetchReportCommentsAction = exports.fetchReposTreeAction = exports.fetchCommitsAction = exports.fetchBranchesAction = exports.pinReportAction = exports.updateReportAction = exports.fetchReportAction = exports.createReportAction = void 0;
+exports.fetchFileContentsAction = exports.fetchPinnedReportAction = exports.deleteReportAction = exports.fetchReportCommentsAction = exports.fetchReposTreeAction = exports.fetchCommitsAction = exports.fetchBranchesAction = exports.pinReportAction = exports.updateReportAction = exports.fetchReportsAction = exports.fetchReportAction = exports.createReportAction = void 0;
 var toolkit_1 = require("@reduxjs/toolkit");
 var http_client_1 = require("../../services/http-client");
 exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createReport', function (paths, _a) {
@@ -116,6 +116,35 @@ exports.fetchReportAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReport
         }
     });
 }); });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+exports.fetchReportsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReports', function (_, _a) {
+    var getState = _a.getState;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var _b, team, reports, user, url, axiosResponse, e_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 2, , 3]);
+                    _b = getState(), team = _b.team, reports = _b.reports, user = _b.user;
+                    url = "/reports?page=".concat(reports.page, "&per_page=").concat(reports.limit, "&sort=desc");
+                    return [4 /*yield*/, http_client_1["default"].get(url)];
+                case 1:
+                    axiosResponse = _c.sent();
+                    if (axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) {
+                        return [2 /*return*/, axiosResponse.data];
+                    }
+                    else {
+                        return [2 /*return*/, null];
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_1 = _c.sent();
+                    return [2 /*return*/, null];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+});
 exports.updateReportAction = (0, toolkit_1.createAsyncThunk)('reports/updateReport', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     var url, axiosResponse, _a;
     var _b;
@@ -289,36 +318,6 @@ exports.deleteReportAction = (0, toolkit_1.createAsyncThunk)('reports/deleteRepo
         }
     });
 }); });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-exports.fetchReportsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReports', function (_, _a) {
-    var getState = _a.getState;
-    return __awaiter(void 0, void 0, void 0, function () {
-        var _b, team, reports, user, url, axiosResponse, _c;
-        var _d;
-        return __generator(this, function (_e) {
-            switch (_e.label) {
-                case 0:
-                    _e.trys.push([0, 2, , 3]);
-                    _b = getState(), team = _b.team, reports = _b.reports, user = _b.user;
-                    url = "/reports?team=".concat((team === null || team === void 0 ? void 0 : team.team) ? team.team.name : user.user.nickname, "&page=").concat(reports.page, "&per_page=").concat(reports.limit, "&sort=desc");
-                    return [4 /*yield*/, http_client_1["default"].get(url)];
-                case 1:
-                    axiosResponse = _e.sent();
-                    if ((_d = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _d === void 0 ? void 0 : _d.data) {
-                        return [2 /*return*/, axiosResponse.data.data];
-                    }
-                    else {
-                        return [2 /*return*/, null];
-                    }
-                    return [3 /*break*/, 3];
-                case 2:
-                    _c = _e.sent();
-                    return [2 /*return*/, null];
-                case 3: return [2 /*return*/];
-            }
-        });
-    });
-});
 exports.fetchPinnedReportAction = (0, toolkit_1.createAsyncThunk)('reports/fetchPinnedReport', function () { return __awaiter(void 0, void 0, void 0, function () {
     var url, axiosResponse, _a;
     var _b;

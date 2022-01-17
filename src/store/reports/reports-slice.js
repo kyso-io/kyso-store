@@ -11,6 +11,7 @@ var initialState = {
     commits: [],
     currentBranch: null,
     list: [],
+    relations: {},
     limit: 20,
     page: 1,
     pinnedReport: null,
@@ -25,6 +26,9 @@ var reportsSlice = (0, toolkit_1.createSlice)({
     reducers: {
         setReports: function (state, action) {
             state.list = action.payload;
+        },
+        setRelations: function (state, action) {
+            state.relations = action.payload;
         },
         setPinnedReport: function (state, action) {
             state.pinnedReport = action.payload;
@@ -91,7 +95,8 @@ var reportsSlice = (0, toolkit_1.createSlice)({
             state.active = null;
         });
         builder.addCase(reports_actions_1.fetchReportsAction.fulfilled, function (state, action) {
-            state.list = action.payload;
+            state.list = action.payload.data;
+            state.relations = action.payload.relations;
         });
         builder.addCase(reports_actions_1.fetchPinnedReportAction.fulfilled, function (state, action) {
             state.pinnedReport = action.payload;

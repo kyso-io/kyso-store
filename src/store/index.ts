@@ -35,7 +35,7 @@ export type AppDispatch = typeof store.dispatch;
 
 // Export actions
 export * from './auth/auth-actions';
-export { setToken } from './auth/auth-slice';
+export { setToken, setOrganization, setTeam } from './auth/auth-slice';
 export * from './discussions/discussions-actions';
 export * from './reports/reports-actions';
 export * from './repos/repos-actions';

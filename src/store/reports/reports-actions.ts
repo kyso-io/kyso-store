@@ -56,6 +56,24 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
   }
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState }) => {
+  try {
+    const { team, reports, user } = getState() as RootState;
+    // const url = `/reports?team=${team?.team ? team.team.name : user.user!.nickname}&page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
+
+    if (axiosResponse?.data) {
+      return axiosResponse.data;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+});
+
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { owner: string; reportName: string; data: UpdateReportRequest }) => {
   try {
     const url = `/reports/${payload.owner}/${payload.reportName}`;
@@ -147,22 +165,6 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
     const url = `/reports/${payload.owner}/${payload.reportName}`;
     await httpClient.delete(url);
     return null;
-  } catch {
-    return null;
-  }
-});
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState }) => {
-  try {
-    const { team, reports, user } = getState() as RootState;
-    const url = `/reports?team=${team?.team ? team.team.name : user.user!.nickname}&page=${reports.page}&per_page=${reports.limit}&sort=desc`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
-    } else {
-      return null;
-    }
   } catch {
     return null;
   }
