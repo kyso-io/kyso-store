@@ -130,6 +130,6 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setCurrentBranch, setPageAndLimit, setSearchQuery, setTagsQuery } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setPageAndLimit, setSearchQuery, setTagsQuery } = reportsSlice.actions;
 
 export default reportsSlice.reducer;
