@@ -23,9 +23,7 @@ export type ReportsState = {
   activeId: string | null | undefined; // single id of active report
   activeIds: object | null;  // list of ids for showing lists of reports
   entities: { [key: string]: any | null | undefined } | null; // all the reports by id
-  commentEntities: { [key: string]: any | null | undefined } | null; // all the reports by id
   branches: any[];
-  comment_ids: string[];
   commits: any[];
   currentBranch: null;
   limit: number;
@@ -41,9 +39,7 @@ const initialState: ReportsState = {
   activeId: null,
   activeIds: null,
   entities: {},
-  commentEntities: {},
   branches: [],
-  comment_ids: [],
   commits: [],
   currentBranch: null,
   limit: 20,
@@ -97,9 +93,6 @@ const reportsSlice = createSlice({
     setCurrentBranch: (state: ReportsState, action: ActionWithPayload<any>) => {
       state.currentBranch = action.payload;
     },
-    setReportsComments: (state: ReportsState, action: ActionWithPayload<any[]>) => {
-      state.comment_ids = action.payload!.map((entity) => entity.id);
-    },
   },
   extraReducers: builder => {
     builder.addCase(createReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
@@ -127,9 +120,6 @@ const reportsSlice = createSlice({
     builder.addCase(fetchReposTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;
     });
-    // builder.addCase(fetchReportCommentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
-    //   state.comment_ids = action.payload!.map((entity) => entity.id);
-    // });
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
       state.activeId = null;
     });
@@ -150,10 +140,6 @@ const reportsSlice = createSlice({
       state.entities = {
         ...state.entities,
         ...action.payload?.report,
-      }
-      state.commentEntities = {
-        ...state.commentEntities,
-        ...action.payload?.comment,
       }
     });
   },
