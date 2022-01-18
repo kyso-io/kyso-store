@@ -1,6 +1,6 @@
 {
   "name": "@kyso-io/kyso-store",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -34,8 +34,10 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@kyso-io/kyso-model": "^0.0.1",
     "@reduxjs/toolkit": "^1.7.1",
     "axios": "^0.24.0",
-    "dotenv": "^11.0.0"
+    "dotenv": "^11.0.0",
+    "jwt-decode": "^3.1.2"
   }
 }

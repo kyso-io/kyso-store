@@ -1,4 +1,4 @@
-import { NormalizedResponse } from '@kyso-io/kyso-model';
+import { NormalizedResponse, Repository } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
@@ -13,7 +13,7 @@ export const fetchReposAction = createAsyncThunk('repos/fetchRepos', async (_, {
     if (repos?.searchQuery && repos.searchQuery.length > 0) {
       url += `&filter=${repos.searchQuery}`;
     }
-    const axiosResponse: AxiosResponse<NormalizedResponse> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<Repository[]>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
@@ -33,7 +33,7 @@ export const fetchRepoAction = createAsyncThunk('repos/fetchRepo', async (payloa
   try {
     const { repos } = getState() as RootState;
     const url = `/repos/${repos.provider}/${payload.owner}/${payload.name}`;
-    const axiosResponse: AxiosResponse<NormalizedResponse> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<Repository>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
@@ -51,7 +51,7 @@ export const fetchRepoTreeAction = createAsyncThunk('repos/fetchTree', async (pa
       return;
     }
     const url = `/repos/${repos.provider}/${payload.owner}/${repos.active.name}/${payload.branch}/tree`;
-    const axiosResponse: AxiosResponse<NormalizedResponse> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<object>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {

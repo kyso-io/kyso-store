@@ -1,4 +1,4 @@
-import { NormalizedResponse } from '@kyso-io/kyso-model';
+import { NormalizedResponse, Team } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import httpClient from '../../services/http-client';
@@ -6,7 +6,7 @@ import httpClient from '../../services/http-client';
 export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamName: string) => {
   try {
     const url = `/teams/${teamName}`;
-    const axiosResponse: AxiosResponse<NormalizedResponse> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.get(url, {
       headers: { 'x-kyso-team': teamName },
     });
     if (axiosResponse?.data?.data) {
