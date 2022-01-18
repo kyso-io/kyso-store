@@ -13,8 +13,8 @@ export type Discussion = {
     is_edited: boolean;
     is_closed: boolean;
     is_answered: boolean;
-    created_at: string;
-    updated_at: string;
+    created_at: Date;
+    updated_at: Date;
     version_array: string;
     owner_nickname: string; //name under who the report is owned by (name in the url)
     participants: string[];  // list of participants id (a person who create a comment is a participant)

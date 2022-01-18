@@ -20,8 +20,8 @@ export type Report = {
   has_metadata: boolean;
   preview: string; //preview picture
   default_code: string; //hidden, shown, both
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
   branches_url: string;
   commits_url: string;
   tree_url: string;

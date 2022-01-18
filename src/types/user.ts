@@ -5,10 +5,10 @@ import { UserAccount } from './user-account';
 export type User = {
   id: string;
   email: string;
-  username: string;
+  name: string; //same for team
   nickname: string;
   provider: LoginProviderEnum;
-  github_id: string; // not sure if this is longer needit
+  github_id: string; // not sure if this is longer needed it
   bio: string;
   location: string;
   link: string;

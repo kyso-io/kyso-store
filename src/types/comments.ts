@@ -7,8 +7,8 @@ export type Discussion = {
     is_edited: boolean;
     is_marked: boolean;
     marked_by: string; // nickname of the person who has marked this comments as the answered on a discussion
-    created_at: string;
-    updated_at: string;
+    created_at: Date;
+    updated_at: Date;
     owner_nickname: string; //name under who the report is owned by (name in the url)
     parent_ids: string;
     author_id: string;
