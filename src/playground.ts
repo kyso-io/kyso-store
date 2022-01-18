@@ -23,11 +23,11 @@ export const play = async () => {
   await dispatch(setTeam('private-team'))
   await dispatch(refreshUserAction())
 
-  await dispatch(fetchReportAction({ owner: 'rey', reportName: 'reys-report' }))
-  await dispatch(fetchReportsAction())
+  // await dispatch(fetchReportAction({ owner: 'rey', reportName: 'reys-report' }))
+  // await dispatch(fetchReportsAction())
   await dispatch(fetchReportCommentsAction({ owner: 'rey', reportName: 'reys-report' }))
   
-  console.log(getState().comments)
+  console.log(getState())
 }
 
 play()

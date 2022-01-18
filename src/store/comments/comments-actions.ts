@@ -12,7 +12,7 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
 
     if (axiosResponse?.data?.relations) {
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
+        dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
     }
 
     if (axiosResponse?.data?.data) {

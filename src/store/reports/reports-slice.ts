@@ -10,7 +10,6 @@ import {
   fetchFileContentsAction,
   fetchPinnedReportAction,
   fetchReportAction,
-  // fetchReportCommentsAction,
   fetchReportsAction,
   fetchReposTreeAction,
   pinReportAction,
