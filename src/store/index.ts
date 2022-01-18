@@ -6,6 +6,7 @@ import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
+import comments from './comments/comments-slice';
 
 export const reducer = combineReducers({
   auth,
@@ -14,6 +15,7 @@ export const reducer = combineReducers({
   repos,
   team,
   user,
+  comments
 })
 
 export const store = configureStore({
@@ -24,6 +26,7 @@ export const store = configureStore({
     repos,
     team,
     user,
+    comments
   },
 });
 
@@ -42,3 +45,4 @@ export * from './repos/repos-actions';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
 export * from './team/team-actions';
 export * from './user/user-actions';
+export * from './comments/comments-actions';

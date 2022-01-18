@@ -5,6 +5,7 @@ import httpClient from '../../services/http-client';
 import { NormalizedResponse } from '../../types/normalized-response';
 import { Report } from '../../types/report';
 import { UpdateReportRequest } from '../../types/update-report-request';
+// import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
   try {
@@ -64,8 +65,8 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
 
-    if (axiosResponse?.data) {
-      return axiosResponse.data;
+    if (axiosResponse?.data.data) {
+      return axiosResponse.data.data;
     } else {
       return null;
     }
@@ -144,25 +145,25 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
   }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
-  try {
-    const url = `/reports/${payload.owner}/${payload.reportName}/comments`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
+//   try {
+//     const url = `/reports/${payload.owner}/${payload.reportName}/comments`;
+//     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
 
-    if (axiosResponse?.data?.relations) {
-      // dispatch({'relations/fetch', payload: axiosResponse?.data?.relations })
-    }
+//     if (axiosResponse?.data?.relations) {
+//       dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
+//     }
 
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
-    } else {
-      return null;
-    }
-  } catch {
-    return null;
-  }
-});
+//     if (axiosResponse?.data?.data) {
+//       return axiosResponse.data.data;
+//     } else {
+//       return null;
+//     }
+//   } catch {
+//     return null;
+//   }
+// });
 
 export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (payload: { owner: string; reportName: string }) => {
   try {

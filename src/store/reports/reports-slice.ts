@@ -10,17 +10,20 @@ import {
   fetchFileContentsAction,
   fetchPinnedReportAction,
   fetchReportAction,
-  fetchReportCommentsAction,
+  // fetchReportCommentsAction,
   fetchReportsAction,
   fetchReposTreeAction,
   pinReportAction,
   updateReportAction,
 } from './reports-actions';
 
+import { fetchRelationsAction } from '../relations/relations-actions';
+
 export type ReportsState = {
   activeId: string | null | undefined; // single id of active report
-  allIds: object | null;  // list of ids for showing lists of reports
+  activeIds: object | null;  // list of ids for showing lists of reports
   entities: { [key: string]: any | null | undefined } | null; // all the reports by id
+  commentEntities: { [key: string]: any | null | undefined } | null; // all the reports by id
   branches: any[];
   comment_ids: string[];
   commits: any[];
@@ -36,8 +39,9 @@ export type ReportsState = {
 
 const initialState: ReportsState = {
   activeId: null,
-  allIds: null,
+  activeIds: null,
   entities: {},
+  commentEntities: {},
   branches: [],
   comment_ids: [],
   commits: [],
@@ -55,12 +59,12 @@ const reportsSlice = createSlice({
   name: 'reports',
   initialState,
   reducers: {
-    setReports: (state: ReportsState, action: ActionWithPayload<any>) => {
+    setReports: (state: ReportsState, action: ActionWithPayload<Report[]>) => {
       state.entities = {
         ...state.entities,
-        ...listToKeyVal(action.payload.data)
+        ...listToKeyVal(action.payload)
       }
-      state.allIds = action.payload.data.map((entity: Report) => entity.id)
+      state.activeIds = action.payload!.map((entity: Report) => entity.id)
     },
     setPinnedReport: (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;
@@ -123,24 +127,34 @@ const reportsSlice = createSlice({
     builder.addCase(fetchReposTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;
     });
-    builder.addCase(fetchReportCommentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
-      state.comment_ids = action.payload!.map((entity) => entity.id);
-    });
+    // builder.addCase(fetchReportCommentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
+    //   state.comment_ids = action.payload!.map((entity) => entity.id);
+    // });
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
       state.activeId = null;
     });
     builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.entities = {
         ...state.entities,
-        ...listToKeyVal(action.payload.data)
+        ...listToKeyVal(action.payload)
       }
-      state.allIds = action.payload.data.map((entity: Report) => entity.id)
+      state.activeIds = action.payload.map((entity: Report) => entity.id)
     });
     builder.addCase(fetchPinnedReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;
     });
     builder.addCase(fetchFileContentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.content = action.payload!;
+    });
+    builder.addCase(fetchRelationsAction, (state: ReportsState, action: ActionWithPayload<any>) => {
+      state.entities = {
+        ...state.entities,
+        ...action.payload?.report,
+      }
+      state.commentEntities = {
+        ...state.commentEntities,
+        ...action.payload?.comment,
+      }
     });
   },
 });

@@ -36,43 +36,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.play = void 0;
-var dotenv = require('dotenv');
-dotenv.config({
-    path: "".concat(__dirname, "/../.env")
-});
-var store_1 = require("./store");
-var play = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var getState, dispatch;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                getState = store_1.store.getState, dispatch = store_1.store.dispatch;
-                return [4 /*yield*/, dispatch((0, store_1.loginAction)({ username: 'kylo@kyso.io', password: 'n0tiene', provider: 'kyso' }))];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.setOrganization)('darkside'))];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.setTeam)('private-team'))];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.refreshUserAction)())];
-            case 4:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.fetchReportAction)({ owner: 'rey', reportName: 'reys-report' }))];
-            case 5:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.fetchReportsAction)())];
-            case 6:
-                _a.sent();
-                return [4 /*yield*/, dispatch((0, store_1.fetchReportCommentsAction)({ owner: 'rey', reportName: 'reys-report' }))];
-            case 7:
-                _a.sent();
-                console.log(getState().comments);
-                return [2 /*return*/];
-        }
+exports.fetchReportCommentsAction = void 0;
+var toolkit_1 = require("@reduxjs/toolkit");
+var http_client_1 = require("../../services/http-client");
+var relations_actions_1 = require("../relations/relations-actions");
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+exports.fetchReportCommentsAction = (0, toolkit_1.createAsyncThunk)('comments/fetchReportComments', function (payload, _a) {
+    var getState = _a.getState, dispatch = _a.dispatch;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var url, axiosResponse, _b;
+        var _c, _d, _e;
+        return __generator(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    _f.trys.push([0, 2, , 3]);
+                    url = "/reports/".concat(payload.owner, "/").concat(payload.reportName, "/comments");
+                    return [4 /*yield*/, http_client_1["default"].get(url)];
+                case 1:
+                    axiosResponse = _f.sent();
+                    if ((_c = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _c === void 0 ? void 0 : _c.relations) {
+                        dispatch((0, relations_actions_1.fetchRelationsAction)((_d = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _d === void 0 ? void 0 : _d.relations));
+                    }
+                    if ((_e = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _e === void 0 ? void 0 : _e.data) {
+                        return [2 /*return*/, axiosResponse.data.data];
+                    }
+                    else {
+                        return [2 /*return*/, null];
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    _b = _f.sent();
+                    return [2 /*return*/, null];
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.play = play;
-(0, exports.play)();
+});

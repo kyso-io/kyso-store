@@ -19,13 +19,15 @@ var reports_slice_1 = require("./reports/reports-slice");
 var repos_slice_1 = require("./repos/repos-slice");
 var team_slice_1 = require("./team/team-slice");
 var user_slice_1 = require("./user/user-slice");
+var comments_slice_1 = require("./comments/comments-slice");
 exports.reducer = (0, redux_1.combineReducers)({
     auth: auth_slice_1["default"],
     discussions: discussions_slice_1["default"],
     reports: reports_slice_1["default"],
     repos: repos_slice_1["default"],
     team: team_slice_1["default"],
-    user: user_slice_1["default"]
+    user: user_slice_1["default"],
+    comments: comments_slice_1["default"]
 });
 exports.store = (0, toolkit_1.configureStore)({
     reducer: {
@@ -34,7 +36,8 @@ exports.store = (0, toolkit_1.configureStore)({
         reports: reports_slice_1["default"],
         repos: repos_slice_1["default"],
         team: team_slice_1["default"],
-        user: user_slice_1["default"]
+        user: user_slice_1["default"],
+        comments: comments_slice_1["default"]
     }
 });
 // Export actions
@@ -52,3 +55,4 @@ __createBinding(exports, repos_slice_2, "setProvider");
 __createBinding(exports, repos_slice_2, "setSearchQuery");
 __exportStar(require("./team/team-actions"), exports);
 __exportStar(require("./user/user-actions"), exports);
+__exportStar(require("./comments/comments-actions"), exports);

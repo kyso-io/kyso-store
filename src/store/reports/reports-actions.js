@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.fetchFileContentsAction = exports.fetchPinnedReportAction = exports.deleteReportAction = exports.fetchReportCommentsAction = exports.fetchReposTreeAction = exports.fetchCommitsAction = exports.fetchBranchesAction = exports.pinReportAction = exports.updateReportAction = exports.fetchReportsAction = exports.fetchReportAction = exports.createReportAction = void 0;
+exports.fetchFileContentsAction = exports.fetchPinnedReportAction = exports.deleteReportAction = exports.fetchReposTreeAction = exports.fetchCommitsAction = exports.fetchBranchesAction = exports.pinReportAction = exports.updateReportAction = exports.fetchReportsAction = exports.fetchReportAction = exports.createReportAction = void 0;
 var toolkit_1 = require("@reduxjs/toolkit");
 var http_client_1 = require("../../services/http-client");
+// import { fetchRelationsAction } from '../relations/relations-actions';
 exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createReport', function (paths, _a) {
     if (paths === void 0) { paths = []; }
     var getState = _a.getState;
@@ -127,8 +128,8 @@ exports.fetchReportsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchRepor
                     return [4 /*yield*/, http_client_1["default"].get(url)];
                 case 1:
                     axiosResponse = _c.sent();
-                    if (axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) {
-                        return [2 /*return*/, axiosResponse.data];
+                    if (axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data.data) {
+                        return [2 /*return*/, axiosResponse.data.data];
                     }
                     else {
                         return [2 /*return*/, null];
@@ -267,38 +268,23 @@ exports.fetchReposTreeAction = (0, toolkit_1.createAsyncThunk)('reports/fetchTre
         }
     });
 }); });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-exports.fetchReportCommentsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReportComments', function (payload, _a) {
-    var getState = _a.getState, dispatch = _a.dispatch;
-    return __awaiter(void 0, void 0, void 0, function () {
-        var url, axiosResponse, _b;
-        var _c, _d;
-        return __generator(this, function (_e) {
-            switch (_e.label) {
-                case 0:
-                    _e.trys.push([0, 2, , 3]);
-                    url = "/reports/".concat(payload.owner, "/").concat(payload.reportName, "/comments");
-                    return [4 /*yield*/, http_client_1["default"].get(url)];
-                case 1:
-                    axiosResponse = _e.sent();
-                    if ((_c = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _c === void 0 ? void 0 : _c.relations) {
-                        // dispatch({'relations/fetch', payload: axiosResponse?.data?.relations })
-                    }
-                    if ((_d = axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data) === null || _d === void 0 ? void 0 : _d.data) {
-                        return [2 /*return*/, axiosResponse.data.data];
-                    }
-                    else {
-                        return [2 /*return*/, null];
-                    }
-                    return [3 /*break*/, 3];
-                case 2:
-                    _b = _e.sent();
-                    return [2 /*return*/, null];
-                case 3: return [2 /*return*/];
-            }
-        });
-    });
-});
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
+//   try {
+//     const url = `/reports/${payload.owner}/${payload.reportName}/comments`;
+//     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
+//     if (axiosResponse?.data?.relations) {
+//       dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
+//     }
+//     if (axiosResponse?.data?.data) {
+//       return axiosResponse.data.data;
+//     } else {
+//       return null;
+//     }
+//   } catch {
+//     return null;
+//   }
+// });
 exports.deleteReportAction = (0, toolkit_1.createAsyncThunk)('reports/deleteReport', function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     var url, _a;
     return __generator(this, function (_b) {

@@ -16,10 +16,12 @@ exports.setTagsQuery = exports.setSearchQuery = exports.setPageAndLimit = export
 var toolkit_1 = require("@reduxjs/toolkit");
 var list_to_key_val_1 = require("../../helpers/list-to-key-val");
 var reports_actions_1 = require("./reports-actions");
+var relations_actions_1 = require("../relations/relations-actions");
 var initialState = {
     activeId: null,
-    allIds: null,
+    activeIds: null,
     entities: {},
+    commentEntities: {},
     branches: [],
     comment_ids: [],
     commits: [],
@@ -37,8 +39,8 @@ var reportsSlice = (0, toolkit_1.createSlice)({
     initialState: initialState,
     reducers: {
         setReports: function (state, action) {
-            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload.data));
-            state.allIds = action.payload.data.map(function (entity) { return entity.id; });
+            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload));
+            state.activeIds = action.payload.map(function (entity) { return entity.id; });
         },
         setPinnedReport: function (state, action) {
             state.pinnedReport = action.payload;
@@ -100,21 +102,26 @@ var reportsSlice = (0, toolkit_1.createSlice)({
         builder.addCase(reports_actions_1.fetchReposTreeAction.fulfilled, function (state, action) {
             state.tree = action.payload;
         });
-        builder.addCase(reports_actions_1.fetchReportCommentsAction.fulfilled, function (state, action) {
-            state.comment_ids = action.payload.map(function (entity) { return entity.id; });
-        });
+        // builder.addCase(fetchReportCommentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
+        //   state.comment_ids = action.payload!.map((entity) => entity.id);
+        // });
         builder.addCase(reports_actions_1.deleteReportAction.fulfilled, function (state) {
             state.activeId = null;
         });
         builder.addCase(reports_actions_1.fetchReportsAction.fulfilled, function (state, action) {
-            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload.data));
-            state.allIds = action.payload.data.map(function (entity) { return entity.id; });
+            state.entities = __assign(__assign({}, state.entities), (0, list_to_key_val_1["default"])(action.payload));
+            state.activeIds = action.payload.map(function (entity) { return entity.id; });
         });
         builder.addCase(reports_actions_1.fetchPinnedReportAction.fulfilled, function (state, action) {
             state.pinnedReport = action.payload;
         });
         builder.addCase(reports_actions_1.fetchFileContentsAction.fulfilled, function (state, action) {
             state.content = action.payload;
+        });
+        builder.addCase(relations_actions_1.fetchRelationsAction, function (state, action) {
+            var _a, _b;
+            state.entities = __assign(__assign({}, state.entities), (_a = action.payload) === null || _a === void 0 ? void 0 : _a.report);
+            state.commentEntities = __assign(__assign({}, state.commentEntities), (_b = action.payload) === null || _b === void 0 ? void 0 : _b.comment);
         });
     }
 });
