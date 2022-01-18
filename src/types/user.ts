@@ -6,7 +6,7 @@ export type User = {
   id: string;
   email: string;
   name: string; //same for team
-  nickname: string;
+  username: string;
   provider: LoginProviderEnum;
   github_id: string; // not sure if this is longer needed it
   bio: string;

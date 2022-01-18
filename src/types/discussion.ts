@@ -2,7 +2,8 @@ import { BaseModel } from './base';
 
 export type Discussion = {
     id: string;
-    name: string;
+    url_name: string;
+    title: string;
     discussion_number: number;
     type: 'discussion';
     main: string;
@@ -16,9 +17,9 @@ export type Discussion = {
     created_at: Date;
     updated_at: Date;
     version_array: string;
-    owner_nickname: string; //name under who the report is owned by (name in the url)
     participants: string[];  // list of participants id (a person who create a comment is a participant)
     assignees: string[]; //list of member assigned to the discussion
+    owner_name: string; //name under who the report is owned by (name in the url)
     author_id: string;
     comment_ids: [string];
     team_id: string;

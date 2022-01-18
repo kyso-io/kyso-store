@@ -9,7 +9,7 @@ export type Discussion = {
     marked_by: string; // nickname of the person who has marked this comments as the answered on a discussion
     created_at: Date;
     updated_at: Date;
-    owner_nickname: string; //name under who the report is owned by (name in the url)
+    owner_name: string; //name under who the report is owned by (name in the url)
     parent_ids: string;
     author_id: string;
     team_id: string;

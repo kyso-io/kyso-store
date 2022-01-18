@@ -2,8 +2,8 @@ import { BaseModel } from './base';
 
 export type Report = {
   id: string;
-  name: string;
   url_name: string;
+  title: string;
   main: string; //main file rendered
   type: 'report';
   views: number;
@@ -26,7 +26,7 @@ export type Report = {
   commits_url: string;
   tree_url: string;
   version_array: string;
-  owner_nickname: string; //name under who the report is owned by (name in the url)
+  owner_name: string; //name under who the report is owned by (name in the url)
   auhtor_id: string[];  //It can have more than one author
   comment_ids: [string];
   team_id: string;
