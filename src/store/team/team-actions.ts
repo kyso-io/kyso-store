@@ -1,8 +1,7 @@
+import { NormalizedResponse, Team } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import httpClient from '../../services/http-client';
-import { NormalizedResponse } from '../../types/normalized-response';
-import { Team } from '../../types/team';
 
 export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamName: string) => {
   try {

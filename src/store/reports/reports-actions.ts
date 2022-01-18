@@ -1,10 +1,8 @@
+import { NormalizedResponse, Report, UpdateReportRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import httpClient from '../../services/http-client';
-import { NormalizedResponse } from '../../types/normalized-response';
-import { Report } from '../../types/report';
-import { UpdateReportRequest } from '../../types/update-report-request';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
   try {
@@ -104,7 +102,7 @@ export const pinReportAction = createAsyncThunk('reports/pinReport', async (payl
 export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', async (payload: { owner: string; reportName: string }) => {
   try {
     const url = `/reports/${payload.owner}/${payload.reportName}/branches`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<any>> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<any[]>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
@@ -118,7 +116,7 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
 export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async (payload: { owner: string; reportName: string; branch: string }) => {
   try {
     const url = `/reports/${payload.owner}/${payload.reportName}/${payload.branch}/commits`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<any>> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<any[]>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
@@ -132,7 +130,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
 export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { owner: string; reportName: string; branch: string; filePath: string }) => {
   try {
     const url = `/reports/${payload.owner}/${payload.reportName}/${payload.branch}/tree/${payload.filePath}`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<any>> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<Report>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
@@ -143,25 +141,6 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
   }
 });
 
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// export const fetchReportCommentsAction = createAsyncThunk('reports/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
-//   try {
-//     const url = `/reports/${payload.owner}/${payload.reportName}/comments`;
-//     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
-
-//     if (axiosResponse?.data?.relations) {
-//       dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
-//     }
-
-//     if (axiosResponse?.data?.data) {
-//       return axiosResponse.data.data;
-//     } else {
-//       return null;
-//     }
-//   } catch {
-//     return null;
-//   }
-// });
 
 export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (payload: { owner: string; reportName: string }) => {
   try {

@@ -1,10 +1,8 @@
+import { NormalizedResponse, User, UpdateUserRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import httpClient from '../../services/http-client';
-import { NormalizedResponse } from '../../types/normalized-response';
-import { UpdateUserRequest } from '../../types/update-user-request';
-import { User } from '../../types/user';
 
 export const refreshUserAction = createAsyncThunk('user/refresh', async () => {
   try {

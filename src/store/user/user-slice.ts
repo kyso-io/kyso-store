@@ -1,6 +1,6 @@
+import { User } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '../../types/action-with-payload';
-import { User } from '../../types/user';
 import { refreshUserAction, updateUserAction } from './user-actions';
 
 export type UserState = {

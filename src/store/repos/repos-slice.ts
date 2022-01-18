@@ -1,7 +1,6 @@
+import { LoginProviderEnum, Repository } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { LoginProviderEnum } from '../../enums/login-provider.enum';
 import { ActionWithPayload } from '../../types/action-with-payload';
-import { Repository } from '../../types/repository';
 import { fetchRepoAction, fetchReposAction, fetchRepoTreeAction } from './repos-actions';
 
 export type ReposState = {

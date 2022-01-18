@@ -1,9 +1,8 @@
+import { NormalizedResponse, Repository } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import httpClient from '../../services/http-client';
-import { NormalizedResponse } from '../../types/normalized-response';
-import { Repository } from '../../types/repository';
 import { setSearchQuery } from './repos-slice';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,7 +51,7 @@ export const fetchRepoTreeAction = createAsyncThunk('repos/fetchTree', async (pa
       return;
     }
     const url = `/repos/${repos.provider}/${payload.owner}/${repos.active.name}/${payload.branch}/tree`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<Repository>> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponse<object>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {

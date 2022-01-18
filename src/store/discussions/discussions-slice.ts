@@ -1,9 +1,10 @@
+import { Discussion } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchDiscussionsAction } from './discussions-actions';
 
 export type DiscussionsState = {
-  list: any[];
+  list: Discussion[];
   limit: number;
   page: number;
 };
@@ -27,7 +28,7 @@ const discussionsSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchDiscussionsAction.fulfilled, (state: DiscussionsState, action: ActionWithPayload<any[]>) => {
+    builder.addCase(fetchDiscussionsAction.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
       state.list = action.payload!;
     });
   },
