@@ -39,7 +39,6 @@ exports.__esModule = true;
 exports.fetchFileContentsAction = exports.fetchPinnedReportAction = exports.deleteReportAction = exports.fetchReposTreeAction = exports.fetchCommitsAction = exports.fetchBranchesAction = exports.pinReportAction = exports.updateReportAction = exports.fetchReportsAction = exports.fetchReportAction = exports.createReportAction = void 0;
 var toolkit_1 = require("@reduxjs/toolkit");
 var http_client_1 = require("../../services/http-client");
-// import { fetchRelationsAction } from '../relations/relations-actions';
 exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createReport', function (paths, _a) {
     if (paths === void 0) { paths = []; }
     var getState = _a.getState;
@@ -56,9 +55,9 @@ exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createRepo
                         reports = paths.map(function (path) { return ({
                             src: {
                                 provider: repos_1.provider,
-                                // owner: repos.active!.owner,
-                                // name: repos.active!.name,
-                                // default_branch: repos.active!.default_branch,
+                                owner: repos_1.active.owner,
+                                name: repos_1.active.name,
+                                default_branch: repos_1.active.default_branch,
                                 path: path
                             }
                         }); });
@@ -66,7 +65,10 @@ exports.createReportAction = (0, toolkit_1.createAsyncThunk)('reports/createRepo
                     else {
                         reports = {
                             src: {
-                                provider: repos_1.provider
+                                provider: repos_1.provider,
+                                owner: repos_1.active.owner,
+                                name: repos_1.active.name,
+                                default_branch: repos_1.active.default_branch
                             }
                         };
                     }
@@ -118,16 +120,16 @@ exports.fetchReportAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReport
 exports.fetchReportsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchReports', function (_, _a) {
     var getState = _a.getState;
     return __awaiter(void 0, void 0, void 0, function () {
-        var _b, team, reports, user, url, axiosResponse, e_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var reports, url, axiosResponse, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _c.trys.push([0, 2, , 3]);
-                    _b = getState(), team = _b.team, reports = _b.reports, user = _b.user;
+                    _b.trys.push([0, 2, , 3]);
+                    reports = getState().reports;
                     url = "/reports?page=".concat(reports.page, "&per_page=").concat(reports.limit, "&sort=desc");
                     return [4 /*yield*/, http_client_1["default"].get(url)];
                 case 1:
-                    axiosResponse = _c.sent();
+                    axiosResponse = _b.sent();
                     if (axiosResponse === null || axiosResponse === void 0 ? void 0 : axiosResponse.data.data) {
                         return [2 /*return*/, axiosResponse.data.data];
                     }
@@ -136,7 +138,7 @@ exports.fetchReportsAction = (0, toolkit_1.createAsyncThunk)('reports/fetchRepor
                     }
                     return [3 /*break*/, 3];
                 case 2:
-                    e_1 = _c.sent();
+                    e_1 = _b.sent();
                     return [2 /*return*/, null];
                 case 3: return [2 /*return*/];
             }

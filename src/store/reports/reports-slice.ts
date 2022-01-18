@@ -122,12 +122,12 @@ const reportsSlice = createSlice({
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
       state.activeId = null;
     });
-    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
+    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report[]>) => {
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload)
       }
-      state.activeIds = action.payload.map((entity: Report) => entity.id)
+      state.activeIds = action.payload!.map((entity: Report) => entity.id)
     });
     builder.addCase(fetchPinnedReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;
@@ -135,7 +135,7 @@ const reportsSlice = createSlice({
     builder.addCase(fetchFileContentsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.content = action.payload!;
     });
-    builder.addCase(fetchRelationsAction, (state: ReportsState, action: ActionWithPayload<any>) => {
+    builder.addCase(fetchRelationsAction, (state: ReportsState, action: ActionWithPayload<any>) => { // needs to be type relation
       state.entities = {
         ...state.entities,
         ...action.payload?.report,

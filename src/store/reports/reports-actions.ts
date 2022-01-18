@@ -5,7 +5,6 @@ import httpClient from '../../services/http-client';
 import { NormalizedResponse } from '../../types/normalized-response';
 import { Report } from '../../types/report';
 import { UpdateReportRequest } from '../../types/update-report-request';
-// import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
   try {
@@ -15,9 +14,9 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       reports = paths.map((path: any) => ({
         src: {
           provider: repos.provider,
-          // owner: repos.active!.owner,
-          // name: repos.active!.name,
-          // default_branch: repos.active!.default_branch,
+          owner: repos.active!.owner,
+          name: repos.active!.name,
+          default_branch: repos.active!.default_branch,
           path,
         },
       }));
@@ -25,9 +24,9 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       reports = {
         src: {
           provider: repos.provider,
-          // owner: repos.active!.owner,
-          // name: repos.active!.name,
-          // default_branch: repos.active!.default_branch,
+          owner: repos.active!.owner,
+          name: repos.active!.name,
+          default_branch: repos.active!.default_branch,
         },
       };
     }
@@ -60,8 +59,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState }) => {
   try {
-    const { team, reports, user } = getState() as RootState;
-    // const url = `/reports?team=${team?.team ? team.team.name : user.user!.nickname}&page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    const { reports } = getState() as RootState;
     const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
 
