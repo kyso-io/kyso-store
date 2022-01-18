@@ -1,11 +1,11 @@
+import { NormalizedResponse } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import httpClient from '../../services/http-client';
-import { NormalizedResponse } from '../../types/normalized-response';
 
 export const loginAction = createAsyncThunk('auth/login', async (credentials: { username: string; password: string; provider: string }) => {
   try {
-    const axiosResponse: AxiosResponse<NormalizedResponse<string>> = await httpClient.post('/auth/login', { ...credentials });
+    const axiosResponse: AxiosResponse<NormalizedResponse> = await httpClient.post('/auth/login', { ...credentials });
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {

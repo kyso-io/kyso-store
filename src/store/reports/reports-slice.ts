@@ -1,6 +1,6 @@
+import { Report } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '../../types/action-with-payload';
-import { Report } from '../../types/report';
 import {
   createReportAction,
   deleteReportAction,
