@@ -4,20 +4,20 @@ import { KysoRole } from './kyso-role';
 
 export type Team = {
   id: string;
-  name: string; // or user nickname
-  company_name: string;
+  access_domains: string[];
+  access_gmail_only: boolean;
   avatar_url: string;
+  billing_email: string;
   bio: string;
+  connect_repos_admin_only: boolean; // check
+  company_name: string;
+  discussions_number: number; //total number of discussions
   link: string;
   location: string;
-  roles: KysoRole[];
-  visibility: TeamVisibilityEnum;
+  name: string;
   organization_id: string;
-  billing_email: string;
-  tax_id: string;
+  roles: KysoRole[];
   subscription_id: string;
-  access_domains: Array;
-  access_only_gmail: boolen; //check
-  connect_repos_admin_only: boolean; // check
-  discussion_number: number;
+  tax_id: string;
+  visibility: TeamVisibilityEnum;
 } & BaseModel;
