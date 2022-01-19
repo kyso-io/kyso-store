@@ -2,7 +2,6 @@ import { BaseModel } from './base';
 
 export type Comment = {
     id: string;
-    author_id: string;
     text: string;
     created_at: Date;
     discussion_id: string;
@@ -15,6 +14,7 @@ export type Comment = {
     report_id: string;
     team_id: string;
     updated_at: Date;
+    user_id: string;
 } & BaseModel;
 
 
