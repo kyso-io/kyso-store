@@ -2,27 +2,27 @@ import { BaseModel } from './base';
 
 export type Discussion = {
     id: string;
-    url_name: string;
-    title: string;
-    discussion_number: number;
-    type: 'discussion';
-    main: string;
-    number_of_comments: number;
-    tags: Array;
-    description: string;
-    request_private: boolean;
-    edited: boolean;
-    closed: boolean;
     answered: boolean;
-    created_at: Date;
-    updated_at: Date;
-    version_id: string;
-    participants: Array;  // list of participants id (a person who create a comment is a participant)
-    assignees: Array; //list of member assigned to the discussion
-    owner_name: string; //name under who the report is owned by (name in the url)
+    assignees: string[];
     author_id: string;
+    closed: boolean;
+    content: string;
     comment_ids: [string];
+    created_at: Date;
+    description: string;
+    discussion_number: number;
+    edited: boolean;
+    main: string;
+    mark_delete_at: Date;
+    number_of_comments: number;
+    owner_name: string;
+    participants: string[];
+    request_private: boolean;
     team_id: string;
+    title: string;
+    url_name: string;
+    updated_at: Date;
+    version_id: string;   
 } & BaseModel;
 
 

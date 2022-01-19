@@ -2,7 +2,6 @@ import { BaseModel } from './base';
 
 export type Comment = {
     id: string;
-    type: 'comment';
     text: string;
     edited: boolean;
     marked: boolean;
