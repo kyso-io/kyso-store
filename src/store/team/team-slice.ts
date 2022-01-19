@@ -1,6 +1,6 @@
+import { Team } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '../../types/action-with-payload';
-import { Team } from '../../types/team';
 import { fetchTeamAction } from './team-actions';
 
 export type TeamState = {
