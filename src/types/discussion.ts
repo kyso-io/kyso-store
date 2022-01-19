@@ -7,7 +7,7 @@ export type Discussion = {
     author_id: string;
     closed: boolean;
     content: string;
-    comment_ids: [string];
+    comment_id: string;
     created_at: Date;
     description: string;
     discussion_number: number;
