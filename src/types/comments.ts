@@ -1,16 +1,16 @@
 import { BaseModel } from './base';
 
-export type Discussion = {
+export type Comment = {
     id: string;
     type: 'comment';
     text: string;
-    is_edited: boolean;
-    is_marked: boolean;
+    edited: boolean;
+    marked: boolean;
     marked_by: string; // nickname of the person who has marked this comments as the answered on a discussion
     created_at: Date;
     updated_at: Date;
     owner_name: string; //name under who the report is owned by (name in the url)
-    parent_ids: string;
+    parent_id: string;
     author_id: string;
     team_id: string;
     report_id: string;
