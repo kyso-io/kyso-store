@@ -11,8 +11,8 @@
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "tscBuild": "tsc --build",
-    "build": "yarn run clean && npm run tscBuild",
-    "prepare": "yarn run build",
+    "build": "npm run clean && npm run tscBuild",
+    "prepare": "npm run build",
     "dev": "tsc --watch",
     "start": "tsc"
   },
