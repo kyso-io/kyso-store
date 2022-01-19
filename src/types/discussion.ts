@@ -17,12 +17,11 @@ export type Discussion = {
     number_of_comments: number;
     owner_name: string;
     participants: string[];
-    request_private: boolean;
+    private: boolean;
     team_id: string;
     title: string;
     url_name: string;
     updated_at: Date;
-    version_id: string;   
 } & BaseModel;
 
 

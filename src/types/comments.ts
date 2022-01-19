@@ -2,7 +2,7 @@ import { BaseModel } from './base';
 
 export type Comment = {
     id: string;
-    text: string;
+    content: string;
     edited: boolean;
     marked: boolean;
     marked_by: string; // nickname of the person who has marked this comments as the answered on a discussion
