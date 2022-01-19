@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { store } from '../store';
 
 const httpClient: AxiosInstance = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
