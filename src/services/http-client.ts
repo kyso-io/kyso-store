@@ -7,6 +7,7 @@ const httpClient: AxiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+/* Use axios-helper instead
 httpClient.interceptors.request.use((config: any) => {
   const auth = {
     token: null,
@@ -14,9 +15,7 @@ httpClient.interceptors.request.use((config: any) => {
     organization: null
   }
 
-  LOGGER.trace(`Axios interceptor called with following configuration`)
-  LOGGER.trace(config)
-
+  
   const token: string | null = auth.token;
 
   if (token) {
@@ -33,6 +32,7 @@ httpClient.interceptors.request.use((config: any) => {
 
   return config;
 });
+*/
 
 httpClient.interceptors.response.use(
   (response: AxiosResponse<any>) => {

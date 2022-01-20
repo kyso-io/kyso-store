@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import { LOGGER } from '../..';
+import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
@@ -66,9 +67,9 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     
     LOGGER.trace(`${printAuthenticated(auth)} - GET ${url} `)
     LOGGER.trace(`Received token: ${auth.token}`)
-    
+
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url, {
-      headers: { 'Authorization': `Bearer ${auth.token}`}
+      headers: buildAuthHeaders(auth)
     });
 
     if (axiosResponse?.data.data) {
