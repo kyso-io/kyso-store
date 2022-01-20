@@ -59,19 +59,24 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }) => {
   try {
-    LOGGER.silly("Calling fetchReportsAction")
+    LOGGER.trace("fetchReportsAction invoked")
     const { reports } = getState() as RootState;
     const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    
+    LOGGER.trace(`GET ${url}`)
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
 
     if (axiosResponse?.data.data) {
+      LOGGER.trace(`axiosResponse: ${axiosResponse}`)
       return axiosResponse.data.data;
     } else {
-      return null;
+      LOGGER.trace(`Response didn't have data, returning an empty array []`)
+      return [];
     }
   } catch (e: any) {
+    LOGGER.error(e)
     dispatch(setError(e.toString()))
-    return null
+    return []
   }
 });
 
