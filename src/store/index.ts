@@ -5,17 +5,7 @@ import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
-
-export const store = configureStore({
-  reducer: {
-    auth,
-    discussions,
-    reports,
-    repos,
-    team,
-    user,
-  },
-});
+import error from './error/error-slice';
 
 export const reducer = combineReducers({
   auth,
@@ -24,7 +14,12 @@ export const reducer = combineReducers({
   repos,
   team,
   user,
+  error
 })
+
+export const store = configureStore({
+  reducer
+});
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
@@ -34,10 +29,11 @@ export type AppDispatch = typeof store.dispatch;
 
 // Export actions
 export * from './auth/auth-actions';
-export { setToken } from './auth/auth-slice';
+export { setToken, setTeam, setOrganization } from './auth/auth-slice';
 export * from './discussions/discussions-actions';
 export * from './reports/reports-actions';
 export * from './repos/repos-actions';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
+export { setError } from './error/error-slice'
 export * from './team/team-actions';
 export * from './user/user-actions';
