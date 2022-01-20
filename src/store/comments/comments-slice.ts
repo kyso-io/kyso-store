@@ -18,7 +18,7 @@ const initialState: CommentsState = {
 };
 
 const commentSlice = createSlice({
-  name: 'team',
+  name: 'comment',
   initialState,
   reducers: {},
   extraReducers: builder => {
