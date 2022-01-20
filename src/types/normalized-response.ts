@@ -1,6 +1,6 @@
 import { Relation } from "./relations";
 
-export type NormalizedResponse<T> = {
+export type NormalizedResponseDTO<T> = {
   data: T;
   relations?: Relation;
 };
