@@ -74,7 +74,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(e)
+    LOGGER.error(`Error processing action: ${e.toString()}`)
     dispatch(setError(e.toString()))
     return []
   }
