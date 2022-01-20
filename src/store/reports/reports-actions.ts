@@ -66,8 +66,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     
     LOGGER.trace(`${printAuthenticated(auth)} - GET ${url} `)
-    LOGGER.trace(`Received token: ${auth.token}`)
-
+    
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth)
     });
