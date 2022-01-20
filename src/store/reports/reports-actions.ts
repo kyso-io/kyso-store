@@ -61,21 +61,21 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }) => {
   try {
-    LOGGER.trace("fetchReportsAction invoked")
+    LOGGER.silly("fetchReportsAction invoked")
     const { reports, auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     
-    LOGGER.trace(`${printAuthenticated(auth)} - GET ${url} `)
+    LOGGER.silly(`${printAuthenticated(auth)} - GET ${url} `)
     
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth)
     });
 
     if (axiosResponse?.data.data) {
-      LOGGER.trace(`${JSON.stringify(axiosResponse.data)}`)
+      LOGGER.silly(`${JSON.stringify(axiosResponse.data)}`)
       return axiosResponse.data.data;
     } else {
-      LOGGER.trace(`Response didn't have data, returning an empty array []`)
+      LOGGER.silly(`Response didn't have data, returning an empty array []`)
       return [];
     }
   } catch (e: any) {
