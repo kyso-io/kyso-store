@@ -17,6 +17,7 @@ import {
 } from './reports-actions';
 
 import { fetchRelationsAction } from '../relations/relations-actions';
+import { RootState } from '..';
 
 export type ReportsState = {
   activeId: string | null | undefined; // single id of active report
@@ -146,5 +147,11 @@ const reportsSlice = createSlice({
 });
 
 export const { setReports, setCurrentBranch, setPageAndLimit, setSearchQuery, setTagsQuery } = reportsSlice.actions;
+
+export const selectActiveReport = (state: RootState) => {
+  if (!state.reports.activeId) return null;
+  if (state.reports.entities!.length === 0) return null;
+  return state.reports.entities![state.reports.activeId];
+}
 
 export default reportsSlice.reducer;

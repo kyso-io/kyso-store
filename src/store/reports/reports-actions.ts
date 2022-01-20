@@ -7,6 +7,7 @@ import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
+import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
   try {
@@ -44,17 +45,33 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
   }
 });
 
-export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (payload: { owner: string; reportName: string }) => {
+export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<Report>> = await httpClient.get(url);
-    if (axiosResponse?.data?.data) {
+    LOGGER.trace("fetchReportAction invoked")
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.owner}/${payload.reportName}`;
+    
+    LOGGER.trace(`${printAuthenticated(auth)} - GET ${url} `)
+    LOGGER.trace(`Received token: ${auth.token}`)
+
+    const axiosResponse: AxiosResponse<NormalizedResponse<Report>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth)
+    });
+
+    if (axiosResponse?.data?.relations) {
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+
+    if (axiosResponse?.data.data) {
       return axiosResponse.data.data;
     } else {
+      LOGGER.trace(`Response didn't have data, returning null`)
       return null;
     }
-  } catch {
-    return null;
+  } catch (e: any) {
+    LOGGER.error(`Error processing action: ${e.toString()}`)
+    dispatch(setError(e.toString()))
+    return null
   }
 });
 
