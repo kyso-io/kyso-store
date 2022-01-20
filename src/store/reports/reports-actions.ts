@@ -61,7 +61,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
   try {
     LOGGER.trace("fetchReportsAction invoked")
     const { reports } = getState() as RootState;
-    const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     
     LOGGER.trace(`GET ${url}`)
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
