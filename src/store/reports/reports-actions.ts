@@ -73,7 +73,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     });
 
     if (axiosResponse?.data.data) {
-      LOGGER.trace(`${axiosResponse.data}`)
+      LOGGER.trace(`${JSON.stringify(axiosResponse.data)}`)
       return axiosResponse.data.data;
     } else {
       LOGGER.trace(`Response didn't have data, returning an empty array []`)
