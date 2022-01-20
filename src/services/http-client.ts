@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { store } from '../store';
+// import { store } from '../store'; // shouldnt use instance of store
 
 const httpClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.API_URL,
@@ -7,18 +7,25 @@ const httpClient: AxiosInstance = axios.create({
 });
 
 httpClient.interceptors.request.use((config: any) => {
-  const token: string | null = store.getState().auth.token;
+  const auth = {
+    token: null,
+    team: null, 
+    organization: null
+  }
+  const token: string | null = auth.token;
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  const team: string | null = store.getState().auth.team;
+  const team: string | null = auth.team;
   if (team) {
     config.headers['x-kyso-team'] = team;
   }
-  const organization: string | null = store.getState().auth.organization;
+  const organization: string | null = auth.organization;
   if (organization) {
     config.headers['x-kyso-organization'] = organization;
   }
+
   return config;
 });
 

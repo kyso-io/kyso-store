@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import httpClient from '../../services/http-client';
+import { setError } from '../error/error-slice';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
   try {
@@ -55,7 +56,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState }) => {
+export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }) => {
   try {
     const { reports } = getState() as RootState;
     const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
@@ -66,8 +67,9 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     } else {
       return null;
     }
-  } catch (e) {
-    return null;
+  } catch (e: any) {
+    dispatch(setError(e.toString()))
+    return null
   }
 });
 

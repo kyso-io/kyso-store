@@ -123,6 +123,7 @@ const reportsSlice = createSlice({
       state.activeId = null;
     });
     builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report[]>) => {
+      if (!action.payload) return
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload)
