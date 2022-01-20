@@ -12,7 +12,7 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
     const axiosResponse: AxiosResponse<NormalizedResponse<Comment[]>> = await httpClient.get(url);
 
     if (axiosResponse?.data?.relations) {
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations))
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
 
     if (axiosResponse?.data?.data) {
@@ -25,3 +25,54 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
   }
 });
 
+export const fetchComment = createAsyncThunk('comments/fetchComment', async (id: string) => {
+  try {
+    const axiosResponse: AxiosResponse<NormalizedResponse<Comment>> = await httpClient.get(`/comments/${id}`);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+});
+
+export const createComment = createAsyncThunk('comments/createComment', async (payload: Comment) => {
+  try {
+    const axiosResponse: AxiosResponse<NormalizedResponse<Comment>> = await httpClient.post('/comments', payload);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+});
+
+export const updateComment = createAsyncThunk('comments/updateComment', async (payload: { id: string; comment: Comment }) => {
+  try {
+    const axiosResponse: AxiosResponse<NormalizedResponse<Comment>> = await httpClient.put(`/comments/${payload.id}`, payload.comment);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+});
+
+export const deleteComment = createAsyncThunk('comments/deleteComment', async (id: string) => {
+  try {
+    const axiosResponse: AxiosResponse<NormalizedResponse<Comment>> = await httpClient.delete(`/comments/${id}`);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+});
