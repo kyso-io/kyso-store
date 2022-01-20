@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions'
-import { Comment } from '../../types/comment'
+import { Comment } from '@kyso-io/kyso-model'
 import { fetchReportCommentsAction } from './comments-actions';
 import { Relation } from '../../types/relations';
+import { RootState } from '..';
 
 export type CommentsState = {
   activeId: string | null | undefined; // single id of active report
@@ -14,7 +15,7 @@ export type CommentsState = {
 const initialState: CommentsState = {
   activeId: null,
   activeIds: [],
-  entities: []
+  entities: {}
 };
 
 const commentSlice = createSlice({
@@ -32,7 +33,17 @@ const commentSlice = createSlice({
       }
     });    
   }
-
 });
+
+export const selectCommentsByParent = (state: RootState, parentId: string | null) => {
+  const values = Object.values(state.comments.entities!)
+  if (values.length === 0) return []
+  const filtered = values.filter((comment: Comment) => comment.comment_id === parentId)
+  return filtered
+}
+
+export const selectCommentsById = (state: RootState, id: string) => {
+  if (id in state.comments.entities!) return state.comments.entities![id]
+}
 
 export default commentSlice.reducer;

@@ -6,6 +6,7 @@ import repos from './repos/repos-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
 import error from './error/error-slice';
+import comments from './comments/comments-slice';
 
 export const reducer = combineReducers({
   auth,
@@ -14,7 +15,8 @@ export const reducer = combineReducers({
   repos,
   team,
   user,
-  error
+  error,
+  comments
 })
 
 export const store = configureStore({
@@ -33,6 +35,9 @@ export { setToken, setTeam, setOrganization } from './auth/auth-slice';
 export * from './discussions/discussions-actions';
 export * from './reports/reports-actions';
 export * from './repos/repos-actions';
+export * from './comments/comments-actions';
+export { selectActiveReport } from './reports/reports-slice';
+export { selectCommentsByParent, selectCommentsById } from './comments/comments-slice';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
 export { setError } from './error/error-slice'
 export * from './team/team-actions';
