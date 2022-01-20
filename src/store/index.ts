@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import { configureStore } from '@reduxjs/toolkit';
 import auth from './auth/auth-slice';
 import discussions from './discussions/discussions-slice';
@@ -6,17 +5,6 @@ import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
-import comments from './comments/comments-slice';
-
-export const reducer = combineReducers({
-  auth,
-  discussions,
-  reports,
-  repos,
-  team,
-  user,
-  comments
-})
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +14,6 @@ export const store = configureStore({
     repos,
     team,
     user,
-    comments
   },
 });
 
@@ -38,11 +25,10 @@ export type AppDispatch = typeof store.dispatch;
 
 // Export actions
 export * from './auth/auth-actions';
-export { setToken, setOrganization, setTeam } from './auth/auth-slice';
+export { setToken } from './auth/auth-slice';
 export * from './discussions/discussions-actions';
 export * from './reports/reports-actions';
 export * from './repos/repos-actions';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
 export * from './team/team-actions';
 export * from './user/user-actions';
-export * from './comments/comments-actions';
