@@ -2,6 +2,7 @@ import { NormalizedResponse, Report, UpdateReportRequest } from '@kyso-io/kyso-m
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
+import { LOGGER } from '../..';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
@@ -58,6 +59,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }) => {
   try {
+    LOGGER.silly("Calling fetchReportsAction")
     const { reports } = getState() as RootState;
     const url = `/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Report[]>> = await httpClient.get(url);
