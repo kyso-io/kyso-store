@@ -2,20 +2,32 @@ import { CreateDiscussionRequest, Discussion, NormalizedResponse, UpdateDiscussi
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
+import { LOGGER } from '../..';
+import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 
 export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscussions', async (_, { getState }) => {
   try {
-    const { discussions, team, user } = getState() as RootState;
-    const url = `/discussions?owner=${team?.team ? team.team.name : user.user!.nickname}&page=${discussions.page}&per_page=${discussions.limit}&sort=asc`;
-    const axiosResponse: AxiosResponse<NormalizedResponse<Discussion[]>> = await httpClient.get(url);
+    LOGGER.silly("fetchDiscussionsAction invoked")
+    const { discussions, team, user, auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?owner=${team?.team ? team.team.name : user.user!.nickname}&page=${discussions.page}&per_page=${discussions.limit}&sort=asc`;
+    
+    LOGGER.silly(`${printAuthenticated(auth)} - GET ${url} `)
+    
+    const axiosResponse: AxiosResponse<NormalizedResponse<Discussion[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth)
+    });
+    
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`${JSON.stringify(axiosResponse.data)}`)
       return axiosResponse.data.data;
     } else {
-      return null;
+      return [];
     }
-  } catch {
-    return null;
+  } catch(e: any) {
+    LOGGER.error(`Error processing action fetchDiscussionsAction: ${e.toString()}`)
+    return [];
   }
 });
 
