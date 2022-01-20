@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { LOGGER } from '..';
 // import { store } from '../store'; // shouldnt use instance of store
 
 const httpClient: AxiosInstance = axios.create({
@@ -12,6 +13,10 @@ httpClient.interceptors.request.use((config: any) => {
     team: null, 
     organization: null
   }
+
+  LOGGER.trace(`Axios interceptor called with following configuration`)
+  LOGGER.trace(config)
+
   const token: string | null = auth.token;
 
   if (token) {
