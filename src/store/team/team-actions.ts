@@ -1,9 +1,9 @@
-import { NormalizedResponse, Team } from '@kyso-io/kyso-model';
+import { NormalizedResponse, Team, TeamMember } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import httpClient from '../../services/http-client';
 
-export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamName: string) => {
+export const fetchTeamByNameAction = createAsyncThunk('team/fetchTeamByName', async (teamName: string) => {
   try {
     const url = `/teams/${teamName}`;
     const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.get(url, {
@@ -20,33 +20,68 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamNam
   }
 });
 
-export const fetchUsersTeamAction = createAsyncThunk('team/fetchUsersTeam', async (teamName: string) => {
-  // TODO
-  /**  Legacy implementation
-  * @function fetchUsersTeam
-  * @param {string} teamname
-  * @description Fetches a team that the user is a member of.
-  * @return Sets `state.team`
-  * @example import { fetchUsersTeam } from './store/team/actions'
-  * dispatch(fetchUsersTeam({ teamname }))
-  */
-  /*
+export const fetchTeamByIdAction = createAsyncThunk('team/fetchTeamById', async (id: string) => {
   try {
-    const { user } = getStore()
-
-    if (!user) return
-
-    const team = await handleRequest({
-      url: `/v1/teams/${teamname}`,
-      method: 'get',
-      token: user.session_token,
-    })
-
-    dispatch(setTeam(team))
-  } catch (e) {
-    console.error(e)
+    const url = `/teams/id/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.get(url);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    console.error(`${e.response.status} ${e?.response.statusText}`);
+    return null;
   }
-  */
+});
 
+export const createTeamAction = createAsyncThunk('team/createTeam', async (team: Team) => {
+  try {
+    const url = `/teams`;
+    const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.post(url, team);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    console.error(`${e.response.status} ${e?.response.statusText}`);
+    return null;
+  }
+});
+
+export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (id: number) => {
+  try {
+    const url = `/teams/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponse<Team>> = await httpClient.delete(url);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    console.error(`${e.response.status} ${e?.response.statusText}`);
+    return null;
+  }
+});
+
+export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', async (teamName: string) => {
+  try {
+    const url = `/teams/${teamName}/members`;
+    const axiosResponse: AxiosResponse<NormalizedResponse<TeamMember[]>> = await httpClient.get(url, {
+      headers: { 'x-kyso-team': teamName },
+    });
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    console.error(`${e.response.status} ${e?.response.statusText}`);
+    return null;
+  }
+});
+
+export const fetchUsersTeamAction = createAsyncThunk('team/fetchUsersTeam', async () => {
   return [];
 });
