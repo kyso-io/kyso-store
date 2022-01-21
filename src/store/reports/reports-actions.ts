@@ -9,9 +9,10 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState }) => {
+export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState, dispatch }) => {
   try {
-    const { repos } = getState() as RootState;
+    LOGGER.trace(`createReportAction invoked`);
+    const { auth, repos } = getState() as RootState;
     let reports;
     if (paths.length > 0) {
       reports = paths.map((path: any) => ({
@@ -33,185 +34,299 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
         },
       };
     }
-    const url = '/reports';
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.post(url, reports);
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
+    LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.post(url, reports, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`createReportAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`createReportAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`createReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
+export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }) => {
   try {
-    LOGGER.trace("fetchReportAction invoked")
+    LOGGER.trace('fetchReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.owner}/${payload.reportName}`;
-    
-    LOGGER.trace(`${printAuthenticated(auth)} - GET ${url} `)
-    LOGGER.trace(`Received token: ${auth.token}`)
-
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url} `);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth)
+      headers: buildAuthHeaders(auth),
     });
-
     if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
       dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
-
     if (axiosResponse?.data.data) {
+      LOGGER.silly(`fetchReportAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.trace(`Response didn't have data, returning null`)
+      LOGGER.silly(`fetchReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`Error processing action: ${e.toString()}`)
-    dispatch(setError(e.toString()))
-    return null
+    LOGGER.error(`fetchReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
   }
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }) => {
+export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }): Promise<Report[]> => {
   try {
-    LOGGER.silly("fetchReportsAction invoked")
+    LOGGER.silly('fetchReportsAction invoked');
     const { reports, auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
-    
-    LOGGER.silly(`${printAuthenticated(auth)} - GET ${url} `)
-    
+    LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url} `);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth)
+      headers: buildAuthHeaders(auth),
     });
-
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReportsAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data.data) {
-      LOGGER.silly(`${JSON.stringify(axiosResponse.data)}`)
+      LOGGER.silly(`fetchReportsAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`Response didn't have data, returning an empty array []`)
+      LOGGER.silly(`fetchReportsAction: Response didn't have data, returning null`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`Error processing action: ${e.toString()}`)
-    dispatch(setError(e.toString()))
-    return []
+    LOGGER.error(`fetchReportsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
   }
 });
 
-export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { owner: string; reportName: string; data: UpdateReportRequestDTO }) => {
+export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<Report | null> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(url, payload.data);
+    LOGGER.silly('updateReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
+    LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(url, payload.data, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`updateReportAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`updateReportAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`updateReportAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`updateReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const pinReportAction = createAsyncThunk('reports/pinReport', async (payload: { owner: string; reportName: string }) => {
+export const pinReportAction = createAsyncThunk('reports/pinReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}/pin`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.post(url);
+    LOGGER.silly('pinReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pin`;
+    LOGGER.silly(`pinReportAction: ${printAuthenticated(auth)} - PATH ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`pinReportAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`pinReportAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`pinReportAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`pinReportAction: Error processing action: ${e.toString()}`);
     return null;
   }
 });
 
-export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', async (payload: { owner: string; reportName: string }) => {
+export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', async (reportId: string, { getState, dispatch }): Promise<any[]> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}/branches`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url);
+    LOGGER.silly('fetchBranchesAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/branches`;
+    LOGGER.silly(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchBranchesAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchBranchesAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      return null;
+      LOGGER.silly(`fetchBranchesAction: Response didn't have data, returning []`);
+      return [];
     }
-  } catch {
-    return null;
+  } catch (e: any) {
+    LOGGER.error(`fetchBranchesAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
   }
 });
 
-export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async (payload: { owner: string; reportName: string; branch: string }) => {
+export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async (payload: { reportId: string; branch: string }, { getState, dispatch }): Promise<any[]> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}/${payload.branch}/commits`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url);
+    LOGGER.silly('fetchCommitsAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/commits`;
+    LOGGER.silly(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchCommitsAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchCommitsAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      return null;
+      LOGGER.silly(`fetchCommitsAction: Response didn't have data, returning []`);
+      return [];
     }
-  } catch {
-    return null;
+  } catch (e: any) {
+    LOGGER.error(`fetchCommitsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
   }
 });
 
-export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { owner: string; reportName: string; branch: string; filePath: string }) => {
+export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<string | null> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}/${payload.branch}/tree/${payload.filePath}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.get(url);
+    LOGGER.silly('fetchReposTreeAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
+    LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReposTreeAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchReposTreeAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`fetchReposTreeAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`fetchReposTreeAction: Error processing action: ${e.toString()}`);
     return null;
   }
 });
 
-
-export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (payload: { owner: string; reportName: string }) => {
+export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
   try {
-    const url = `/reports/${payload.owner}/${payload.reportName}`;
-    await httpClient.delete(url);
-    return null;
-  } catch {
-    return null;
-  }
-});
-
-export const fetchPinnedReportAction = createAsyncThunk('reports/fetchPinnedReport', async () => {
-  try {
-    const url = `/get-pinned-post`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.get(url);
+    LOGGER.silly('deleteReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    LOGGER.silly(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.delete(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`deleteReportAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`deleteReportAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`deleteReportAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`deleteReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const fetchFileContentsAction = createAsyncThunk('reports/fetchFileContents', async (payload: { owner: string; reportName: string; hash: string }, { getState }) => {
+export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserPinnedReports', async (userId: string, { getState, dispatch }): Promise<Report[]> => {
   try {
-    const { reports } = getState() as RootState;
+    LOGGER.silly('fetchUserPinnedReportsAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/pinned`;
+    LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchUserPinnedReportsAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchUserPinnedReportsAction: axiosResponse ${axiosResponse.data.data}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`fetchUserPinnedReportsAction: Response didn't have data, returning []`);
+      return [];
+    }
+  } catch (e: any) {
+    LOGGER.error(`fetchUserPinnedReportsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
+  }
+});
+
+export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<any> => {
+  try {
+    LOGGER.silly('fetchFileContentAction invoked');
+    const { auth, reports } = getState() as RootState;
     let hash = payload.hash;
     if (reports.tree) {
       hash = reports.tree[0].hash;
     }
-    const url = `/reports/${payload.owner}/${payload.reportName}/file/${hash}`;
-    const axiosResponse: AxiosResponse<any> = await httpClient.get(url);
-    if (axiosResponse?.data) {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchFileContentAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchFileContentAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data;
     } else {
+      LOGGER.silly(`fetchFileContentAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`fetchFileContentAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
