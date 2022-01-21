@@ -1,93 +1,143 @@
+import { Comment } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import httpClient from '../../services/http-client';
-import { Comment } from '@kyso-io/kyso-model'
-import { LOGGER } from '../..';
 import { RootState } from '..';
+import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
+import httpClient from '../../services/http-client';
 import { NormalizedResponseDTO } from '../../types/normalized-response';
-import { fetchRelationsAction } from '../relations/relations-actions';
 import { setError } from '../error/error-slice';
+import { fetchRelationsAction } from '../relations/relations-actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (payload: { owner: string; reportName: string }, { getState, dispatch }) => {
+export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (reportId: string, { getState, dispatch }) => {
   try {
-    LOGGER.silly("fetchReportCommentsAction invoked")
+    LOGGER.silly('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.owner}/${payload.reportName}/comments`;
-    LOGGER.silly(`${printAuthenticated(auth)} - GET ${url} `)
-    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/comments`;
+    LOGGER.silly(`fetchReportCommentsAction ${printAuthenticated(auth)} - GET ${url} `);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth)
+      headers: buildAuthHeaders(auth),
     });
-
     if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReportCommentsAction: relations ${axiosResponse.data.relations}`);
       dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
-
-    if (axiosResponse?.data.data) {
-      LOGGER.silly(axiosResponse.data.data)
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchReportCommentsAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`Response didn't have data, returning an empty array []`)
+      LOGGER.silly(`fetchReportCommentsAction: Response didn't have data, returning an empty array []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`Error processing action: ${e.toString()}`)
-    dispatch(setError(e.toString()))
-    return []
+    LOGGER.error(`fetchReportCommentsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
   }
 });
 
-export const fetchComment = createAsyncThunk('comments/fetchComment', async (id: string) => {
+export const fetchCommentAction = createAsyncThunk('comments/fetchComment', async (commentId: string, { getState, dispatch }) => {
   try {
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(`/comments/${id}`);
+    LOGGER.silly('fetchCommentAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
+    LOGGER.silly(`fetchCommentAction ${printAuthenticated(auth)} - GET ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchCommentAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchCommentAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`fetchCommentAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const createComment = createAsyncThunk('comments/createComment', async (payload: Comment) => {
+export const createCommentAction = createAsyncThunk('comments/createComment', async (payload: Comment, { getState, dispatch }) => {
   try {
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post('/comments', payload);
+    LOGGER.silly('createCommentAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments`;
+    LOGGER.silly(`createCommentAction ${printAuthenticated(auth)} - POST ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`createCommentAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`createCommentAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`createCommentAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`createCommentAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const updateComment = createAsyncThunk('comments/updateComment', async (payload: { id: string; comment: Comment }) => {
+export const updateCommentAction = createAsyncThunk('comments/updateComment', async (payload: { commentId: string; comment: Comment }, { getState, dispatch }) => {
   try {
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.put(`/comments/${payload.id}`, payload.comment);
+    LOGGER.silly('updateCommentAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.commentId}`;
+    LOGGER.silly(`updateCommentAction ${printAuthenticated(auth)} - PUT ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.put(url, payload.comment, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`updateCommentAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`updateCommentAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`updateCommentAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`updateCommentAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });
 
-export const deleteComment = createAsyncThunk('comments/deleteComment', async (id: string) => {
+export const deleteCommentAction = createAsyncThunk('comments/deleteComment', async (commentId: string, { getState, dispatch }) => {
   try {
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(`/comments/${id}`);
+    LOGGER.trace('deleteCommentAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
+    LOGGER.silly(`deleteCommentAction ${printAuthenticated(auth)} - DELETE ${url} `);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`deleteCommentAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`deleteCommentAction: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`deleteCommentAction: Response didn't have data, returning null`);
       return null;
     }
-  } catch {
+  } catch (e: any) {
+    LOGGER.error(`deleteCommentAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });

@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { LOGGER } from '..';
 // import { store } from '../store'; // shouldnt use instance of store
 
 const httpClient: AxiosInstance = axios.create({
