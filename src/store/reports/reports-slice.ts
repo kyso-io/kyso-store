@@ -1,6 +1,6 @@
 import { Report } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchFileContentAction, RootState } from '..';
+import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -12,6 +12,7 @@ import {
   fetchReportAction,
   fetchReportsAction,
   fetchReposTreeAction,
+  fetchFileContentAction,
   pinReportAction,
   updateReportAction,
 } from './reports-actions';
