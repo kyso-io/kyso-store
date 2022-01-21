@@ -1,4 +1,4 @@
 import { createAction } from '@reduxjs/toolkit'
-import { Relation } from '../../types/relations'
+import { Relations } from '@kyso-io/kyso-model'
 
-export const fetchRelationsAction = createAction<Relation>('relations/fetchRelations')
+export const fetchRelationsAction = createAction<Relations>('relations/fetchRelations')

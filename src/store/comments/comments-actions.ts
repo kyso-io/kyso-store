@@ -1,4 +1,4 @@
-import { Comment } from '@kyso-io/kyso-model';
+import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
@@ -6,7 +6,6 @@ import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
-import { NormalizedResponseDTO } from '../../types/normalized-response';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 

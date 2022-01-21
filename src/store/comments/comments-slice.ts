@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions'
 import { Comment } from '@kyso-io/kyso-model'
 import { fetchReportCommentsAction } from './comments-actions';
-import { Relation } from '../../types/relations';
+import { Relations, ActionWithPayload } from '@kyso-io/kyso-model';
 import { RootState } from '..';
 
 export type CommentsState = {
@@ -26,7 +25,7 @@ const commentSlice = createSlice({
     builder.addCase(fetchReportCommentsAction.fulfilled, (state: CommentsState, action: ActionWithPayload<Comment[]>) => {
       state.activeIds = action.payload!.map((entity) => entity.id);
     });
-    builder.addCase(fetchRelationsAction, (state: CommentsState, action: ActionWithPayload<Relation>) => {
+    builder.addCase(fetchRelationsAction, (state: CommentsState, action: ActionWithPayload<Relations>) => {
       state.entities = {
         ...state.entities,
         ...action.payload?.comment,

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionWithPayload } from '../../types/action-with-payload';
+import { ActionWithPayload } from '@kyso-io/kyso-model';
 import { loginAction } from './auth-actions';
 
 export type AuthState = {

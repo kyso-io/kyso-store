@@ -1,8 +1,7 @@
-import { Report } from '@kyso-io/kyso-model';
+import { Report, ActionWithPayload, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
-import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import {
   createReportAction,
@@ -132,7 +131,7 @@ const reportsSlice = createSlice({
     builder.addCase(fetchFileContentAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.content = action.payload!;
     });
-    builder.addCase(fetchRelationsAction, (state: ReportsState, action: ActionWithPayload<any>) => {
+    builder.addCase(fetchRelationsAction, (state: ReportsState, action: ActionWithPayload<Relations>) => {
       // needs to be type relation
       state.entities = {
         ...state.entities,
