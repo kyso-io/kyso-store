@@ -40,11 +40,11 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createReportAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createReportAction: Response didn't have data, returning null`);
@@ -67,11 +67,11 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
-      LOGGER.silly(`fetchReportAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchReportAction: Response didn't have data, returning null`);
@@ -95,11 +95,11 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
-      LOGGER.silly(`fetchReportsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchReportsAction: Response didn't have data, returning null`);
@@ -122,11 +122,11 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateReportAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`updateReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateReportAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`updateReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`updateReportAction: Response didn't have data, returning null`);
@@ -153,11 +153,11 @@ export const pinReportAction = createAsyncThunk('reports/pinReport', async (repo
       }
     );
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`pinReportAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`pinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`pinReportAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`pinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`pinReportAction: Response didn't have data, returning null`);
@@ -179,11 +179,11 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchBranchesAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchBranchesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchBranchesAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchBranchesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchBranchesAction: Response didn't have data, returning []`);
@@ -206,11 +206,11 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchCommitsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchCommitsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchCommitsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchCommitsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchCommitsAction: Response didn't have data, returning []`);
@@ -233,11 +233,11 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReposTreeAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchReposTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchReposTreeAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchReposTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchReposTreeAction: Response didn't have data, returning null`);
@@ -259,11 +259,11 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteReportAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteReportAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteReportAction: Response didn't have data, returning null`);
@@ -286,11 +286,11 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchUserPinnedReportsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchUserPinnedReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchUserPinnedReportsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchUserPinnedReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchUserPinnedReportsAction: Response didn't have data, returning []`);
@@ -316,11 +316,11 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchFileContentAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchFileContentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchFileContentAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data;
     } else {
       LOGGER.silly(`fetchFileContentAction: Response didn't have data, returning null`);
