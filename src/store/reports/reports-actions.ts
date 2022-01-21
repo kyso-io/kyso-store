@@ -9,7 +9,7 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState, dispatch }) => {
+export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState, dispatch }): Promise<Report | null> => {
   try {
     LOGGER.trace(`createReportAction invoked`);
     const { auth, repos } = getState() as RootState;
@@ -57,7 +57,7 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
   }
 });
 
-export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }) => {
+export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
   try {
     LOGGER.trace('fetchReportAction invoked');
     const { auth } = getState() as RootState;
