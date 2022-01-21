@@ -18,11 +18,11 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (_, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchTeamsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchTeamsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchTeamsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchTeamsAction: Response didn't have data, returning an empty array []`);
@@ -45,11 +45,11 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchTeamAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchTeamAction: Response didn't have data, returning null`);
@@ -72,11 +72,11 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createTeamAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`createTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createTeamAction: Response didn't have data, returning null`);
@@ -99,11 +99,11 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteTeamAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteTeamAction: Response didn't have data, returning null`);
@@ -126,11 +126,11 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchTeamMembers: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchTeamMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchTeamMembers: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamMembers: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchTeamMembers: Response didn't have data, returning null`);
@@ -153,7 +153,7 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`checkMemberBelongsToTheTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`checkMemberBelongsToTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`checkMemberBelongsToTheTeamAction: Response didn't have data, returning null`);
@@ -176,7 +176,7 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`addMemberToTheTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`addMemberToTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`addMemberToTheTeamAction: Response didn't have data, returning null`);
@@ -199,7 +199,7 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteMemberFromTheTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteMemberFromTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteMemberFromTheTeamAction: Response didn't have data, returning null`);
@@ -222,11 +222,11 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateTeamAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`updateTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateTeamAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`updateTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`updateTeamAction: Response didn't have data, returning null`);
@@ -249,7 +249,7 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`checkTeamNameIsUniqueAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`checkTeamNameIsUniqueAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`checkTeamNameIsUniqueAction: Response didn't have data, returning null`);
@@ -272,11 +272,11 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchTeamReportsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchTeamReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchTeamReportsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchTeamReportsAction: Response didn't have data, returning null`);
@@ -301,11 +301,11 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateRoleToMembersOfTeamAction: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`updateRoleToMembersOfTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateRoleToMembersOfTeamAction: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`updateRoleToMembersOfTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`updateRoleToMembersOfTeamAction: Response didn't have data, returning null`);
@@ -331,11 +331,11 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`deleteRoleOfMembersOfTeamAction: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`deleteRoleOfMembersOfTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`deleteRoleOfMembersOfTeamAction: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`deleteRoleOfMembersOfTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`deleteRoleOfMembersOfTeamAction: Response didn't have data, returning null`);
@@ -361,11 +361,11 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateTeamProfilePictureAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`updateTeamProfilePictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateTeamProfilePictureAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`updateTeamProfilePictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`updateTeamProfilePictureAction: Response didn't have data, returning null`);
@@ -388,11 +388,11 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteTeamProfilePictureAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteTeamProfilePictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteTeamProfilePictureAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteTeamProfilePictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteTeamProfilePictureAction: Response didn't have data, returning null`);

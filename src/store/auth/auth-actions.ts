@@ -12,7 +12,7 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: { 
     LOGGER.silly(`loginAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`loginAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`loginAction: Response didn't have data, returning null`);

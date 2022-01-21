@@ -18,11 +18,11 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchOrganizationAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchOrganizationAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchOrganizationAction: Response didn't have data, returning null`);
@@ -45,7 +45,7 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteOrganizationAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteOrganizationAction: Response didn't have data, returning null`);
@@ -70,11 +70,11 @@ export const updateOrganizationAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateOrganizationAction: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`updateOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateOrganizationAction: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`updateOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`updateOrganizationAction: Response didn't have data, returning null`);
@@ -98,11 +98,11 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchOrganizationMembers: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchOrganizationMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchOrganizationMembers: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchOrganizationMembers: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchOrganizationMembers: Response didn't have data, returning []`);
@@ -125,11 +125,11 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createOrganization: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`createOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createOrganization: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createOrganization: Response didn't have data, returning null`);
@@ -154,11 +154,11 @@ export const addUserToOrganizationAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`addUserToOrganization: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`addUserToOrganization: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`addUserToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`addUserToOrganization: Response didn't have data, returning null`);
@@ -184,11 +184,11 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`removeUserFromOrganization: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`removeUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`removeUserFromOrganization: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`removeUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`removeUserFromOrganization: Response didn't have data, returning null`);
@@ -214,11 +214,11 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateMembersRolesToOrganization: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`updateMembersRolesToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateMembersRolesToOrganization: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`updateMembersRolesToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`updateMembersRolesToOrganization: Response didn't have data, returning null`);
@@ -244,11 +244,11 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`deleteRoleToUserFromOrganization: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`deleteRoleToUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`deleteRoleToUserFromOrganization: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`deleteRoleToUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`deleteRoleToUserFromOrganization: Response didn't have data, returning null`);

@@ -22,11 +22,11 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchDiscussionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchDiscussionsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchDiscussionsAction: Response didn't have data, returning an empty array []`);
@@ -55,11 +55,11 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     });
     
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchTeamDiscussions: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchTeamDiscussions: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchTeamDiscussions: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamDiscussions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchTeamDiscussions: Response didn't have data, returning an empty array []`);
@@ -86,11 +86,11 @@ export const fetchDiscussionById = createAsyncThunk(
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url);
       
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchDiscussionById: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`fetchDiscussionById: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchDiscussionById: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`fetchDiscussionById: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`fetchDiscussionById: Response didn't have data, returning null`);
@@ -122,12 +122,12 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
     });
     
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionComments: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchDiscussionComments: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
 
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionComments: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchDiscussionComments: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchDiscussionComments: Response didn't have data, returning null`);
@@ -147,11 +147,11 @@ export const createDiscussion = createAsyncThunk('discussions/createDiscussion',
     LOGGER.silly(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload);
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createDiscussion: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`createDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createDiscussion: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createDiscussion: Response didn't have data, returning null`);
@@ -174,11 +174,11 @@ export const updateDiscussion = createAsyncThunk(
       LOGGER.silly(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data);
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateDiscussion: relations ${axiosResponse.data.relations}`);
+        LOGGER.silly(`updateDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateDiscussion: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`updateDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
         LOGGER.silly(`updateDiscussion: Response didn't have data, returning null`);
@@ -199,11 +199,11 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
     LOGGER.silly(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url);
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteDiscussion: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteDiscussion: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteDiscussion: Response didn't have data, returning null`);

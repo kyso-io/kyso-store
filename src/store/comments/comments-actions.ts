@@ -20,11 +20,11 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportCommentsAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchReportCommentsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchReportCommentsAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchReportCommentsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchReportCommentsAction: Response didn't have data, returning an empty array []`);
@@ -47,11 +47,11 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchCommentAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchCommentAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchCommentAction: Response didn't have data, returning null`);
@@ -72,11 +72,11 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
     LOGGER.silly(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createCommentAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`createCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createCommentAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createCommentAction: Response didn't have data, returning null`);
@@ -99,11 +99,11 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateCommentAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`updateCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateCommentAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`updateCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`updateCommentAction: Response didn't have data, returning null`);
@@ -124,11 +124,11 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
     LOGGER.silly(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteCommentAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteCommentAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteCommentAction: Response didn't have data, returning null`);

@@ -18,11 +18,11 @@ export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (_, { 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchUsersAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchUsersAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchUsersAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchUsersAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchUsersAction: Response didn't have data, returning an empty array []`);
@@ -45,11 +45,11 @@ export const createUserAction = createAsyncThunk('user/createUser', async (user:
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createUserAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`createUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createUserAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`createUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`createUserAction: Response didn't have data, returning null`);
@@ -72,11 +72,11 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchUserAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`fetchUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchUserAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`fetchUserAction: Response didn't have data, returning null`);
@@ -99,11 +99,11 @@ export const updateUserAction = createAsyncThunk('user/updateUser', async (paylo
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateUserAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`updateUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateUserAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`updateUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`updateUserAction: Response didn't have data, returning null`);
@@ -126,11 +126,11 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteUserAction: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`deleteUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteUserAction: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`deleteUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`deleteUserAction: Response didn't have data, returning null`);
@@ -153,11 +153,11 @@ export const addAccountToUser = createAsyncThunk('user/addAccountToUser', async 
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`addAccountToUser: relations ${axiosResponse.data.relations}`);
+      LOGGER.silly(`addAccountToUser: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`addAccountToUser: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`addAccountToUser: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`addAccountToUser: Response didn't have data, returning false`);
