@@ -9,11 +9,14 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscussions', async (_, { getState, dispatch }) => {
+/**
+ * Fetch discussions based on team and user data in the Store. Pagination allowed using page and per_page parameters
+ */
+export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscussions', async (payload: { page: number, per_page: number }, { getState, dispatch }) => {
   try {
     LOGGER.silly('fetchDiscussionsAction invoked');
-    const { discussions, team, user, auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team?.team ? `team_id=${team.team.id}` : `user_id=${user.user!.id}`}&page=${discussions.page}&per_page=${discussions.limit}&sort=asc`;
+    const { team, user, auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team?.team ? `team_id=${team.team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
     LOGGER.silly(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -36,58 +39,105 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
   }
 });
 
-export const fetchDiscussionsOfATeam = createAsyncThunk('discussions/fetchDiscussionsOfATeam', async (teamId: string, { getState, dispatch }): Promise<Discussion[]> => {
+/**
+ * Fetch all discussions related to the team specified as parameter. Pagination allowed using page and per_page parameters
+ */
+ export const fetchDiscussionsOfATeam = createAsyncThunk('discussions/fetchDiscussionsOfATeam', async (payload: { team_id: string, page: number, per_page: number }, { getState, dispatch }) => {
   try {
-    LOGGER.silly('fetchDiscussionsOfATeam invoked');
+    LOGGER.silly('fetchTeamDiscussions invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/team-discussions/${teamId}`;
-    LOGGER.silly(`fetchDiscussionsOfATeam: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url);
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    LOGGER.silly(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url} `);
+    
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionsOfATeam: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      LOGGER.silly(`fetchTeamDiscussions: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionsOfATeam: axiosResponse ${axiosResponse.data.data}`);
+      LOGGER.silly(`fetchTeamDiscussions: axiosResponse ${axiosResponse.data.data}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchDiscussionsOfATeam: Response didn't have data, returning []`);
+      LOGGER.silly(`fetchTeamDiscussions: Response didn't have data, returning an empty array []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchDiscussionsOfATeam: Error processing action: ${e.toString()}`);
+    LOGGER.error(`Error processing action fetchTeamDiscussions: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
 });
 
-export const fetchDiscussionByTeamAndDiscussionNumber = createAsyncThunk(
-  'discussions/fetchDiscussionByTeamAndDiscussionNumber',
-  async (payload: { teamId: string; discussionNumber: number }, { getState, dispatch }): Promise<Discussion | null> => {
+/**
+ * 
+ */
+export const fetchDiscussionById = createAsyncThunk(
+  'discussions/fetchDiscussionById',
+  async (payload: { discussionId: string }, { getState, dispatch }): Promise<Discussion | null> => {
     try {
-      LOGGER.silly('fetchDiscussionByTeamAndDiscussionNumber invoked');
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.teamId}/${payload.discussionNumber}`;
+      LOGGER.silly('fetchDiscussionById invoked');
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
-      LOGGER.silly(`fetchDiscussionByTeamAndDiscussionNumber: ${printAuthenticated(auth)} - GET ${url}`);
+      LOGGER.silly(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url} `);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url);
+      
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchDiscussionByTeamAndDiscussionNumber: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+        LOGGER.silly(`fetchDiscussionById: relations ${axiosResponse.data.relations}`);
+        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchDiscussionByTeamAndDiscussionNumber: axiosResponse ${axiosResponse.data.data}`);
+        LOGGER.silly(`fetchDiscussionById: axiosResponse ${axiosResponse.data.data}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`fetchDiscussionByTeamAndDiscussionNumber: Response didn't have data, returning null`);
+        LOGGER.silly(`fetchDiscussionById: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`fetchDiscussionByTeamAndDiscussionNumber: Error processing action: ${e.toString()}`);
+      LOGGER.error(`fetchDiscussionById: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
   }
 );
+
+/**
+ * Fetchs all the comments from the discussion_id provided as param
+ * TODO: this should be paged as well
+ */
+export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Comment[]> => {
+  try {
+    LOGGER.silly('fetchDiscussionComments invoked');
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
+    const { auth } = getState() as RootState;
+    
+    LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url} `);
+    
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth)
+    });
+    
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchDiscussionComments: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchDiscussionComments: axiosResponse ${axiosResponse.data.data}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`fetchDiscussionComments: Response didn't have data, returning null`);
+      return [];
+    }
+  } catch (e: any) {
+    LOGGER.error(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
+    return [];
+  }
+});
 
 export const createDiscussion = createAsyncThunk('discussions/createDiscussion', async (payload: CreateDiscussionRequestDTO, { getState, dispatch }): Promise<Discussion | null> => {
   try {
@@ -164,37 +214,3 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
     return null;
   }
 });
-
-export const fetchDiscussionComments = createAsyncThunk(
-  'discussions/fetchDiscussionComments',
-  async (payload: { teamId: string; discussionNumber: number }, { getState, dispatch }): Promise<Comment[]> => {
-    try {
-      LOGGER.silly('fetchDiscussionComments invoked');
-
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.teamId}/${payload.discussionNumber}/comments`;
-      const { auth } = getState() as RootState;
-
-      LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - DELETE ${url}`);
-
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
-      });
-
-      if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchDiscussionComments: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
-      }
-
-      if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchDiscussionComments: axiosResponse ${axiosResponse.data.data}`);
-        return axiosResponse.data.data;
-      } else {
-        LOGGER.silly(`fetchDiscussionComments: Response didn't have data, returning null`);
-        return [];
-      }
-    } catch (e: any) {
-      LOGGER.error(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
-      return [];
-    }
-  }
-);
