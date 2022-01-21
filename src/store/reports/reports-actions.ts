@@ -332,3 +332,14 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     return null;
   }
 });
+
+export const fetchPinnedReportAction = createAsyncThunk('reports/fetchPinnedReportAction', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<any> => {
+  try {
+    LOGGER.warn('[NOT IMPLEMENTED]fetchPinnedReportAction invoked');
+    return []
+  } catch (e: any) {
+    LOGGER.error(`[NOT IMPLEMENTED]fetchPinnedReportAction invoked: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
+  }
+});
