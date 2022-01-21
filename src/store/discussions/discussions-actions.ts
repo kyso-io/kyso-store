@@ -166,11 +166,11 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
 });
 
 
-export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (discussionId: string, { getState, dispatch }): Promise<Comment[]> => {
+export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { teamId: string; discussionNumber: number }, { getState, dispatch }): Promise<Comment[]> => {
   try {
     LOGGER.silly('fetchDiscussionComments invoked');
     
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${discussionId}/comments`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.teamId}/${payload.discussionNumber}/comments`;
     const { auth } = getState() as RootState;
     
     LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - DELETE ${url} `);
