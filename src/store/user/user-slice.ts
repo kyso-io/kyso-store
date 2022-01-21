@@ -1,7 +1,5 @@
-import { User } from '@kyso-io/kyso-model';
-import { Relation } from '../../types/relations';
+import { User, ActionWithPayload, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { refreshUserAction, updateUserAction } from './user-actions';
 
@@ -24,13 +22,13 @@ const userSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(refreshUserAction.fulfilled, (state: UserState, action: ActionWithPayload<User | null>) => {
+    builder.addCase(refreshUserAction.fulfilled, (state: UserState, action: ActionWithPayload<User>) => {
       state.user = action.payload;
     });
-    builder.addCase(updateUserAction.fulfilled, (state: UserState, action: ActionWithPayload<User | null>) => {
+    builder.addCase(updateUserAction.fulfilled, (state: UserState, action: ActionWithPayload<User>) => {
       state.user = action.payload;
     });
-    builder.addCase(fetchRelationsAction, (state: UserState, action: ActionWithPayload<Relation>) => {
+    builder.addCase(fetchRelationsAction, (state: UserState, action: ActionWithPayload<Relations>) => {
       state.entities = {
         ...state.entities,
         ...action.payload?.user,

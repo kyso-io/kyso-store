@@ -1,6 +1,5 @@
-import { Discussion } from '@kyso-io/kyso-model';
+import { Discussion, ActionWithPayload } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchDiscussionsAction } from './discussions-actions';
 
 export type DiscussionsState = {
