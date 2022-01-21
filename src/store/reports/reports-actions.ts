@@ -229,7 +229,9 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
     LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReposTreeAction: relations ${axiosResponse.data.relations}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
