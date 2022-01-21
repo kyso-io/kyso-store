@@ -1,8 +1,39 @@
-import { NormalizedResponseDTO, User, UpdateUserRequestDTO } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, UpdateUserRequestDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { RootState } from '..';
+import { RootState, setError } from '..';
+import { LOGGER } from '../..';
+import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
+import { fetchRelationsAction } from '../relations/relations-actions';
+
+export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (_, { dispatch, getState }): Promise<User[]> => {
+  try {
+    LOGGER.silly('fetchUsersAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.REACT_APP_API_URL}/users`;
+    LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchUsersAction: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchUsersAction: axiosResponse ${axiosResponse.data.data}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`fetchUsersAction: Response didn't have data, returning an empty array []`);
+      return [];
+    }
+  } catch (e: any) {
+    LOGGER.error(`fetchTeamsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
+  }
+});
 
 export const refreshUserAction = createAsyncThunk('user/refresh', async () => {
   try {

@@ -35,13 +35,13 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
       };
     }
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
-    LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url} `);
+    LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.post(url, reports, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`createReportAction: axiosResponse ${axiosResponse.data.data}`);
@@ -62,13 +62,13 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
     LOGGER.trace('fetchReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
-    LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReportAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
       LOGGER.silly(`fetchReportAction: axiosResponse ${axiosResponse.data.data}`);
@@ -90,13 +90,13 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     LOGGER.silly('fetchReportsAction invoked');
     const { reports, auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
-    LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReportsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
       LOGGER.silly(`fetchReportsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -117,13 +117,13 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
     LOGGER.silly('updateReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
-    LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+    LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`updateReportAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`updateReportAction: axiosResponse ${axiosResponse.data.data}`);
@@ -144,7 +144,7 @@ export const pinReportAction = createAsyncThunk('reports/pinReport', async (repo
     LOGGER.silly('pinReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pin`;
-    LOGGER.silly(`pinReportAction: ${printAuthenticated(auth)} - PATH ${url} `);
+    LOGGER.silly(`pinReportAction: ${printAuthenticated(auth)} - PATH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(
       url,
       {},
@@ -154,7 +154,7 @@ export const pinReportAction = createAsyncThunk('reports/pinReport', async (repo
     );
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`pinReportAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`pinReportAction: axiosResponse ${axiosResponse.data.data}`);
@@ -174,13 +174,13 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
     LOGGER.silly('fetchBranchesAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/branches`;
-    LOGGER.silly(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchBranchesAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchBranchesAction: axiosResponse ${axiosResponse.data.data}`);
@@ -201,13 +201,13 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
     LOGGER.silly('fetchCommitsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/commits`;
-    LOGGER.silly(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchCommitsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchCommitsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -228,11 +228,11 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
     LOGGER.silly('fetchReposTreeAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
-    LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReposTreeAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchReposTreeAction: axiosResponse ${axiosResponse.data.data}`);
@@ -252,13 +252,13 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
     LOGGER.silly('deleteReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
-    LOGGER.silly(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    LOGGER.silly(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`deleteReportAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`deleteReportAction: axiosResponse ${axiosResponse.data.data}`);
@@ -279,13 +279,13 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
     LOGGER.silly('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/pinned`;
-    LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchUserPinnedReportsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchUserPinnedReportsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -315,7 +315,7 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchFileContentAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchFileContentAction: axiosResponse ${axiosResponse.data.data}`);

@@ -13,13 +13,13 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (_, {
     LOGGER.silly('fetchTeamsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
-    LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchTeamsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchTeamsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -40,13 +40,13 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
     LOGGER.silly(`fetchTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
-    LOGGER.silly(`fetchTeamAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchTeamAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -67,13 +67,13 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
     LOGGER.silly(`createTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
-    LOGGER.silly(`createTeamAction: ${printAuthenticated(auth)} - POST ${url} `);
+    LOGGER.silly(`createTeamAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, team, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`createTeamAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`createTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -94,13 +94,13 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
     LOGGER.silly(`deleteTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
-    LOGGER.silly(`deleteTeamAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    LOGGER.silly(`deleteTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`deleteTeamAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`deleteTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -121,13 +121,13 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
     LOGGER.silly(`fetchTeamMembers invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/members`;
-    LOGGER.silly(`fetchTeamMembers: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchTeamMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchTeamMembers: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchTeamMembers: axiosResponse ${axiosResponse.data.data}`);
@@ -148,7 +148,7 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
     LOGGER.silly(`checkMemberBelongsToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
-    LOGGER.silly(`checkMemberBelongsToTheTeamAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`checkMemberBelongsToTheTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -171,7 +171,7 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
     LOGGER.silly(`addMemberToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
-    LOGGER.silly(`addMemberToTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+    LOGGER.silly(`addMemberToTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
       headers: buildAuthHeaders(auth),
     });
@@ -194,7 +194,7 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
     LOGGER.silly(`deleteMemberFromTheTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
-    LOGGER.silly(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+    LOGGER.silly(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
       headers: buildAuthHeaders(auth),
     });
@@ -217,13 +217,13 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
     LOGGER.silly(`updateTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}`;
-    LOGGER.silly(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+    LOGGER.silly(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`updateTeamAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`updateTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -244,7 +244,7 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
     LOGGER.silly(`checkTeamNameIsUniqueAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/check-name/${teamName}`;
-    LOGGER.silly(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -267,13 +267,13 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
     LOGGER.silly(`fetchTeamReportsAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/reports`;
-    LOGGER.silly(`fetchTeamReportsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchTeamReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchTeamReportsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchTeamReportsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -296,13 +296,13 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
       LOGGER.silly(`updateRoleToMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles`;
-      LOGGER.silly(`updateRoleToMembersOfTeamAction: ${printAuthenticated(auth)} - PATCH ${url} `);
+      LOGGER.silly(`updateRoleToMembersOfTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload.data, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`updateRoleToMembersOfTeamAction: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`updateRoleToMembersOfTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -326,13 +326,13 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
       LOGGER.silly(`deleteRoleOfMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
-      LOGGER.silly(`deleteRoleOfMembersOfTeamAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+      LOGGER.silly(`deleteRoleOfMembersOfTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`deleteRoleOfMembersOfTeamAction: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`deleteRoleOfMembersOfTeamAction: axiosResponse ${axiosResponse.data.data}`);
@@ -354,7 +354,7 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
     LOGGER.silly(`updateTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/profile-picture`;
-    LOGGER.silly(`updateTeamProfilePictureAction: ${printAuthenticated(auth)} - POST ${url} `);
+    LOGGER.silly(`updateTeamProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', payload.file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, formData, {
@@ -362,7 +362,7 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`updateTeamProfilePictureAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`updateTeamProfilePictureAction: axiosResponse ${axiosResponse.data.data}`);
@@ -383,13 +383,13 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
     LOGGER.silly(`deleteTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/profile-picture`;
-    LOGGER.silly(`deleteTeamProfilePictureAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    LOGGER.silly(`deleteTeamProfilePictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`deleteTeamProfilePictureAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`deleteTeamProfilePictureAction: axiosResponse ${axiosResponse.data.data}`);

@@ -13,13 +13,13 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
     LOGGER.silly('fetchOrganizationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
-    LOGGER.silly(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchOrganizationAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchOrganizationAction: axiosResponse ${axiosResponse.data.data}`);
@@ -40,7 +40,7 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
     LOGGER.silly('deleteOrganizationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
-    LOGGER.silly(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    LOGGER.silly(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -65,13 +65,13 @@ export const updateOrganizationAction = createAsyncThunk(
       LOGGER.silly('updateOrganizationAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}`;
-      LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PUT ${url} `);
+      LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.put(url, payload.organization, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`updateOrganizationAction: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`updateOrganizationAction: axiosResponse ${axiosResponse.data.data}`);
@@ -93,13 +93,13 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
     LOGGER.silly('fetchOrganizationMembers invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}/members`;
-    LOGGER.silly(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchOrganizationMembers: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchOrganizationMembers: axiosResponse ${axiosResponse.data.data}`);
@@ -120,13 +120,13 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
     LOGGER.silly('createOrganization invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations`;
-    LOGGER.silly(`createOrganization: ${printAuthenticated(auth)} - POST ${url} `);
+    LOGGER.silly(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, organization, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`createOrganization: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`createOrganization: axiosResponse ${axiosResponse.data.data}`);
@@ -149,13 +149,13 @@ export const addUserToOrganizationAction = createAsyncThunk(
       LOGGER.silly('addUserToOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
-      LOGGER.silly(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url} `);
+      LOGGER.silly(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`addUserToOrganization: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`addUserToOrganization: axiosResponse ${axiosResponse.data.data}`);
@@ -179,13 +179,13 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
       LOGGER.silly('removeUserFromOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
-      LOGGER.silly(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url} `);
+      LOGGER.silly(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`removeUserFromOrganization: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`removeUserFromOrganization: axiosResponse ${axiosResponse.data.data}`);
@@ -209,13 +209,13 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
       LOGGER.silly('updateMembersRolesToOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members-roles`;
-      LOGGER.silly(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url} `);
+      LOGGER.silly(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, payload.data, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`updateMembersRolesToOrganization: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`updateMembersRolesToOrganization: axiosResponse ${axiosResponse.data.data}`);
@@ -239,13 +239,13 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
       LOGGER.silly('deleteRoleToUserFromOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
-      LOGGER.silly(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url} `);
+      LOGGER.silly(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`deleteRoleToUserFromOrganization: relations ${axiosResponse.data.relations}`);
-        dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
         LOGGER.silly(`deleteRoleToUserFromOrganization: axiosResponse ${axiosResponse.data.data}`);

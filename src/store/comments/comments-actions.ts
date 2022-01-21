@@ -16,13 +16,13 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
     LOGGER.silly('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/comments`;
-    LOGGER.silly(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReportCommentsAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchReportCommentsAction: axiosResponse ${axiosResponse.data.data}`);
@@ -43,13 +43,13 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
     LOGGER.silly('fetchCommentAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
-    LOGGER.silly(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url} `);
+    LOGGER.silly(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchCommentAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`fetchCommentAction: axiosResponse ${axiosResponse.data.data}`);
@@ -70,11 +70,11 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
     LOGGER.silly('createCommentAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/comments`;
-    LOGGER.silly(`createCommentAction: ${printAuthenticated(auth)} - POST ${url} `);
+    LOGGER.silly(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`createCommentAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`createCommentAction: axiosResponse ${axiosResponse.data.data}`);
@@ -95,13 +95,13 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
     LOGGER.silly('updateCommentAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.commentId}`;
-    LOGGER.silly(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url} `);
+    LOGGER.silly(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.put(url, payload.comment, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`updateCommentAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`updateCommentAction: axiosResponse ${axiosResponse.data.data}`);
@@ -122,11 +122,11 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
     LOGGER.trace('deleteCommentAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
-    LOGGER.silly(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url} `);
+    LOGGER.silly(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`deleteCommentAction: relations ${axiosResponse.data.relations}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`deleteCommentAction: axiosResponse ${axiosResponse.data.data}`);
