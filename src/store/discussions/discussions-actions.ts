@@ -47,7 +47,7 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     LOGGER.silly('fetchTeamDiscussions invoked');
     const { auth } = getState() as RootState;
     
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
     LOGGER.silly(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url} `);
     
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
