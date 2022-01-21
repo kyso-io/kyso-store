@@ -5,7 +5,7 @@ import { LOGGER } from '../..';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
-export const loginAction = createAsyncThunk('auth/login', async (credentials: { username: string; password: string; provider: string }, { dispatch }) => {
+export const loginAction = createAsyncThunk('auth/login', async (credentials: { username: string; password: string; provider: string }, { dispatch }): Promise<string | null> => {
   try {
     LOGGER.silly('loginAction invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
