@@ -164,3 +164,35 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
     return null;
   }
 });
+
+
+export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { teamId: string; discussionNumber: number }, { getState, dispatch }): Promise<Comment[]> => {
+  try {
+    LOGGER.silly('fetchDiscussionComments invoked');
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.teamId}/${payload.discussionNumber}/comments`;
+    const { auth } = getState() as RootState;
+    
+    LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - DELETE ${url} `);
+    
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth)
+    });
+    
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchDiscussionComments: relations ${axiosResponse.data.relations}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`fetchDiscussionComments: axiosResponse ${axiosResponse.data.data}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`fetchDiscussionComments: Response didn't have data, returning null`);
+      return [];
+    }
+  } catch (e: any) {
+    LOGGER.error(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
+    return [];
+  }
+});
