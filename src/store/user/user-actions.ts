@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount } from '@kyso-io/kyso-model';
+import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -170,40 +170,87 @@ export const addAccountToUser = createAsyncThunk('user/addAccountToUser', async 
   }
 });
 
-export const refreshUserAction = createAsyncThunk('user/refresh', async () => {
-  try {
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get('/user');
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
-    } else {
-      return null;
+export const removeAccountFromUser = createAsyncThunk(
+  'user/removeAccountFromUser',
+  async (payload: { userId: string; provider: LoginProviderEnum; accountId: string }, { dispatch, getState }): Promise<boolean> => {
+    try {
+      LOGGER.silly('removeAccountFromUser invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.REACT_APP_API_URL}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
+      LOGGER.silly(`removeAccountFromUser: ${printAuthenticated(auth)} - DELETE ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.delete(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        LOGGER.silly(`removeAccountFromUser: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        LOGGER.silly(`removeAccountFromUser: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        LOGGER.silly(`removeAccountFromUser: Response didn't have data, returning false`);
+        return false;
+      }
+    } catch (e: any) {
+      LOGGER.error(`removeAccountFromUser: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return false;
     }
-  } catch (e: any) {
-    return null;
   }
-});
+);
 
-export const resetPasswordAction = createAsyncThunk('user/resetPassword', async (email: string) => {
+export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (file: File, { dispatch, getState }): Promise<User | null> => {
   try {
-    const url = `/parse/requestPasswordReset`;
-    await httpClient.post(url, { email }, { headers: { 'X-Parse-Application-Id': 'api-kyso-io' } });
-  } catch (e: any) {
-    return null;
-  }
-});
-
-export const disconnectGithubAction = createAsyncThunk('user/disconnectGithub', async () => {
-  try {
-    const url = `/user`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.patch(url, {
-      accessToken: null,
+    LOGGER.silly('updateUserProfilePictureAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.REACT_APP_API_URL}/users/profile-picture`;
+    LOGGER.silly(`updateUserProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const formData = new FormData();
+    formData.append('file', file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, formData, {
+      headers: buildAuthHeaders(auth),
     });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`updateUserProfilePictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
     if (axiosResponse?.data?.data) {
+      LOGGER.silly(`updateUserProfilePictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
+      LOGGER.silly(`updateUserProfilePictureAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
+    LOGGER.error(`updateUserProfilePictureAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { getState, dispatch }): Promise<User | null> => {
+  try {
+    LOGGER.silly('refreshUserAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.REACT_APP_API_URL}/user`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`refreshUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`refreshUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`refreshUserAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`refreshUserAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
     return null;
   }
 });

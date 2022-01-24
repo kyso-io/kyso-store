@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO } from '@kyso-io/kyso-model';
+import { CreateUserRequestDTO, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { LOGGER } from '../..';
@@ -20,6 +20,26 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: { 
     }
   } catch (e: any) {
     LOGGER.error(`loginAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const signUpAction = createAsyncThunk('auth/signup', async (payload: CreateUserRequestDTO, { dispatch }): Promise<User | null> => {
+  try {
+    LOGGER.silly('signUpAction invoked');
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/sign-up`;
+    LOGGER.silly(`signUpAction - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, payload);
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`signUpAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`signUpAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`signUpAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
