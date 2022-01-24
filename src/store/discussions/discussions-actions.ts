@@ -1,22 +1,24 @@
 import { CreateDiscussionRequestDTO, Discussion, NormalizedResponseDTO, UpdateDiscussionRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { RootState } from '..';
+import { RootState, selectActiveReport } from '..';
 import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
-
+import { selectActiveTeam } from '../teams/teams-slice';
 /**
  * Fetch discussions based on team and user data in the Store. Pagination allowed using page and per_page parameters
  */
 export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscussions', async (payload: { page: number, per_page: number }, { getState, dispatch }) => {
   try {
     LOGGER.silly('fetchDiscussionsAction invoked');
-    const { team, user, auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team?.team ? `team_id=${team.team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    const { user, auth, ...state } = getState() as RootState;
+    const team = selectActiveTeam(state as RootState)
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team ? `team_id=${team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
     LOGGER.silly(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Organization, ActionWithPayload } from '@kyso-io/kyso-model';
+import { RootState } from '..';
 
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -12,10 +14,26 @@ const initialState: OrganizationsState = {
   entities: {},
 };
 
-const organizationSlice = createSlice({
+const organizationsSlice = createSlice({
   name: 'organization',
   initialState,
-  reducers: {},
+  reducers: {
+      setOrganization: (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
+        state.entities = {
+          ...state.entities,
+          [action.payload!.id as string]: action.payload
+        };
+        state.activeId = action.payload!.id
+      },
+  }
 });
 
-export default organizationSlice.reducer;
+export const { setOrganization } = organizationsSlice.actions;
+
+export const selectActiveOrganization = (state: RootState) => {
+  if (!state.organizations.activeId) return null;
+  if (state.organizations.entities!.length === 0) return null;
+  return state.organizations.entities![state.organizations.activeId];
+};
+
+export default organizationsSlice.reducer;
