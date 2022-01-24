@@ -1,7 +1,7 @@
 import { CreateUserRequestDTO, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { fetchUserAction, refreshUserAction } from '..';
+import { refreshUserAction } from '..';
 import { LOGGER } from '../..';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
