@@ -141,7 +141,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setReports, setCurrentBranch, setPageAndLimit, setSearchQuery, setTagsQuery } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setTagsQuery } = reportsSlice.actions;
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
@@ -154,5 +154,12 @@ export const selectActiveReports = (state: RootState) => {
   if (state.reports.entities!.length === 0) return null;
   return state.reports.activeIds.map(id => state.reports.entities![id]);
 };
+
+export const selectFirstSearchResult = (state: RootState) => {
+  if (state.reports.activeIds.length === 0) return null;
+  if (state.reports.entities!.length === 0) return null;
+  return state.reports.entities![state.reports.activeIds[0]];
+};
+
 
 export default reportsSlice.reducer;

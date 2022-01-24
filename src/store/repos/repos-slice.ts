@@ -74,6 +74,6 @@ const reposSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, setProvider, setPageAndLimit } = reposSlice.actions;
+export const { setSearchQuery, setProvider } = reposSlice.actions;
 
 export default reposSlice.reducer;
