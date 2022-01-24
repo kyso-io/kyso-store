@@ -18,7 +18,7 @@ import {
 
 export type ReportsState = {
   activeId: string | null | undefined; // single id of active report
-  activeIds: object | null; // list of ids for showing lists of reports
+  activeIds: string[];
   entities: { [key: string]: any | null | undefined } | null; // all the reports by id
   branches: any[];
   commits: any[];
@@ -34,7 +34,7 @@ export type ReportsState = {
 
 const initialState: ReportsState = {
   activeId: null,
-  activeIds: null,
+  activeIds: [],
   entities: {},
   branches: [],
   commits: [],
@@ -57,7 +57,7 @@ const reportsSlice = createSlice({
         ...state.entities,
         ...listToKeyVal(action.payload),
       };
-      state.activeIds = action.payload!.map((entity: Report) => entity.id);
+      state.activeIds = action.payload!.map((entity: Report) => entity.id as string);
     },
     setPinnedReport: (state: ReportsState, action: ActionWithPayload<Report>) => {
       state.pinnedReport = action.payload!;
@@ -126,7 +126,7 @@ const reportsSlice = createSlice({
         ...state.entities,
         ...listToKeyVal(action.payload),
       };
-      state.activeIds = action.payload!.map((entity: Report) => entity.id);
+      state.activeIds = action.payload!.map((entity: Report) => entity.id as string);
     });
     builder.addCase(fetchFileContentAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.content = action.payload!;
@@ -147,6 +147,12 @@ export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
   if (state.reports.entities!.length === 0) return null;
   return state.reports.entities![state.reports.activeId];
+};
+
+export const selectActiveReports = (state: RootState) => {
+  if (state.reports.activeIds.length === 0) return null;
+  if (state.reports.entities!.length === 0) return null;
+  return state.reports.activeIds.map(id => state.reports.entities![id]);
 };
 
 export default reportsSlice.reducer;

@@ -42,7 +42,7 @@ export * from './discussions/discussions-actions';
 export { setError } from './error/error-slice';
 export * from './organizations/organizations-actions';
 export * from './reports/reports-actions';
-export { selectActiveReport } from './reports/reports-slice';
+export { selectActiveReport, selectActiveReports } from './reports/reports-slice';
 export * from './repos/repos-actions';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
 export * from './tag/tag-actions';
