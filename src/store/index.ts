@@ -6,19 +6,21 @@ import error from './error/error-slice';
 import organizations from './organizations/organizations-slice';
 import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
+import tag from './tag/tag-slice';
 import team from './team/team-slice';
 import user from './user/user-slice';
 
 export const reducer = combineReducers({
   auth,
+  comments,
   discussions,
+  error,
   organizations,
   reports,
   repos,
+  tag,
   team,
   user,
-  error,
-  comments,
 });
 
 export const store = configureStore({
@@ -43,5 +45,6 @@ export * from './reports/reports-actions';
 export { selectActiveReport } from './reports/reports-slice';
 export * from './repos/repos-actions';
 export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slice';
+export * from './tag/tag-actions';
 export * from './team/team-actions';
 export * from './user/user-actions';
