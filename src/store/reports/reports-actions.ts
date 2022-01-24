@@ -1,6 +1,7 @@
 import { NormalizedResponseDTO, Report, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
+import { report } from 'process';
 import { RootState } from '..';
 import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
@@ -85,11 +86,19 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (_, { getState, dispatch }): Promise<Report[]> => {
+export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (payload: { filter: object, page: number, per_page: number }, { getState, dispatch }): Promise<Report[]> => {
   try {
     LOGGER.silly('fetchReportsAction invoked');
-    const { reports, auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?page=${reports.page}&per_page=${reports.limit}&sort=desc`;
+    const { auth } = getState() as RootState;
+
+    const qs = new URLSearchParams({
+      "page": (payload.page || 1).toString(),
+      "per_page": (payload.per_page || 20).toString(),
+      "sort": 'desc',
+      ...payload.filter
+    })
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
     LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
