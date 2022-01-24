@@ -48,3 +48,4 @@ export { setPageAndLimit, setProvider, setSearchQuery } from './repos/repos-slic
 export * from './tag/tag-actions';
 export * from './team/team-actions';
 export * from './user/user-actions';
+export { setUser } from './user/user-slice';
