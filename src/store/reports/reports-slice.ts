@@ -1,4 +1,4 @@
-import { Report, ActionWithPayload, Relations } from '@kyso-io/kyso-model';
+import { ActionWithPayload, Relations, ReportDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
@@ -8,24 +8,24 @@ import {
   deleteReportAction,
   fetchBranchesAction,
   fetchCommitsAction,
+  fetchFileContentAction,
   fetchReportAction,
   fetchReportsAction,
   fetchReposTreeAction,
-  fetchFileContentAction,
-  pinReportAction,
+  toggleUserPinReportAction,
   updateReportAction,
 } from './reports-actions';
 
 export type ReportsState = {
   activeId: string | null | undefined; // single id of active report
   activeIds: string[];
-  entities: { [key: string]: any | null | undefined } | null; // all the reports by id
+  entities: { [key: string]: ReportDTO | null | undefined } | null; // all the reports by id
   branches: any[];
   commits: any[];
   currentBranch: null;
   limit: number;
   page: number;
-  pinnedReport: Report | null;
+  pinnedReport: ReportDTO | null;
   content: any;
   searchQuery: string | null;
   tagsQuery: any[];
@@ -52,14 +52,14 @@ const reportsSlice = createSlice({
   name: 'reports',
   initialState,
   reducers: {
-    setReports: (state: ReportsState, action: ActionWithPayload<Report[]>) => {
+    setReports: (state: ReportsState, action: ActionWithPayload<ReportDTO[]>) => {
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload),
       };
-      state.activeIds = action.payload!.map((entity: Report) => entity.id as string);
+      state.activeIds = action.payload!.map((entity: ReportDTO) => entity.id as string);
     },
-    setPinnedReport: (state: ReportsState, action: ActionWithPayload<Report>) => {
+    setPinnedReport: (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.pinnedReport = action.payload!;
     },
     setContent: (state: ReportsState, action: ActionWithPayload<any>) => {
@@ -75,7 +75,7 @@ const reportsSlice = createSlice({
     setTagsQuery: (state: ReportsState, action: ActionWithPayload<any[]>) => {
       state.tagsQuery = action.payload!;
     },
-    setReport: (state: ReportsState, action: ActionWithPayload<Report>) => {
+    setReport: (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
     },
     setBranches: (state: ReportsState, action: ActionWithPayload<any[]>) => {
@@ -92,20 +92,20 @@ const reportsSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(createReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
+    builder.addCase(createReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
     });
-    builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
+    builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
       state.entities = {
         ...state.entities,
         [action.payload!.id as string]: action.payload!,
       };
     });
-    builder.addCase(updateReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
+    builder.addCase(updateReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
     });
-    builder.addCase(pinReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report>) => {
+    builder.addCase(toggleUserPinReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchBranchesAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
@@ -120,13 +120,13 @@ const reportsSlice = createSlice({
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
       state.activeId = null;
     });
-    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report[]>) => {
+    builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO[]>) => {
       if (!action.payload) return;
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload),
       };
-      state.activeIds = action.payload!.map((entity: Report) => entity.id as string);
+      state.activeIds = action.payload!.map((entity: ReportDTO) => entity.id as string);
     });
     builder.addCase(fetchFileContentAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.content = action.payload!;
@@ -145,21 +145,20 @@ export const { setReports, setCurrentBranch, setTagsQuery } = reportsSlice.actio
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
-  if (state.reports.entities!.length === 0) return null;
+  if (Object.keys(state.reports.entities!).length === 0) return null;
   return state.reports.entities![state.reports.activeId];
 };
 
 export const selectActiveReports = (state: RootState) => {
   if (state.reports.activeIds.length === 0) return null;
-  if (state.reports.entities!.length === 0) return null;
+  if (Object.keys(state.reports.entities!).length === 0) return null;
   return state.reports.activeIds.map(id => state.reports.entities![id]);
 };
 
 export const selectFirstSearchResult = (state: RootState) => {
   if (state.reports.activeIds.length === 0) return null;
-  if (state.reports.entities!.length === 0) return null;
+  if (Object.keys(state.reports.entities!).length === 0) return null;
   return state.reports.entities![state.reports.activeIds[0]];
 };
-
 
 export default reportsSlice.reducer;
