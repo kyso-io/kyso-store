@@ -36,4 +36,9 @@ export const selectActiveOrganization = (state: RootState) => {
   return state.organizations.entities![state.organizations.activeId];
 };
 
+export const selectOrganizationById = (state: RootState, id: string) => {
+  if (state.organizations.entities!.length === 0) return null;
+  return state.organizations.entities![id];
+};
+
 export default organizationsSlice.reducer;
