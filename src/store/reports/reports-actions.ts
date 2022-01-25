@@ -236,7 +236,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   try {
     LOGGER.silly('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/pinned`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/pinned`;
     LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
