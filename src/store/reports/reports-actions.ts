@@ -1,7 +1,6 @@
-import { NormalizedResponseDTO, Report, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { CreateReportDTO, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { report } from 'process';
 import { RootState } from '..';
 import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
@@ -10,34 +9,13 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const createReportAction = createAsyncThunk('reports/createReport', async (paths: any[] = [], { getState, dispatch }): Promise<Report | null> => {
+export const createReportAction = createAsyncThunk('reports/createReport', async (createReportDto: CreateReportDTO, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     LOGGER.trace(`createReportAction invoked`);
-    const { auth, repos } = getState() as RootState;
-    let reports;
-    if (paths.length > 0) {
-      reports = paths.map((path: any) => ({
-        src: {
-          provider: repos.provider,
-          owner: repos.active!.owner,
-          name: repos.active!.name,
-          default_branch: repos.active!.default_branch,
-          path,
-        },
-      }));
-    } else {
-      reports = {
-        src: {
-          provider: repos.provider,
-          owner: repos.active!.owner,
-          name: repos.active!.name,
-          default_branch: repos.active!.default_branch,
-        },
-      };
-    }
+    const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
     LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.post(url, reports, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, createReportDto, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -58,13 +36,13 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
   }
 });
 
-export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
+export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     LOGGER.trace('fetchReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
     LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -85,22 +63,21 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
   }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (payload: { filter?: object, page?: number, per_page?: number }, { getState, dispatch }): Promise<Report[]> => {
+export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<ReportDTO[]> => {
   try {
     LOGGER.silly('fetchReportsAction invoked');
     const { auth } = getState() as RootState;
 
     const qs = new URLSearchParams({
-      "page": (payload?.page || 1).toString(),
-      "per_page": (payload?.per_page || 20).toString(),
-      "sort": 'desc',
-      ...payload?.filter
-    })
+      page: (payload?.page || 1).toString(),
+      per_page: (payload?.per_page || 20).toString(),
+      sort: 'desc',
+      ...payload?.filter,
+    });
 
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
     LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -121,13 +98,13 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
   }
 });
 
-export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<Report | null> => {
+export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     LOGGER.silly('updateReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
     LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(url, payload.data, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -144,36 +121,6 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
   } catch (e: any) {
     LOGGER.error(`updateReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
-    return null;
-  }
-});
-
-export const pinReportAction = createAsyncThunk('reports/pinReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
-  try {
-    LOGGER.silly('pinReportAction invoked');
-    const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pin`;
-    LOGGER.silly(`pinReportAction: ${printAuthenticated(auth)} - PATH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.patch(
-      url,
-      {},
-      {
-        headers: buildAuthHeaders(auth),
-      }
-    );
-    if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`pinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      LOGGER.silly(`pinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      LOGGER.silly(`pinReportAction: Response didn't have data, returning null`);
-      return null;
-    }
-  } catch (e: any) {
-    LOGGER.error(`pinReportAction: Error processing action: ${e.toString()}`);
     return null;
   }
 });
@@ -289,7 +236,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   try {
     LOGGER.silly('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/pinned`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/pinned`;
     LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -321,6 +268,7 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
       hash = reports.tree[0].hash;
     }
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -342,13 +290,64 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
   }
 });
 
-export const fetchPinnedReportAction = createAsyncThunk('reports/fetchPinnedReportAction', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<any> => {
+export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.warn('[NOT IMPLEMENTED]fetchPinnedReportAction invoked');
-    return []
+    LOGGER.silly('toggleUserPinReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-pin`;
+    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`toggleUserPinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`toggleUserPinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`toggleUserPinReportAction: Response didn't have data, returning null`);
+      return null;
+    }
   } catch (e: any) {
-    LOGGER.error(`[NOT IMPLEMENTED]fetchPinnedReportAction invoked: Error processing action: ${e.toString()}`);
+    LOGGER.error(`toggleUserPinReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
-    return [];
+    return null;
+  }
+});
+
+export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserStarReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
+  try {
+    LOGGER.silly('toggleUserStarReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-star`;
+    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`toggleUserStarReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`toggleUserStarReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`toggleUserStarReportAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`toggleUserStarReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
   }
 });

@@ -1,7 +1,7 @@
 import { CreateUserRequestDTO, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { refreshUserAction } from '..';
+import { refreshUserAction, setTokenAuthAction } from '..';
 import { LOGGER } from '../..';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
@@ -14,9 +14,8 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: { 
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
     if (axiosResponse?.data?.data) {
       LOGGER.silly(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-
+      dispatch(setTokenAuthAction(axiosResponse.data.data));
       dispatch(refreshUserAction());
-
       return axiosResponse.data.data;
     } else {
       LOGGER.silly(`loginAction: Response didn't have data, returning null`);

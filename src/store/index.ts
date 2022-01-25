@@ -3,6 +3,7 @@ import auth from './auth/auth-slice';
 import comments from './comments/comments-slice';
 import discussions from './discussions/discussions-slice';
 import error from './error/error-slice';
+import githubRepositories from './github/github-repositories-slice';
 import organizations from './organizations/organizations-slice';
 import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
@@ -15,6 +16,7 @@ export const reducer = combineReducers({
   comments,
   discussions,
   error,
+  githubRepositories,
   organizations,
   reports,
   repos,
@@ -40,14 +42,16 @@ export * from './comments/comments-actions';
 export * from './comments/comments-slice';
 export * from './discussions/discussions-actions';
 export * from './error/error-slice';
+export * from './github/github-actions';
+export * from './github/github-repositories-slice';
 export * from './organizations/organizations-actions';
+export * from './organizations/organizations-slice';
 export * from './reports/reports-actions';
 export * from './reports/reports-slice';
 export * from './repos/repos-actions';
 export * from './repos/repos-slice';
 export * from './tag/tag-actions';
 export * from './teams/teams-actions';
-export * from './organizations/organizations-slice';
 export * from './teams/teams-slice';
 export * from './user/user-actions';
 export * from './user/user-slice';

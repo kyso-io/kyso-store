@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
 import { ActionWithPayload } from '@kyso-io/kyso-model';
-import { loginAction } from './auth-actions';
+import { createSlice } from '@reduxjs/toolkit';
 
 export type AuthState = {
   token: string | null;
@@ -27,11 +26,6 @@ const authSlice = createSlice({
     setOrganizationAuthAction: (state: AuthState, action: ActionWithPayload<string>) => {
       state.organization = action.payload;
     },
-  },
-  extraReducers: builder => {
-    builder.addCase(loginAction.fulfilled, (state: AuthState, action) => {
-      state.token = action.payload;
-    });
   },
 });
 
