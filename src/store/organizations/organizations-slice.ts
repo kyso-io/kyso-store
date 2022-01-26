@@ -51,4 +51,9 @@ export const selectOrganizationById = (state: RootState, id: string) => {
   return state.organizations.entities![id];
 };
 
+export const selectOrganizationByName = (state: RootState, name: string) => {
+  if (state.organizations.entities!.length === 0) return null;
+  return state.organizations.entities!.values().filter((org: { name: string }) => org.name === name);
+};
+
 export default organizationsSlice.reducer;
