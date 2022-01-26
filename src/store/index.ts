@@ -46,6 +46,7 @@ export * from './github/github-actions';
 export * from './github/github-repositories-slice';
 export * from './organizations/organizations-actions';
 export * from './organizations/organizations-slice';
+export * from './relations/relations-actions';
 export * from './reports/reports-actions';
 export * from './reports/reports-slice';
 export * from './repos/repos-actions';

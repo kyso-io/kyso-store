@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Organization, ActionWithPayload } from '@kyso-io/kyso-model';
+import { Relations, Organization, ActionWithPayload } from '@kyso-io/kyso-model';
+import { fetchRelationsAction } from '../relations/relations-actions'
 import { RootState } from '..';
 
 export type OrganizationsState = {
@@ -25,7 +26,16 @@ const organizationsSlice = createSlice({
         };
         state.activeId = action.payload!.id
       },
-  }
+  },
+  extraReducers: builder => {
+    builder.addCase(fetchRelationsAction, (state: OrganizationsState, action: ActionWithPayload<Relations>) => {
+      state.entities = {
+        ...state.entities,
+        ...action.payload?.organization,
+      }
+    });    
+  },
+
 });
 
 export const { setOrganization } = organizationsSlice.actions;
