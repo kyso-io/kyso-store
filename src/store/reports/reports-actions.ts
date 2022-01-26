@@ -68,8 +68,6 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     LOGGER.silly('fetchReportsAction invoked');
     const { auth } = getState() as RootState;
 
-    console.log({ auth })
-
     const qs = new URLSearchParams({
       page: (payload?.page || 1).toString(),
       per_page: (payload?.per_page || 20).toString(),
