@@ -2,11 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Relations, Organization, ActionWithPayload } from '@kyso-io/kyso-model';
 import { fetchRelationsAction } from '../relations/relations-actions'
 import { RootState } from '..';
+import slugify from '../../helpers/slugify';
 
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
   activeIds: object | null; // list of ids for showing lists of organizations
-  entities: { [key: string]: any | null | undefined } | null; // all the organizations by id
+  entities: { [key: string]: any | null | undefined }; // all the organizations by id
 };
 
 const initialState: OrganizationsState = {
@@ -51,9 +52,11 @@ export const selectOrganizationById = (state: RootState, id: string) => {
   return state.organizations.entities![id];
 };
 
-export const selectOrganizationByName = (state: RootState, name: string) => {
-  if (state.organizations.entities!.length === 0) return null;
-  return state.organizations.entities!.values().filter((org: { name: string }) => org.name === name);
+export const selectOrganizationBySlugifiedName = (state: RootState, name: string) => {
+  return Object.values(state.organizations.entities).find((org: { name: string }) => {
+    console.log(name, org.name, slugify(org.name))
+    return slugify(org.name) === name
+  });
 };
 
 export default organizationsSlice.reducer;
