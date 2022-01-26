@@ -17,6 +17,11 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setAuthAction: (state: AuthState, action: ActionWithPayload<{ jwt: string, teamName: string, organizationName: string }>) => {
+      state.token = action.payload!.jwt;
+      state.team = action.payload!.teamName
+      state.organization = action.payload!.organizationName
+    },
     setTokenAuthAction: (state: AuthState, action: ActionWithPayload<string>) => {
       state.token = action.payload;
     },
@@ -29,6 +34,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction } = authSlice.actions;
+export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction } = authSlice.actions;
 
 export default authSlice.reducer;
