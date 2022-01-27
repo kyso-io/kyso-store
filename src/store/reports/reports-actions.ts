@@ -1,6 +1,10 @@
 import { CreateReportDTO, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import AdmZip from 'adm-zip';
 import { AxiosResponse } from 'axios';
+import FormData from 'form-data';
+import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
+import sha256File from 'sha256-file';
 import { RootState } from '..';
 import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
@@ -351,3 +355,68 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
     return null;
   }
 });
+
+export const createKysoReportAction = createAsyncThunk(
+  'reports/createKysoReportAction',
+  async (payload: { title: string; organization: string; team: string; description: string; filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    const zipedFiles: string[] = [];
+    try {
+      LOGGER.trace(`createKysoReportAction invoked`);
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/kyso`;
+      LOGGER.silly(`createKysoReportAction: ${printAuthenticated(auth)} - POST ${url}`);
+
+      const formData: FormData = new FormData();
+      formData.append('title', payload.title);
+      formData.append('description', payload.description);
+      formData.append('organization', payload.organization);
+      formData.append('team', payload.team);
+
+      for (const file of payload.filePaths) {
+        const zip = new AdmZip();
+        const sha: string = sha256File(file);
+        const content: Buffer = readFileSync(file);
+        const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
+        zip.addFile(filename, content);
+        const outputFilePath = `/tmp/${filename}.zip`;
+        zip.writeZip(outputFilePath);
+        zipedFiles.push(outputFilePath);
+        formData.append('files', createReadStream(outputFilePath), {
+          filename,
+          knownLength: statSync(outputFilePath).size,
+        });
+        formData.append('original_shas', sha);
+        formData.append('original_sizes', statSync(file).size.toString());
+        formData.append('original_names', filename);
+      }
+
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
+        headers: {
+          ...buildAuthHeaders(auth),
+          ...formData.getHeaders(),
+          'content-length': formData.getLengthSync(),
+        },
+      });
+      if (axiosResponse?.data?.relations) {
+        LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        LOGGER.silly(`createKysoReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        LOGGER.silly(`createKysoReportAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      LOGGER.error(`createKysoReportAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    } finally {
+      // Delete zip files
+      for (const zipedFile of zipedFiles) {
+        unlinkSync(zipedFile);
+      }
+    }
+  }
+);
