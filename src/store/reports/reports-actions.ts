@@ -359,7 +359,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (
-    payload: { title: string; organization: string; team: string; description: string; tags: string[]; filePaths: string[]; basePath: string | null },
+    payload: { title: string; organization: string; team: string; description: string; tags: string; filePaths: string[]; basePath: string | null },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     const zipedFiles: string[] = [];
@@ -374,7 +374,7 @@ export const createKysoReportAction = createAsyncThunk(
       formData.append('description', payload.description);
       formData.append('organization', payload.organization);
       formData.append('team', payload.team);
-      formData.append('tags', payload.tags);
+      formData.append('tags', JSON.stringify(payload.tags));
 
       for (const file of payload.filePaths) {
         const zip = new AdmZip();
