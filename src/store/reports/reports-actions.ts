@@ -420,3 +420,34 @@ export const createKysoReportAction = createAsyncThunk(
     }
   }
 );
+
+export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async (repositoryName: string, { getState, dispatch }): Promise<ReportDTO | null> => {
+  try {
+    LOGGER.trace(`importGithubRepositoryAction invoked`);
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${repositoryName}`;
+    LOGGER.silly(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`importGithubRepositoryAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
