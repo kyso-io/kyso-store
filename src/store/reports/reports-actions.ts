@@ -458,11 +458,11 @@ export const importGithubRepositoryAction = createAsyncThunk('reports/importGith
   }
 });
 
-export const pullReportAction = createAsyncThunk('reports/pullReport', async (reportId: string, { getState, dispatch }): Promise<Buffer | null> => {
+export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     LOGGER.trace(`pullReportAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pull`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
     LOGGER.silly(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
