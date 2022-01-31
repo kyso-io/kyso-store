@@ -466,6 +466,7 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     LOGGER.silly(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
+      responseType: 'arraybuffer',
     });
     return axiosResponse.data;
   } catch (e: any) {
