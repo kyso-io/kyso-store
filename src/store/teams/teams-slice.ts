@@ -3,6 +3,7 @@ import { Relations, Team, ActionWithPayload } from '@kyso-io/kyso-model';
 import { fetchTeamAction } from './teams-actions';
 import { fetchRelationsAction } from '../relations/relations-actions'
 import { RootState } from '..';
+import slugify from '../../helpers/slugify';
 
 export type TeamsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -52,6 +53,13 @@ export const selectActiveTeam = (state: RootState) => {
 export const selectTeamByFilter = (state: RootState, filter: { [key: string]: string }) => {
   if (state.teams.entities!.length === 0) return null;
   return Object.values(state.teams.entities!).find((team) => team[filter.key] === filter[filter.key])
+};
+
+export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
+  return Object.values(state.teams.entities!).find((team: { name: string }) => {
+    console.log(name, team.name, slugify(team.name))
+    return slugify(team.name) === name
+  });
 };
 
 export default teamsSlice.reducer;
