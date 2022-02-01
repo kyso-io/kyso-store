@@ -17,7 +17,7 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
   try {
     LOGGER.trace(`createReportAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
+    const url = `${process.env.KYSO_API}/reports`;
     LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, createReportDto, {
       headers: buildAuthHeaders(auth),
@@ -44,7 +44,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
   try {
     LOGGER.trace('fetchReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    const url = `${process.env.KYSO_API}/reports/${reportId}`;
     LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -79,7 +79,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
       ...payload?.filter,
     });
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
+    const url = `${process.env.KYSO_API}/reports?${qs.toString()}`;
     LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -106,7 +106,7 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
   try {
     LOGGER.silly('updateReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
+    const url = `${process.env.KYSO_API}/reports/${payload.reportId}`;
     LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
@@ -133,7 +133,7 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
   try {
     LOGGER.silly('fetchBranchesAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/branches`;
+    const url = `${process.env.KYSO_API}/reports/${reportId}/branches`;
     LOGGER.silly(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -160,7 +160,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
   try {
     LOGGER.silly('fetchCommitsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/commits`;
+    const url = `${process.env.KYSO_API}/reports/${payload.reportId}/${payload.branch}/commits`;
     LOGGER.silly(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -187,7 +187,7 @@ export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async 
   try {
     LOGGER.silly('fetchReposTreeAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
+    const url = `${process.env.KYSO_API}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
     LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -213,7 +213,7 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
   try {
     LOGGER.silly('deleteReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    const url = `${process.env.KYSO_API}/reports/${reportId}`;
     LOGGER.silly(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -240,7 +240,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   try {
     LOGGER.silly('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/pinned`;
+    const url = `${process.env.KYSO_API}/pinned`;
     LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -271,7 +271,7 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     if (reports.tree) {
       hash = reports.tree[0].hash;
     }
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+    const url = `${process.env.KYSO_API}/reports/${payload.reportId}/file/${hash}`;
     LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -298,7 +298,7 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
   try {
     LOGGER.silly('toggleUserPinReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-pin`;
+    const url = `${process.env.KYSO_API}/reports/${reportId}/user-pin`;
     LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
@@ -329,7 +329,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
   try {
     LOGGER.silly('toggleUserStarReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-star`;
+    const url = `${process.env.KYSO_API}/reports/${reportId}/user-star`;
     LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
@@ -366,7 +366,7 @@ export const createKysoReportAction = createAsyncThunk(
     try {
       LOGGER.trace(`createKysoReportAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/kyso`;
+      const url = `${process.env.KYSO_API}/reports/kyso`;
       LOGGER.silly(`createKysoReportAction: ${printAuthenticated(auth)} - POST ${url}`);
 
       const formData: FormData = new FormData();
@@ -431,7 +431,7 @@ export const importGithubRepositoryAction = createAsyncThunk('reports/importGith
   try {
     LOGGER.trace(`importGithubRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${repositoryName}`;
+    const url = `${process.env.KYSO_API}/reports/github/${repositoryName}`;
     LOGGER.silly(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
       url,
@@ -462,7 +462,7 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
   try {
     LOGGER.trace(`pullReportAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
+    const url = `${process.env.KYSO_API}/reports/${payload.reportName}/${payload.teamName}/pull`;
     LOGGER.silly(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

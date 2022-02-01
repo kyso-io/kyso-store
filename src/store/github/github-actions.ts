@@ -22,7 +22,7 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
         ...payload?.filter,
       });
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github?${qs.toString()}`;
+      const url = `${process.env.KYSO_API}/repos/github?${qs.toString()}`;
       LOGGER.silly(`fetchGithubRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -50,7 +50,7 @@ export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', 
   try {
     LOGGER.silly('fetchGithubUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user`;
+    const url = `${process.env.KYSO_API}/repos/github/user`;
     LOGGER.silly(`fetchGithubUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -77,7 +77,7 @@ export const fetchGithubRepositoryAction = createAsyncThunk('github/fetchGithubR
   try {
     LOGGER.silly('fetchGithubRepositoryAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${repositoryName}`;
+    const url = `${process.env.KYSO_API}/repos/github/${repositoryName}`;
     LOGGER.silly(`fetchGithubRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -106,7 +106,7 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
     try {
       LOGGER.silly('fetchGithubRepositoryTreeAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
+      const url = `${process.env.KYSO_API}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
       LOGGER.silly(`fetchGithubRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -134,7 +134,7 @@ export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetch
   try {
     LOGGER.silly('fetchGithubUserByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/access-token/${accessToken}`;
+    const url = `${process.env.KYSO_API}/repos/github/user/access-token/${accessToken}`;
     LOGGER.silly(`fetchGithubUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -161,7 +161,7 @@ export const fetchGithubUserEmailsByAccessTokenAction = createAsyncThunk('github
   try {
     LOGGER.silly('fetchGithubUserEmailsByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/emails/access-token/${accessToken}`;
+    const url = `${process.env.KYSO_API}/repos/github/user/emails/access-token/${accessToken}`;
     LOGGER.silly(`fetchGithubUserEmailsByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubEmail[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

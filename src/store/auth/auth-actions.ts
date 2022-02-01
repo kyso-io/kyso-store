@@ -9,7 +9,7 @@ import { setError } from '../error/error-slice';
 export const loginAction = createAsyncThunk('auth/login', async (credentials: { username: string; password: string; provider: string }, { dispatch }): Promise<string | null> => {
   try {
     LOGGER.silly('loginAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
+    const url = `${process.env.KYSO_API}/auth/login`;
     LOGGER.silly(`loginAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
     if (axiosResponse?.data?.data) {
@@ -31,7 +31,7 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: { 
 export const signUpAction = createAsyncThunk('auth/signup', async (payload: CreateUserRequestDTO, { dispatch }): Promise<User | null> => {
   try {
     LOGGER.silly('signUpAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/sign-up`;
+    const url = `${process.env.KYSO_API}/auth/sign-up`;
     LOGGER.silly(`signUpAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, payload);
     if (axiosResponse?.data?.data) {
