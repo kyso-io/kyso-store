@@ -49,4 +49,9 @@ export const selectActiveTeam = (state: RootState) => {
   return state.teams.entities![state.teams.activeId];
 };
 
+export const selectTeamByFilter = (state: RootState, filter: { [key: string]: string }) => {
+  if (state.teams.entities!.length === 0) return null;
+  return Object.values(state.teams.entities!).find((team) => team[filter.key] === filter[filter.key])
+};
+
 export default teamsSlice.reducer;

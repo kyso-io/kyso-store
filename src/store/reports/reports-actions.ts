@@ -183,28 +183,28 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
   }
 });
 
-export const fetchReposTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<string | null> => {
+export const fetchReportsTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<string | null> => {
   try {
-    LOGGER.silly('fetchReposTreeAction invoked');
+    LOGGER.silly('fetchReportsTreeAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
-    LOGGER.silly(`fetchReposTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
+    LOGGER.silly(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReposTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      LOGGER.silly(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchReposTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      LOGGER.silly(`fetchReportsTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchReposTreeAction: Response didn't have data, returning null`);
+      LOGGER.silly(`fetchReportsTreeAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`fetchReposTreeAction: Error processing action: ${e.toString()}`);
+    LOGGER.error(`fetchReportsTreeAction: Error processing action: ${e.toString()}`);
     return null;
   }
 });

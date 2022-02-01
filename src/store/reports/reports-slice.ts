@@ -11,7 +11,7 @@ import {
   fetchFileContentAction,
   fetchReportAction,
   fetchReportsAction,
-  fetchReposTreeAction,
+  fetchReportsTreeAction,
   toggleUserPinReportAction,
   updateReportAction,
 } from './reports-actions';
@@ -114,7 +114,7 @@ const reportsSlice = createSlice({
     builder.addCase(fetchCommitsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
       state.commits = action.payload!;
     });
-    builder.addCase(fetchReposTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
+    builder.addCase(fetchReportsTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;
     });
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
