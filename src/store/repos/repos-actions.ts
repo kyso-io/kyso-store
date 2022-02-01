@@ -11,7 +11,7 @@ export const fetchRepositoriesAction = createAsyncThunk('repos/fetchRepositories
   try {
     LOGGER.silly('fetchRepositoriesAction invoked');
     const { auth, repos } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}?page=${repos.page}&per_page=${repos.limit}`;
+    let url = `${process.env.KYSO_API}/repos/${repos.provider}?page=${repos.page}&per_page=${repos.limit}`;
     if (repos?.searchQuery && repos.searchQuery.length > 0) {
       url += `&filter=${repos.searchQuery}`;
     }
@@ -41,7 +41,7 @@ export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepository
   try {
     LOGGER.silly('fetchRepositoryUserAction invoked');
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user`;
+    const url = `${process.env.KYSO_API}/repos/${repos.provider}/user`;
     LOGGER.silly(`fetchRepositoryUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -68,7 +68,7 @@ export const fetchRepositoryAction = createAsyncThunk('repos/fetchRepository', a
   try {
     LOGGER.silly(`fetchRepositoryAction: repoName ${repoName}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/${repoName}`;
+    const url = `${process.env.KYSO_API}/repos/${repos.provider}/${repoName}`;
     LOGGER.silly(`fetchRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -95,7 +95,7 @@ export const fetchRepositoryTreeAction = createAsyncThunk('repos/fetchRepository
   try {
     LOGGER.silly(`fetchRepositoryTreeAction: repoName ${payload.repoName} branch ${payload.branch}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/${payload.repoName}/${payload.branch}/tree`;
+    const url = `${process.env.KYSO_API}/repos/${repos.provider}/${payload.repoName}/${payload.branch}/tree`;
     LOGGER.silly(`fetchRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -122,7 +122,7 @@ export const fetchUserByAccessTokenAction = createAsyncThunk('repos/fetchUserByA
   try {
     LOGGER.silly(`fetchUserByAccessTokenAction: accessToken ${accessToken}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/${accessToken}`;
+    const url = `${process.env.KYSO_API}/repos/${repos.provider}/user/${accessToken}`;
     LOGGER.silly(`fetchUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -149,7 +149,7 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
   try {
     LOGGER.silly(`fetchUserEmailsByAccessToken: accessToken ${accessToken}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/emails/${accessToken}`;
+    const url = `${process.env.KYSO_API}/repos/${repos.provider}/user/emails/${accessToken}`;
     LOGGER.silly(`fetchUserEmailsByAccessToken: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

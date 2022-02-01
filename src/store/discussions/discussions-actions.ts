@@ -18,7 +18,7 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     const { user, auth, ...state } = getState() as RootState;
     const team = selectActiveTeam(state as RootState)
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team ? `team_id=${team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    const url = `${process.env.KYSO_API}/discussions?${team ? `team_id=${team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
     LOGGER.silly(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -49,7 +49,7 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     LOGGER.silly('fetchTeamDiscussions invoked');
     const { auth } = getState() as RootState;
     
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    const url = `${process.env.KYSO_API}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
     LOGGER.silly(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
     
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
@@ -82,7 +82,7 @@ export const fetchDiscussionById = createAsyncThunk(
   async (payload: { discussionId: string }, { getState, dispatch }): Promise<Discussion | null> => {
     try {
       LOGGER.silly('fetchDiscussionById invoked');
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
+      const url = `${process.env.KYSO_API}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
       LOGGER.silly(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url);
@@ -114,7 +114,7 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
   try {
     LOGGER.silly('fetchDiscussionComments invoked');
     
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
+    const url = `${process.env.KYSO_API}/discussions/${payload.discussionId}/comments`;
     const { auth } = getState() as RootState;
     
     LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
@@ -144,7 +144,7 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
 export const createDiscussion = createAsyncThunk('discussions/createDiscussion', async (payload: CreateDiscussionRequestDTO, { getState, dispatch }): Promise<Discussion | null> => {
   try {
     LOGGER.silly('createDiscussion invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions`;
+    const url = `${process.env.KYSO_API}/discussions`;
     const { auth } = getState() as RootState;
     LOGGER.silly(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload);
@@ -171,7 +171,7 @@ export const updateDiscussion = createAsyncThunk(
   async (payload: { discussionId: string; data: UpdateDiscussionRequestDTO }, { getState, dispatch }): Promise<Discussion | null> => {
     try {
       LOGGER.silly('updateDiscussion invoked');
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
+      const url = `${process.env.KYSO_API}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
       LOGGER.silly(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data);
@@ -196,7 +196,7 @@ export const updateDiscussion = createAsyncThunk(
 export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion', async (discussionId: string, { getState, dispatch }): Promise<Discussion | null> => {
   try {
     LOGGER.silly('deleteDiscussion invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${discussionId}`;
+    const url = `${process.env.KYSO_API}/discussions/${discussionId}`;
     const { auth } = getState() as RootState;
     LOGGER.silly(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url);
