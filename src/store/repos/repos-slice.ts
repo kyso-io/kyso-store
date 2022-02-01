@@ -1,12 +1,12 @@
-import { LoginProviderEnum, Repository, ActionWithPayload } from '@kyso-io/kyso-model';
+import { ActionWithPayload, GithubRepository, LoginProviderEnum } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchRepoAction, fetchReposAction, fetchRepoTreeAction } from './repos-actions';
+import { fetchRepositoriesAction, fetchRepositoryAction, fetchRepositoryTreeAction } from './repos-actions';
 
 export type ReposState = {
-  list: Repository[];
+  list: GithubRepository[];
   limit: number;
   page: number;
-  active: Repository | null;
+  active: GithubRepository | null;
   searchQuery: string | null;
   provider: LoginProviderEnum;
   branches: any[];
@@ -62,13 +62,13 @@ const reposSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchReposAction.fulfilled, (state: ReposState, action: ActionWithPayload<Repository[]>) => {
+    builder.addCase(fetchRepositoriesAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository[]>) => {
       state.list = action.payload!;
     });
-    builder.addCase(fetchRepoAction.fulfilled, (state: ReposState, action: ActionWithPayload<Repository>) => {
+    builder.addCase(fetchRepositoryAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository>) => {
       state.active = action.payload!;
     });
-    builder.addCase(fetchRepoTreeAction.rejected, (state: ReposState, action: ActionWithPayload<any>) => {
+    builder.addCase(fetchRepositoryTreeAction.rejected, (state: ReposState, action: ActionWithPayload<any>) => {
       state.tree = action.payload;
     });
   },
