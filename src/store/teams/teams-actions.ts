@@ -12,7 +12,7 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (_, {
   try {
     LOGGER.silly('fetchTeamsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
     LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -39,7 +39,7 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
   try {
     LOGGER.silly(`fetchTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${teamId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
     LOGGER.silly(`fetchTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -66,7 +66,7 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
   try {
     LOGGER.silly(`createTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
     LOGGER.silly(`createTeamAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, team, {
       headers: buildAuthHeaders(auth),
@@ -93,7 +93,7 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
   try {
     LOGGER.silly(`deleteTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${teamId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
     LOGGER.silly(`deleteTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -120,7 +120,7 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
   try {
     LOGGER.silly(`fetchTeamMembers invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${teamId}/members`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/members`;
     LOGGER.silly(`fetchTeamMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -147,7 +147,7 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
   try {
     LOGGER.silly(`checkMemberBelongsToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
     LOGGER.silly(`checkMemberBelongsToTheTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -170,7 +170,7 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
   try {
     LOGGER.silly(`addMemberToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
     LOGGER.silly(`addMemberToTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
       headers: buildAuthHeaders(auth),
@@ -193,7 +193,7 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
   try {
     LOGGER.silly(`deleteMemberFromTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
     LOGGER.silly(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
       headers: buildAuthHeaders(auth),
@@ -216,7 +216,7 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
   try {
     LOGGER.silly(`updateTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${payload.teamId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}`;
     LOGGER.silly(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
@@ -243,7 +243,7 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
   try {
     LOGGER.silly(`checkTeamNameIsUniqueAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/check-name/${teamName}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/check-name/${teamName}`;
     LOGGER.silly(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -266,7 +266,7 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
   try {
     LOGGER.silly(`fetchTeamReportsAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${teamId}/reports`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/reports`;
     LOGGER.silly(`fetchTeamReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -295,7 +295,7 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
     try {
       LOGGER.silly(`updateRoleToMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/teams/${payload.teamId}/members-roles`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles`;
       LOGGER.silly(`updateRoleToMembersOfTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload.data, {
         headers: buildAuthHeaders(auth),
@@ -325,7 +325,7 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
     try {
       LOGGER.silly(`deleteRoleOfMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
       LOGGER.silly(`deleteRoleOfMembersOfTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -353,7 +353,7 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
   try {
     LOGGER.silly(`updateTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${payload.teamId}/profile-picture`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/profile-picture`;
     LOGGER.silly(`updateTeamProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', payload.file);
@@ -382,7 +382,7 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
   try {
     LOGGER.silly(`deleteTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/teams/${teamId}/profile-picture`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/profile-picture`;
     LOGGER.silly(`deleteTeamProfilePictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),

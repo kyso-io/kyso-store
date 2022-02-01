@@ -12,7 +12,7 @@ export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (_, { 
   try {
     LOGGER.silly('fetchUsersAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users`;
     LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -39,7 +39,7 @@ export const createUserAction = createAsyncThunk('user/createUser', async (user:
   try {
     LOGGER.silly('createUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users`;
     LOGGER.silly(`createUserAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, user, {
       headers: buildAuthHeaders(auth),
@@ -66,7 +66,7 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
   try {
     LOGGER.silly('fetchUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users/${userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
     LOGGER.silly(`fetchUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -93,7 +93,7 @@ export const updateUserAction = createAsyncThunk('user/updateUser', async (paylo
   try {
     LOGGER.silly('updateUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users/${payload.userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
     LOGGER.silly(`updateUserAction: ${printAuthenticated(auth)} - PUT ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.put(url, payload.user, {
       headers: buildAuthHeaders(auth),
@@ -120,7 +120,7 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
   try {
     LOGGER.silly('deleteUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users/${userId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
     LOGGER.silly(`deleteUserAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -147,7 +147,7 @@ export const addAccountToUser = createAsyncThunk('user/addAccountToUser', async 
   try {
     LOGGER.silly('addAccountToUser invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users/${payload.userId}/accounts`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}/accounts`;
     LOGGER.silly(`addAccountToUser: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.patch(url, payload.userAccount, {
       headers: buildAuthHeaders(auth),
@@ -176,7 +176,7 @@ export const removeAccountFromUser = createAsyncThunk(
     try {
       LOGGER.silly('removeAccountFromUser invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
       LOGGER.silly(`removeAccountFromUser: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -204,7 +204,7 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
   try {
     LOGGER.silly('updateUserProfilePictureAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/users/profile-picture`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/profile-picture`;
     LOGGER.silly(`updateUserProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', file);
@@ -233,7 +233,7 @@ export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { ge
   try {
     LOGGER.silly('refreshUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/user`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/user`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });

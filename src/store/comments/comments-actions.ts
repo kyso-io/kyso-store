@@ -14,7 +14,7 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
   try {
     LOGGER.silly('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/reports/${reportId}/comments`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/comments`;
     LOGGER.silly(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -41,7 +41,7 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
   try {
     LOGGER.silly('fetchCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/comments/${commentId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
     LOGGER.silly(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -68,7 +68,7 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
   try {
     LOGGER.silly('createCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/comments`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments`;
     LOGGER.silly(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
@@ -93,7 +93,7 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
   try {
     LOGGER.silly('updateCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/comments/${payload.commentId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.commentId}`;
     LOGGER.silly(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.put(url, payload.comment, {
       headers: buildAuthHeaders(auth),
@@ -120,7 +120,7 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
   try {
     LOGGER.trace('deleteCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/comments/${commentId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
     LOGGER.silly(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {

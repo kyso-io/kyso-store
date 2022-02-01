@@ -12,7 +12,7 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
   try {
     LOGGER.silly('fetchOrganizationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/organizations/${organizationId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
     LOGGER.silly(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -39,7 +39,7 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
   try {
     LOGGER.silly('deleteOrganizationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/organizations/${organizationId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
     LOGGER.silly(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -64,7 +64,7 @@ export const updateOrganizationAction = createAsyncThunk(
     try {
       LOGGER.silly('updateOrganizationAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/organizations/${payload.organizationId}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}`;
       LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.put(url, payload.organization, {
         headers: buildAuthHeaders(auth),
@@ -92,7 +92,7 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
   try {
     LOGGER.silly('fetchOrganizationMembers invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/organizations/${organizationId}/members`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}/members`;
     LOGGER.silly(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -119,7 +119,7 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
   try {
     LOGGER.silly('createOrganization invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/organizations`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations`;
     LOGGER.silly(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, organization, {
       headers: buildAuthHeaders(auth),
@@ -148,7 +148,7 @@ export const addUserToOrganizationAction = createAsyncThunk(
     try {
       LOGGER.silly('addUserToOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/organizations/${payload.organizationId}/members/${payload.userId}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
       LOGGER.silly(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, {
         headers: buildAuthHeaders(auth),
@@ -178,7 +178,7 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
     try {
       LOGGER.silly('removeUserFromOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/organizations/${payload.organizationId}/members/${payload.userId}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
       LOGGER.silly(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -208,7 +208,7 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
     try {
       LOGGER.silly('updateMembersRolesToOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/organizations/${payload.organizationId}/members-roles`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members-roles`;
       LOGGER.silly(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, payload.data, {
         headers: buildAuthHeaders(auth),
@@ -238,7 +238,7 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
     try {
       LOGGER.silly('deleteRoleToUserFromOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
       LOGGER.silly(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),

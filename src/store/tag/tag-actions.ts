@@ -12,7 +12,7 @@ export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (_, { ge
   try {
     LOGGER.silly('fetchTagsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags`;
     LOGGER.silly(`fetchTagsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -39,7 +39,7 @@ export const createTagAction = createAsyncThunk('tags/createTag', async (tag: Ta
   try {
     LOGGER.silly('createTagAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags`;
     LOGGER.silly(`createTagAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.post(url, tag, {
       headers: buildAuthHeaders(auth),
@@ -66,7 +66,7 @@ export const fetchTagAction = createAsyncThunk('tags/fetchTags', async (tagId: s
   try {
     LOGGER.silly('fetchTagsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags/${tagId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${tagId}`;
     LOGGER.silly(`fetchTagsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -93,7 +93,7 @@ export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (t
   try {
     LOGGER.silly('checkTagNameAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags/check/${tagName}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/check/${tagName}`;
     LOGGER.silly(`checkTagNameAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -116,7 +116,7 @@ export const updateTagActions = createAsyncThunk('tags/updateTag', async (payloa
   try {
     LOGGER.silly('updateTagActions invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags/${payload.tagId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}`;
     LOGGER.silly(`updateTagActions: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.patch(url, payload.tag, {
       headers: buildAuthHeaders(auth),
@@ -143,7 +143,7 @@ export const deleteTagAction = createAsyncThunk('tags/deleteTag', async (tagId: 
   try {
     LOGGER.silly('deleteTagAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/tags/${tagId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${tagId}`;
     LOGGER.silly(`deleteTagAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -172,7 +172,7 @@ export const assignTagToEntityAction = createAsyncThunk(
     try {
       LOGGER.silly('assignTagToEntityAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/tags/${payload.tagId}/assign/${payload.entityId}/${payload.entityEnum}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}/assign/${payload.entityId}/${payload.entityEnum}`;
       LOGGER.silly(`assignTagToEntityAction: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.post(url, null, {
         headers: buildAuthHeaders(auth),
@@ -202,7 +202,7 @@ export const unassignTagFromEntityAction = createAsyncThunk(
     try {
       LOGGER.silly('unassignTagFromEntityAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.KYSO_API}/tags/${payload.tagId}/unassign/${payload.entityId}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}/unassign/${payload.entityId}`;
       LOGGER.silly(`unassignTagFromEntityAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
