@@ -1,4 +1,4 @@
-import { CreateReportDTO, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { CreateReportDTO, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import { AxiosResponse } from 'axios';
@@ -183,31 +183,34 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
   }
 });
 
-export const fetchReportsTreeAction = createAsyncThunk('reports/fetchTree', async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<string | null> => {
-  try {
-    LOGGER.silly('fetchReportsTreeAction invoked');
-    const { auth } = getState() as RootState;
-    const url = `${process.env.KYSO_API}/reports/${payload.reportId}/${payload.branch}/tree/${payload.filePath}`;
-    LOGGER.silly(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+export const fetchReportsTreeAction = createAsyncThunk(
+  'reports/fetchReportsTree',
+  async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<GithubFileHash[]> => {
+    try {
+      LOGGER.silly('fetchReportsTreeAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.KYSO_API}/reports/${payload.reportId}/${payload.branch}/tree?path=${payload.filePath}`;
+      LOGGER.silly(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        LOGGER.silly(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        LOGGER.silly(`fetchReportsTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        LOGGER.silly(`fetchReportsTreeAction: Response didn't have data, returning null`);
+        return [];
+      }
+    } catch (e: any) {
+      LOGGER.error(`fetchReportsTreeAction: Error processing action: ${e.toString()}`);
+      return [];
     }
-    if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchReportsTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      LOGGER.silly(`fetchReportsTreeAction: Response didn't have data, returning null`);
-      return null;
-    }
-  } catch (e: any) {
-    LOGGER.error(`fetchReportsTreeAction: Error processing action: ${e.toString()}`);
-    return null;
   }
-});
+);
 
 export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
   try {
@@ -263,7 +266,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   }
 });
 
-export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<any> => {
+export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     LOGGER.silly('fetchFileContentAction invoked');
     const { auth, reports } = getState() as RootState;
@@ -273,15 +276,11 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     }
     const url = `${process.env.KYSO_API}/reports/${payload.reportId}/file/${hash}`;
     LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
-    if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchFileContentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+    if (axiosResponse?.data) {
+      LOGGER.silly(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
       return axiosResponse.data;
     } else {
       LOGGER.silly(`fetchFileContentAction: Response didn't have data, returning null`);
