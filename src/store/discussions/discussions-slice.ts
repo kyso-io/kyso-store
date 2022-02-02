@@ -34,7 +34,6 @@ const discussionsSlice = createSlice({
 
     builder.addCase(fetchDiscussionsOfATeam.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
       state.list = action.payload!;
-      console.log(state)
     });
   },
 });
