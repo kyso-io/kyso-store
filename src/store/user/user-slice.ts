@@ -2,6 +2,7 @@ import { User, ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { refreshUserAction, updateUserAction, fetchUsersAction } from './user-actions';
+import listToKeyVal from '../../helpers/list-to-key-val';
 
 export type UserState = {
   user: UserDTO | null;
@@ -36,10 +37,12 @@ const userSlice = createSlice({
     });
 
     builder.addCase(fetchUsersAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO[]>) => {
+      if (!action.payload) return;
+      
       state.entities = {
         ...state.entities,
-        ...action.payload,
-      }
+        ...listToKeyVal(action.payload),
+      };
     });
   },
 });
