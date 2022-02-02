@@ -1,5 +1,6 @@
 import { Discussion, ActionWithPayload } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { fetchDiscussionsOfATeam } from './discussions-actions';
 import { fetchDiscussionsAction } from './discussions-actions';
 
 export type DiscussionsState = {
@@ -29,6 +30,11 @@ const discussionsSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(fetchDiscussionsAction.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
       state.list = action.payload!;
+    });
+
+    builder.addCase(fetchDiscussionsOfATeam.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
+      state.list = action.payload!;
+      console.log(state)
     });
   },
 });
