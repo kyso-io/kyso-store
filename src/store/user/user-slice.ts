@@ -1,8 +1,7 @@
 import { User, ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUsersAction } from '..';
 import { fetchRelationsAction } from '../relations/relations-actions';
-import { refreshUserAction, updateUserAction } from './user-actions';
+import { refreshUserAction, updateUserAction, fetchUsersAction } from './user-actions';
 
 export type UserState = {
   user: UserDTO | null;
