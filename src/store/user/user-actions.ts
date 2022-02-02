@@ -1,4 +1,4 @@
-import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount } from '@kyso-io/kyso-model';
+import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount, UserDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -8,13 +8,31 @@ import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (_, { dispatch, getState }): Promise<User[]> => {
+export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (payload: { userIds: string[], page: number, per_page: number, sort: string} , { dispatch, getState }): Promise<UserDTO[]> => {
   try {
     LOGGER.silly('fetchUsersAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users`;
+
+    if(!payload.page) {
+      payload.page = 1
+    }
+
+    if(!payload.per_page) {
+      payload.per_page = 20
+    }
+
+    if(!payload.sort) {
+      payload.sort = "desc"
+    }
+    
+    let userIdsQueryString = ""
+    if(payload.userIds) {
+      userIdsQueryString = payload.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + "&" + last )
+    }
+    
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users?page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}${userIdsQueryString}`;
     LOGGER.silly(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User[]>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -35,13 +53,13 @@ export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (_, { 
   }
 });
 
-export const createUserAction = createAsyncThunk('user/createUser', async (user: User, { dispatch, getState }): Promise<User | null> => {
+export const createUserAction = createAsyncThunk('user/createUser', async (user: User, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('createUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users`;
     LOGGER.silly(`createUserAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, user, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.post(url, user, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -62,13 +80,13 @@ export const createUserAction = createAsyncThunk('user/createUser', async (user:
   }
 });
 
-export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId: string, { dispatch, getState }): Promise<User | null> => {
+export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId: string, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('fetchUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
     LOGGER.silly(`fetchUserAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -89,13 +107,13 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
   }
 });
 
-export const updateUserAction = createAsyncThunk('user/updateUser', async (payload: { userId: string; user: UpdateUserRequestDTO }, { dispatch, getState }): Promise<User | null> => {
+export const updateUserAction = createAsyncThunk('user/updateUser', async (payload: { userId: string; user: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('updateUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
     LOGGER.silly(`updateUserAction: ${printAuthenticated(auth)} - PUT ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.put(url, payload.user, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.put(url, payload.user, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -116,13 +134,13 @@ export const updateUserAction = createAsyncThunk('user/updateUser', async (paylo
   }
 });
 
-export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userId: string, { dispatch, getState }): Promise<User | null> => {
+export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userId: string, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('deleteUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
     LOGGER.silly(`deleteUserAction: ${printAuthenticated(auth)} - DELETE ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.delete(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -200,7 +218,7 @@ export const removeAccountFromUser = createAsyncThunk(
   }
 );
 
-export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (file: File, { dispatch, getState }): Promise<User | null> => {
+export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (file: File, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('updateUserProfilePictureAction invoked');
     const { auth } = getState() as RootState;
@@ -208,7 +226,7 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
     LOGGER.silly(`updateUserProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', file);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, formData, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.post(url, formData, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
@@ -229,12 +247,12 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
   }
 });
 
-export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { getState, dispatch }): Promise<User | null> => {
+export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { getState, dispatch }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('refreshUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/user`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.get(url, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
