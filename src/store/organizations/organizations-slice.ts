@@ -54,7 +54,6 @@ export const selectOrganizationById = (state: RootState, id: string) => {
 
 export const selectOrganizationBySlugifiedName = (state: RootState, name: string) => {
   return Object.values(state.organizations.entities).find((org: { name: string }) => {
-    console.log(name, org.name, slugify(org.name))
     return slugify(org.name) === name
   });
 };

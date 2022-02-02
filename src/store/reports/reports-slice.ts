@@ -12,6 +12,7 @@ import {
   fetchReportAction,
   fetchReportsAction,
   fetchReportsTreeAction,
+  importGithubRepositoryAction,
   toggleUserPinReportAction,
   updateReportAction,
 } from './reports-actions';
@@ -117,8 +118,18 @@ const reportsSlice = createSlice({
     builder.addCase(fetchReportsTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;
     });
-    builder.addCase(deleteReportAction.fulfilled, (state: ReportsState) => {
-      state.activeId = null;
+    builder.addCase(deleteReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO | null>) => {
+      if (action?.payload) {
+        const entities = { ...state.entities };
+        // eslint-disable-next-line no-prototype-builtins
+        if (entities.hasOwnProperty(action.payload.id!)) {
+          delete entities[action.payload.id!];
+        }
+        if (state.activeId === action.payload.id!) {
+          state.activeId = null;
+        }
+        state.entities = entities;
+      }
     });
     builder.addCase(fetchReportsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO[]>) => {
       if (!action.payload) return;
@@ -137,6 +148,13 @@ const reportsSlice = createSlice({
         ...state.entities,
         ...action.payload?.report,
       };
+    });
+    builder.addCase(importGithubRepositoryAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO | null>) => {
+      const entities = { ...state.entities };
+      if (action?.payload) {
+        entities[action.payload.id!] = action.payload;
+      }
+      state.entities = entities;
     });
   },
 });
