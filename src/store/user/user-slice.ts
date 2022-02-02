@@ -33,7 +33,7 @@ const userSlice = createSlice({
         ...state.entities,
         ...action.payload?.user,
       }
-    });    
+    });
   },
 });
 
