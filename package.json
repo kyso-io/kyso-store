@@ -36,7 +36,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@kyso-io/kyso-model": "^0.0.53",
+    "@kyso-io/kyso-model": "^0.0.55",
     "@reduxjs/toolkit": "^1.7.1",
     "adm-zip": "^0.5.9",
     "axios": "^0.24.0",
