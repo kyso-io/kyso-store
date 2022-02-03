@@ -107,13 +107,13 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
   }
 });
 
-export const updateUserAction = createAsyncThunk('user/updateUser', async (payload: { userId: string; user: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
+export const updateUserAction = createAsyncThunk('user/updateUser', async (payload: { userId: string; updateUserRequestDto: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     LOGGER.silly('updateUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
-    LOGGER.silly(`updateUserAction: ${printAuthenticated(auth)} - PUT ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.put(url, payload.user, {
+    LOGGER.silly(`updateUserAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.patch(url, payload.updateUserRequestDto, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {

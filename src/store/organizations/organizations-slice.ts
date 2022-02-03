@@ -1,8 +1,9 @@
+import { ActionWithPayload, Organization, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { Relations, Organization, ActionWithPayload } from '@kyso-io/kyso-model';
-import { fetchRelationsAction } from '../relations/relations-actions'
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
+import { fetchRelationsAction } from '../relations/relations-actions';
+import { fetchOrganizationAction } from './organizations-actions';
 
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -20,23 +21,25 @@ const organizationsSlice = createSlice({
   name: 'organization',
   initialState,
   reducers: {
-      setOrganization: (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
-        state.entities = {
-          ...state.entities,
-          [action.payload!.id as string]: action.payload
-        };
-        state.activeId = action.payload!.id
-      },
+    setOrganization: (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload,
+      };
+      state.activeId = action.payload!.id;
+    },
   },
   extraReducers: builder => {
+    builder.addCase(fetchOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
+      state.activeId = action.payload!.id;
+    });
     builder.addCase(fetchRelationsAction, (state: OrganizationsState, action: ActionWithPayload<Relations>) => {
       state.entities = {
         ...state.entities,
         ...action.payload?.organization,
-      }
-    });    
+      };
+    });
   },
-
 });
 
 export const { setOrganization } = organizationsSlice.actions;
@@ -54,7 +57,7 @@ export const selectOrganizationById = (state: RootState, id: string) => {
 
 export const selectOrganizationBySlugifiedName = (state: RootState, name: string) => {
   return Object.values(state.organizations.entities).find((org: { name: string }) => {
-    return slugify(org.name) === name
+    return slugify(org.name) === name;
   });
 };
 

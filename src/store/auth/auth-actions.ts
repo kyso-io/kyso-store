@@ -1,8 +1,10 @@
 import { CreateUserRequestDTO, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { refreshUserAction, setTokenAuthAction } from '..';
+import { refreshUserAction, RootState, setTokenAuthAction } from '..';
 import { LOGGER } from '../..';
+import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
@@ -43,6 +45,31 @@ export const signUpAction = createAsyncThunk('auth/signup', async (payload: Crea
     }
   } catch (e: any) {
     LOGGER.error(`signUpAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_, { dispatch, getState }): Promise<string | null> => {
+  try {
+    LOGGER.silly('refreshTokenAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`;
+    LOGGER.silly(`refreshTokenAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`refreshTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      dispatch(setTokenAuthAction(axiosResponse.data.data));
+      dispatch(refreshUserAction());
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`refreshTokenAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`refreshTokenAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }

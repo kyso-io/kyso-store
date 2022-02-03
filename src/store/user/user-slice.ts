@@ -1,8 +1,8 @@
-import { User, ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model';
+import { ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchRelationsAction } from '../relations/relations-actions';
-import { refreshUserAction, updateUserAction, fetchUsersAction } from './user-actions';
 import listToKeyVal from '../../helpers/list-to-key-val';
+import { fetchRelationsAction } from '../relations/relations-actions';
+import { fetchUsersAction, refreshUserAction, updateUserAction } from './user-actions';
 
 export type UserState = {
   user: UserDTO | null;
@@ -11,7 +11,7 @@ export type UserState = {
 
 const initialState: UserState = {
   user: null,
-  entities: {}
+  entities: {},
 };
 
 const userSlice = createSlice({
@@ -24,7 +24,8 @@ const userSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(refreshUserAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO>) => {
-      state.user = action.payload;
+      const updatedUser: any = { ...state.user, ...action.payload };
+      state.user = updatedUser;
     });
     builder.addCase(updateUserAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO>) => {
       state.user = action.payload;
@@ -33,12 +34,12 @@ const userSlice = createSlice({
       state.entities = {
         ...state.entities,
         ...action.payload?.user,
-      }
+      };
     });
 
     builder.addCase(fetchUsersAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO[]>) => {
       if (!action.payload) return;
-      
+
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload),

@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -60,13 +60,13 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
 
 export const updateOrganizationAction = createAsyncThunk(
   'organizations/updateOrganization',
-  async (payload: { organizationId: string; organization: Organization }, { getState, dispatch }): Promise<Organization | null> => {
+  async (payload: { organizationId: string; updateOrganizationDto: UpdateOrganizationDTO }, { getState, dispatch }): Promise<Organization | null> => {
     try {
       LOGGER.silly('updateOrganizationAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}`;
-      LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PUT ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.put(url, payload.organization, {
+      LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, payload.updateOrganizationDto, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
@@ -261,3 +261,32 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
     }
   }
 );
+
+export const updateOrganizationPictureAction = createAsyncThunk('user/updateOrganizationProfilePicture', async (args: { organizationId: string; file: File }, { dispatch, getState }): Promise<Organization | null> => {
+  try {
+    LOGGER.silly('updateOrganizationPictureAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/profile-picture`;
+    LOGGER.silly(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const formData = new FormData();
+    formData.append('file', args.file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, formData, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`updateOrganizationPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`updateOrganizationPictureAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
