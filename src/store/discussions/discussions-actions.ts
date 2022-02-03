@@ -85,7 +85,9 @@ export const fetchDiscussionById = createAsyncThunk(
       const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
       LOGGER.silly(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
       
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`fetchDiscussionById: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -147,7 +149,9 @@ export const createDiscussion = createAsyncThunk('discussions/createDiscussion',
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions`;
     const { auth } = getState() as RootState;
     LOGGER.silly(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload, {
+      headers: buildAuthHeaders(auth),
+    });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`createDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -174,7 +178,9 @@ export const updateDiscussion = createAsyncThunk(
       const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
       LOGGER.silly(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data, {
+        headers: buildAuthHeaders(auth),
+      });
       if (axiosResponse?.data?.relations) {
         LOGGER.silly(`updateDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -199,7 +205,9 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${discussionId}`;
     const { auth } = getState() as RootState;
     LOGGER.silly(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url, {
+      headers: buildAuthHeaders(auth),
+    });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`deleteDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
