@@ -271,9 +271,11 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     LOGGER.silly('fetchFileContentAction invoked');
     const { auth, reports } = getState() as RootState;
     let hash = payload.hash;
-    if (reports.tree) {
-      hash = reports.tree[0].hash;
-    }
+
+    // what is this, I have no idea?
+    // if (reports.tree) {
+    //   hash = reports.tree[0].hash;
+    // }
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
     LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
