@@ -1,5 +1,6 @@
 import { Discussion, ActionWithPayload } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { fetchDiscussionById } from '..';
 import { fetchDiscussionsOfATeam } from './discussions-actions';
 import { fetchDiscussionsAction } from './discussions-actions';
 
@@ -34,6 +35,10 @@ const discussionsSlice = createSlice({
 
     builder.addCase(fetchDiscussionsOfATeam.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
       state.list = action.payload!;
+    });
+
+    builder.addCase(fetchDiscussionById.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion>) => {
+      state.list = [action.payload!];
     });
   },
 });
