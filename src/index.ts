@@ -10,5 +10,6 @@ dotenv.config({
 });
 
 console.log(__dirname)
+console.log(process.env.NEXT_PUBLIC_CONFIG_FILE_PATH)
 
 export * from './store';
