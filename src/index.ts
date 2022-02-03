@@ -9,4 +9,6 @@ dotenv.config({
   path: `${__dirname}/../.env`,
 });
 
+console.log(__dirname)
+
 export * from './store';
