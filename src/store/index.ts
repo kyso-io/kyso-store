@@ -4,10 +4,11 @@ import comments from './comments/comments-slice';
 import discussions from './discussions/discussions-slice';
 import error from './error/error-slice';
 import githubRepositories from './github/github-repositories-slice';
+import invitations from './invitations/invitations-slice';
 import organizations from './organizations/organizations-slice';
 import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
-import tag from './tag/tag-slice';
+import tags from './tags/tags-slice';
 import teams from './teams/teams-slice';
 import user from './user/user-slice';
 
@@ -17,10 +18,11 @@ export const reducer = combineReducers({
   discussions,
   error,
   githubRepositories,
+  invitations,
   organizations,
   reports,
   repos,
-  tag,
+  tags,
   teams,
   user,
 });
@@ -48,6 +50,7 @@ export * from './discussions/discussions-actions';
 export * from './error/error-slice';
 export * from './github/github-actions';
 export * from './github/github-repositories-slice';
+export * from './invitations/invitations-slice';
 export * from './organizations/organizations-actions';
 export * from './organizations/organizations-slice';
 export * from './relations/relations-actions';
@@ -55,7 +58,7 @@ export * from './reports/reports-actions';
 export * from './reports/reports-slice';
 export * from './repos/repos-actions';
 export * from './repos/repos-slice';
-export * from './tag/tag-actions';
+export * from './tags/tags-actions';
 export * from './teams/teams-actions';
 export * from './teams/teams-slice';
 export * from './user/user-actions';

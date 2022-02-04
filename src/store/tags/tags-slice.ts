@@ -9,8 +9,8 @@ const initialState: TagState = {
   tags: [],
 };
 
-const tagSlice = createSlice({
-  name: 'tag',
+const tagsSlice = createSlice({
+  name: 'tags',
   initialState,
   reducers: {
     setTags: (state, action: ActionWithPayload<Tag[]>) => {
@@ -20,4 +20,4 @@ const tagSlice = createSlice({
 });
 
 
-export default tagSlice.reducer;
+export default tagsSlice.reducer;
