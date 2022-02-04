@@ -179,4 +179,20 @@ export const selectFirstSearchResult = (state: RootState) => {
   return state.reports.entities![state.reports.activeIds[0]];
 };
 
+export const selectFileContent = (state: RootState) => {
+  if (state.reports.content) return Buffer.from(state.reports.content).toString('utf-8')
+}
+
+export const selectFileToRender = (state: RootState, routerPath: string) => {
+  if (!state.reports.tree) return
+  const files = state.reports.tree.filter((item: any) => item.type === 'file')
+  const fileToRender = files.find((item: any) => {
+    if (routerPath) return item.path === routerPath
+    // return item.path.endsWith('.ipynb') || item.path.endsWith('.md')
+  })
+
+  return fileToRender
+}
+
+
 export default reportsSlice.reducer;
