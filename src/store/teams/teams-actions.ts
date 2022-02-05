@@ -194,8 +194,8 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
     LOGGER.silly(`deleteMemberFromTheTeamAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
-    LOGGER.silly(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
+    LOGGER.silly(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
