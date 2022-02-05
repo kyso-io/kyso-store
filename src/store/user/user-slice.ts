@@ -1,5 +1,6 @@
 import { ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { fetchUsersAction, refreshUserAction, updateUserAction } from './user-actions';
@@ -47,6 +48,10 @@ const userSlice = createSlice({
     });
   },
 });
+
+export const selectUser = (state: RootState) => {
+  return state.user.user
+}
 
 export const { setUser } = userSlice.actions;
 
