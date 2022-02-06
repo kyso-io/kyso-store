@@ -48,12 +48,16 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
 /**
  * Fetch all discussions related to the team specified as parameter. Pagination allowed using page and per_page parameters
  */
- export const fetchDiscussionsOfATeam = createAsyncThunk('discussions/fetchDiscussionsOfATeam', async (payload: { team_id: string, page: number, per_page: number }, { getState, dispatch }) => {
+ export const fetchDiscussionsOfATeam = createAsyncThunk('discussions/fetchDiscussionsOfATeam', async (payload: { team_id: string, page: number, per_page: number, sort?: string }, { getState, dispatch }) => {
   try {
     LOGGER.silly('fetchTeamDiscussions invoked');
     const { auth } = getState() as RootState;
     
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=asc`;
+    if(!payload.sort) {
+      payload.sort = 'desc'
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}`;
     LOGGER.silly(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
     
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
