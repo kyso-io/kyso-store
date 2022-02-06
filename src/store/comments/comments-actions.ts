@@ -95,7 +95,7 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.commentId}`;
     LOGGER.silly(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.put(url, payload.comment, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.patch(url, payload.comment, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
