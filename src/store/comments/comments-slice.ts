@@ -1,10 +1,9 @@
 import { ActionWithPayload, Comment, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { enterScope } from 'immer/dist/internal';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchRelationsAction } from '../relations/relations-actions';
-import { fetchReportCommentsAction, updateCommentAction, deleteCommentAction } from './comments-actions';
+import { fetchDiscussionComments, fetchReportCommentsAction, updateCommentAction, deleteCommentAction } from './comments-actions';
 
 export type CommentsState = {
   activeId: string | null | undefined; // single id of active report
@@ -24,6 +23,14 @@ const commentSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchReportCommentsAction.fulfilled, (state: CommentsState, action: ActionWithPayload<Comment[]>) => {
+      if (!action.payload) return;
+      state.entities = {
+        ...state.entities,
+        ...listToKeyVal(action.payload),
+      };
+      state.activeIds = action.payload!.map((entity: Comment) => entity.id as string);
+    });
+    builder.addCase(fetchDiscussionComments.fulfilled, (state: CommentsState, action: ActionWithPayload<Comment[]>) => {
       if (!action.payload) return;
       state.entities = {
         ...state.entities,

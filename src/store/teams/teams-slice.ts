@@ -31,6 +31,10 @@ const teamsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload
+      };
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchRelationsAction, (state: TeamsState, action: ActionWithPayload<Relations>) => {

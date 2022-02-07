@@ -116,41 +116,6 @@ export const fetchDiscussionById = createAsyncThunk(
   }
 );
 
-/**
- * Fetchs all the comments from the discussion_id provided as param
- * TODO: this should be paged as well
- */
-export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Comment[]> => {
-  try {
-    LOGGER.silly('fetchDiscussionComments invoked');
-    
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
-    const { auth } = getState() as RootState;
-    
-    LOGGER.silly(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
-    
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth)
-    });
-    
-    if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionComments: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
-    }
-
-    if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionComments: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      LOGGER.silly(`fetchDiscussionComments: Response didn't have data, returning null`);
-      return [];
-    }
-  } catch (e: any) {
-    LOGGER.error(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
-    return [];
-  }
-});
-
 export const createDiscussion = createAsyncThunk('discussions/createDiscussion', async (payload: CreateDiscussionRequestDTO, { getState, dispatch }): Promise<Discussion | null> => {
   try {
     LOGGER.silly('createDiscussion invoked');
