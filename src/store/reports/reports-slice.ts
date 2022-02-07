@@ -29,7 +29,7 @@ export type ReportsState = {
   pinnedReport: ReportDTO | null;
   content: any;
   searchQuery: string | null;
-  tagsQuery: any[];
+  selectedTags: string[];
   tree: any;
 };
 
@@ -45,7 +45,7 @@ const initialState: ReportsState = {
   pinnedReport: null,
   content: null,
   searchQuery: null,
-  tagsQuery: [],
+  selectedTags: [],
   tree: null,
 };
 
@@ -73,8 +73,8 @@ const reportsSlice = createSlice({
     setSearchQuery: (state: ReportsState, action: ActionWithPayload<string | null>) => {
       state.searchQuery = action.payload;
     },
-    setTagsQuery: (state: ReportsState, action: ActionWithPayload<any[]>) => {
-      state.tagsQuery = action.payload!;
+    setSelectedTags: (state: ReportsState, action: ActionWithPayload<string[]>) => {
+      state.selectedTags = action.payload!;
     },
     setReport: (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
@@ -159,7 +159,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setReports, setCurrentBranch, setTagsQuery } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setSelectedTags } = reportsSlice.actions;
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
@@ -170,7 +170,14 @@ export const selectActiveReport = (state: RootState) => {
 export const selectActiveReports = (state: RootState) => {
   if (state.reports.activeIds.length === 0) return null;
   if (Object.keys(state.reports.entities!).length === 0) return null;
-  return state.reports.activeIds.map(id => state.reports.entities![id]);
+  const reports: ReportDTO[] = state.reports.activeIds.map(id => state.reports.entities![id] as ReportDTO);
+  if (state.reports.selectedTags.length === 0) {
+    return reports;
+  } else {
+    return reports.filter((report: ReportDTO) => {
+      return state.reports.selectedTags.some(tag => report.tags.includes(tag));
+    });
+  }
 };
 
 export const selectFirstSearchResult = (state: RootState) => {
@@ -180,19 +187,18 @@ export const selectFirstSearchResult = (state: RootState) => {
 };
 
 export const selectFileContent = (state: RootState) => {
-  if (state.reports.content) return Buffer.from(state.reports.content).toString('utf-8')
-}
+  if (state.reports.content) return Buffer.from(state.reports.content).toString('utf-8');
+};
 
 export const selectFileToRender = (state: RootState, routerPath: string) => {
-  if (!state.reports.tree) return
-  const files = state.reports.tree.filter((item: any) => item.type === 'file')
+  if (!state.reports.tree) return;
+  const files = state.reports.tree.filter((item: any) => item.type === 'file');
   const fileToRender = files.find((item: any) => {
-    if (routerPath) return item.path === routerPath
+    if (routerPath) return item.path === routerPath;
     // return item.path.endsWith('.ipynb') || item.path.endsWith('.md')
-  })
+  });
 
-  return fileToRender
-}
-
+  return fileToRender;
+};
 
 export default reportsSlice.reducer;

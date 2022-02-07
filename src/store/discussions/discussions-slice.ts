@@ -1,9 +1,8 @@
-import { Discussion, ActionWithPayload } from '@kyso-io/kyso-model';
+import { ActionWithPayload, Discussion } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { updateDiscussion, fetchDiscussionsOfATeam, fetchDiscussionById, fetchDiscussionsAction } from './discussions-actions';
-
 
 export type DiscussionsState = {
   activeId: string | null | undefined; // single id of active report
@@ -11,6 +10,7 @@ export type DiscussionsState = {
   entities: { [key: string]: Discussion | null | undefined } | null; // all the reports by id
   limit: number;
   page: number;
+  searchDiscussion: string;
 };
 
 const initialState: DiscussionsState = {
@@ -19,6 +19,7 @@ const initialState: DiscussionsState = {
   entities: {},
   limit: 20,
   page: 1,
+  searchDiscussion: '',
 };
 
 const discussionsSlice = createSlice({
@@ -36,6 +37,9 @@ const discussionsSlice = createSlice({
     setPageAndLimit: (state: DiscussionsState, action: ActionWithPayload<{ page?: number; limit?: number }>) => {
       state.page = action.payload?.page || initialState.page;
       state.limit = action.payload?.limit || initialState.limit;
+    },
+    setSearchDiscussion: (state: DiscussionsState, action: ActionWithPayload<string>) => {
+      state.searchDiscussion = action.payload!;
     },
   },
   extraReducers: builder => {
@@ -78,5 +82,7 @@ const discussionsSlice = createSlice({
 export const selectDiscussionById = (state: RootState, id: string) => {
   return state.discussions.entities![id]
 }
+
+export const { setSearchDiscussion } = discussionsSlice.actions;
 
 export default discussionsSlice.reducer;
