@@ -86,7 +86,7 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     });
     if (axiosResponse?.data?.relations) {
       LOGGER.silly(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      // dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
       LOGGER.silly(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);

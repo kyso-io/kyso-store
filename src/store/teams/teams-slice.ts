@@ -1,9 +1,9 @@
+import { ActionWithPayload, Relations, Team } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { Relations, Team, ActionWithPayload } from '@kyso-io/kyso-model';
-import { fetchTeamAction } from './teams-actions';
-import { fetchRelationsAction } from '../relations/relations-actions'
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
+import { fetchRelationsAction } from '../relations/relations-actions';
+import { fetchTeamAction } from './teams-actions';
 
 export type TeamsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -24,9 +24,9 @@ const teamsSlice = createSlice({
     setTeam: (state: TeamsState, action: ActionWithPayload<Team>) => {
       state.entities = {
         ...state.entities,
-        [action.payload!.id as string]: action.payload
+        [action.payload!.id as string]: action.payload,
       };
-      state.activeId = action.payload!.id
+      state.activeId = action.payload!.id;
     },
   },
   extraReducers: builder => {
@@ -37,8 +37,8 @@ const teamsSlice = createSlice({
       state.entities = {
         ...state.entities,
         ...action.payload?.team,
-      }
-    });    
+      };
+    });
   },
 });
 
@@ -50,14 +50,14 @@ export const selectActiveTeam = (state: RootState) => {
   return state.teams.entities![state.teams.activeId];
 };
 
-export const selectTeamByFilter = (state: RootState, filter: { [key: string]: string }) => {
+export const selectTeamByFilter = (state: RootState, filter: { key: string; value: string }) => {
   if (state.teams.entities!.length === 0) return null;
-  return Object.values(state.teams.entities!).find((team) => team[filter.key] === filter[filter.key])
+  return Object.values(state.teams.entities!).find(team => team[filter.key] === filter.value);
 };
 
 export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
   return Object.values(state.teams.entities!).find((team: { name: string }) => {
-    return slugify(team.name) === name
+    return slugify(team.name) === name;
   });
 };
 
