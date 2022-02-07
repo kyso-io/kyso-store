@@ -47,6 +47,7 @@ export * from './auth/auth-slice';
 export * from './comments/comments-actions';
 export * from './comments/comments-slice';
 export * from './discussions/discussions-actions';
+export * from './discussions/discussions-slice';
 export * from './error/error-slice';
 export * from './github/github-actions';
 export * from './github/github-repositories-slice';

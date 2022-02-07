@@ -269,8 +269,8 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
 export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     LOGGER.silly('fetchFileContentAction invoked');
-    const { auth, reports } = getState() as RootState;
-    let hash = payload.hash;
+    const { auth } = getState() as RootState;
+    const hash = payload.hash;
 
     // what is this, I have no idea?
     // if (reports.tree) {
