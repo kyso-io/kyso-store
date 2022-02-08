@@ -4,6 +4,8 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 const httpClient: AxiosInstance = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: { 'Content-Type': 'application/json' },
+  maxBodyLength: 100000000,
+  maxContentLength: 100000000
 });
 
 /* Use axios-helper instead
