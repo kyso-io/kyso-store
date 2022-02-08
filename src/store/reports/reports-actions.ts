@@ -524,3 +524,62 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     return null;
   }
 });
+
+export const updateReportPreviewPictureAction = createAsyncThunk(
+  'user/updateOrganizationProfilePicture',
+  async (args: { reportId: string; file: File }, { dispatch, getState }): Promise<ReportDTO | null> => {
+    try {
+      LOGGER.silly('updateReportPreviewPictureAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/preview-picture`;
+      LOGGER.silly(`updateReportPreviewPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const formData = new FormData();
+      formData.append('file', args.file);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        LOGGER.silly(`updateReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        LOGGER.silly(`updateReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        LOGGER.silly(`updateReportPreviewPictureAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      LOGGER.error(`updateReportPreviewPictureAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
+
+export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteReportPreviewPicture', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
+  try {
+    LOGGER.silly('deleteReportPreviewPictureAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/preview-picture`;
+    LOGGER.silly(`deleteReportPreviewPictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      LOGGER.silly(`deleteReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      LOGGER.silly(`deleteReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      LOGGER.silly(`deleteReportPreviewPictureAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    LOGGER.error(`deleteReportPreviewPictureAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
