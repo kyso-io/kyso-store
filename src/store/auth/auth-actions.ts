@@ -56,7 +56,7 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`;
     LOGGER.silly(`refreshTokenAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, "", {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, null, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
