@@ -428,6 +428,54 @@ export const createKysoReportAction = createAsyncThunk(
   }
 );
 
+export const createKysoReportUIAction = createAsyncThunk(
+  'reports/createKysoReportUI',
+  async (
+    payload: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null },
+    { getState, dispatch }
+  ): Promise<ReportDTO | null> => {
+    try {
+      LOGGER.trace(`createKysoReportUIAction invoked`);
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
+      LOGGER.silly(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const formData: FormData = new FormData();
+      formData.append('title', payload.title);
+      formData.append('description', payload.description);
+      formData.append('organization', payload.organization);
+      formData.append('team', payload.team);
+      payload.tags.forEach((tag: string) => {
+        formData.append('tags', tag);
+      });
+      payload.files.forEach((file: File) => {
+        formData.append('files', file);
+      });
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
+        headers: {
+          ...buildAuthHeaders(auth),
+          headers: { 'content-type': 'multipart/form-data' },
+        },
+      });
+      if (axiosResponse?.data?.relations) {
+        LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        LOGGER.silly(`createKysoReportUIAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        LOGGER.silly(`createKysoReportUIAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      console.log(e);
+      LOGGER.error(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
+
 export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async (repositoryName: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     LOGGER.trace(`importGithubRepositoryAction invoked`);
