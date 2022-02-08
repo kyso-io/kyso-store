@@ -25,8 +25,9 @@ const userSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(refreshUserAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO>) => {
+      console.log(state)
       const updatedUser: any = { ...state.user, ...action.payload };
-      state.user = updatedUser;
+      state.user = action.payload;
     });
     builder.addCase(updateUserAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO>) => {
       state.user = action.payload;
