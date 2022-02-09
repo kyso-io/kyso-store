@@ -6,7 +6,6 @@ import FormData from 'form-data';
 import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
 import sha256File from 'sha256-file';
 import { RootState } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';

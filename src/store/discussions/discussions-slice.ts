@@ -2,12 +2,12 @@ import { ActionWithPayload, Discussion } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
-import { updateDiscussion, fetchDiscussionsOfATeam, fetchDiscussionById, fetchDiscussionsAction } from './discussions-actions';
+import { fetchDiscussionById, fetchDiscussionsAction, fetchDiscussionsOfATeam, updateDiscussion } from './discussions-actions';
 
 export type DiscussionsState = {
   activeId: string | null | undefined; // single id of active report
   activeIds: string[];
-  entities: { [key: string]: Discussion | null | undefined } | null; // all the reports by id
+  entities: { [key: string]: Discussion }; // all the reports by id
   limit: number;
   page: number;
   searchDiscussion: string;
@@ -32,7 +32,6 @@ const discussionsSlice = createSlice({
         ...listToKeyVal(action.payload),
       };
       state.activeIds = action.payload!.map((entity: Discussion) => entity.id as string);
-
     },
     setPageAndLimit: (state: DiscussionsState, action: ActionWithPayload<{ page?: number; limit?: number }>) => {
       state.page = action.payload?.page || initialState.page;
@@ -80,8 +79,19 @@ const discussionsSlice = createSlice({
 });
 
 export const selectDiscussionById = (state: RootState, id: string) => {
-  return state.discussions.entities![id]
-}
+  return state.discussions.entities![id];
+};
+
+export const getActiveDiscussions = (state: RootState): Discussion[] => {
+  const discussions: Discussion[] = [];
+  state.discussions.activeIds.forEach((id: string) => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (state.discussions.entities.hasOwnProperty(id)) {
+      discussions.push(state.discussions.entities![id] as Discussion);
+    }
+  });
+  return discussions;
+};
 
 export const { setSearchDiscussion } = discussionsSlice.actions;
 
