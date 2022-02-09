@@ -11,7 +11,7 @@ export const populate = async (store: any) => {
   const { getState, dispatch } = store;
 
   await dispatch(setReports(reports));
-  console.log(getState().reports.list);
+  // console.log(getState().reports.list);
 };
 
 populate(store);

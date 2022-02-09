@@ -27,7 +27,7 @@ export const play = async () => {
   // await dispatch(fetchReportsAction())
   // await dispatch(fetchReportCommentsAction({ owner: 'rey', reportName: 'reys-report' }))
   
-  console.log(getState())
+  // console.log(getState())
 }
 
 play()
