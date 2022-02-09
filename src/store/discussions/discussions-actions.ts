@@ -18,28 +18,28 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
       payload.sort = 'desc';
     }
 
-    LOGGER.silly('fetchDiscussionsAction invoked');
+    console.log('fetchDiscussionsAction invoked');
     const { user, auth, ...state } = getState() as RootState;
     const team = selectActiveTeam(state as RootState);
 
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?${team ? `team_id=${team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}`;
-    LOGGER.silly(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchDiscussionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchDiscussionsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchDiscussionsAction: Response didn't have data, returning an empty array []`);
+      console.log(`fetchDiscussionsAction: Response didn't have data, returning an empty array []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`Error processing action fetchDiscussionsAction: ${e.toString()}`);
+    console.log(`Error processing action fetchDiscussionsAction: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -52,7 +52,7 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
   'discussions/fetchDiscussionsOfATeam',
   async (payload: { team_id: string; page: number; per_page: number; sort?: string; search?: string }, { getState, dispatch }) => {
     try {
-      LOGGER.silly('fetchTeamDiscussions invoked');
+      console.log('fetchTeamDiscussions invoked');
       const { auth } = getState() as RootState;
 
       if (!payload.sort) {
@@ -63,25 +63,25 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
       if (payload.search && payload.search.length > 0) {
         url += `&search=${payload.search}`;
       }
-      LOGGER.silly(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
 
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchTeamDiscussions: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchTeamDiscussions: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchTeamDiscussions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchTeamDiscussions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`fetchTeamDiscussions: Response didn't have data, returning an empty array []`);
+        console.log(`fetchTeamDiscussions: Response didn't have data, returning an empty array []`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`Error processing action fetchTeamDiscussions: ${e.toString()}`);
+      console.log(`Error processing action fetchTeamDiscussions: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -93,27 +93,27 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
  */
 export const fetchDiscussionById = createAsyncThunk('discussions/fetchDiscussionById', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Discussion | null> => {
   try {
-    LOGGER.silly('fetchDiscussionById invoked');
+    console.log('fetchDiscussionById invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
     const { auth } = getState() as RootState;
-    LOGGER.silly(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
 
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchDiscussionById: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchDiscussionById: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchDiscussionById: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchDiscussionById: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchDiscussionById: Response didn't have data, returning null`);
+      console.log(`fetchDiscussionById: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`fetchDiscussionById: Error processing action: ${e.toString()}`);
+    console.log(`fetchDiscussionById: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -121,26 +121,26 @@ export const fetchDiscussionById = createAsyncThunk('discussions/fetchDiscussion
 
 export const createDiscussion = createAsyncThunk('discussions/createDiscussion', async (payload: CreateDiscussionRequestDTO, { getState, dispatch }): Promise<Discussion | null> => {
   try {
-    LOGGER.silly('createDiscussion invoked');
+    console.log('createDiscussion invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions`;
     const { auth } = getState() as RootState;
-    LOGGER.silly(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`createDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`createDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`createDiscussion: Response didn't have data, returning null`);
+      console.log(`createDiscussion: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`createDiscussion: Error processing action: ${e.toString()}`);
+    console.log(`createDiscussion: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -150,26 +150,26 @@ export const updateDiscussion = createAsyncThunk(
   'discussions/updateDiscussion',
   async (payload: { discussionId: string; data: UpdateDiscussionRequestDTO }, { getState, dispatch }): Promise<Discussion | null> => {
     try {
-      LOGGER.silly('updateDiscussion invoked');
+      console.log('updateDiscussion invoked');
       const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}`;
       const { auth } = getState() as RootState;
-      LOGGER.silly(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
+      console.log(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`updateDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`updateDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`updateDiscussion: Response didn't have data, returning null`);
+        console.log(`updateDiscussion: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`updateDiscussion: Error processing action: ${e.toString()}`);
+      console.log(`updateDiscussion: Error processing action: ${e.toString()}`);
       return null;
     }
   }
@@ -177,26 +177,26 @@ export const updateDiscussion = createAsyncThunk(
 
 export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion', async (discussionId: string, { getState, dispatch }): Promise<Discussion | null> => {
   try {
-    LOGGER.silly('deleteDiscussion invoked');
+    console.log('deleteDiscussion invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${discussionId}`;
     const { auth } = getState() as RootState;
-    LOGGER.silly(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
+    console.log(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`deleteDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`deleteDiscussion: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`deleteDiscussion: Response didn't have data, returning null`);
+      console.log(`deleteDiscussion: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`deleteDiscussion: Error processing action: ${e.toString()}`);
+    console.log(`deleteDiscussion: Error processing action: ${e.toString()}`);
     return null;
   }
 });

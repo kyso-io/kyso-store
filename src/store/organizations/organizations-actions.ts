@@ -10,26 +10,26 @@ import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrganization', async (organizationId: string, { getState, dispatch }): Promise<Organization | null> => {
   try {
-    LOGGER.silly('fetchOrganizationAction invoked');
+    console.log('fetchOrganizationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
-    LOGGER.silly(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchOrganizationAction: Response didn't have data, returning null`);
+      console.log(`fetchOrganizationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`fetchOrganizationAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchOrganizationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -37,22 +37,22 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
 
 export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOrganization', async (organizationId: string, { getState, dispatch }): Promise<Organization | null> => {
   try {
-    LOGGER.silly('deleteOrganizationAction invoked');
+    console.log('deleteOrganizationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
-    LOGGER.silly(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    console.log(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`deleteOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`deleteOrganizationAction: Response didn't have data, returning null`);
+      console.log(`deleteOrganizationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`deleteOrganizationAction: Error processing action: ${e.toString()}`);
+    console.log(`deleteOrganizationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -62,26 +62,26 @@ export const updateOrganizationAction = createAsyncThunk(
   'organizations/updateOrganization',
   async (payload: { organizationId: string; updateOrganizationDto: UpdateOrganizationDTO }, { getState, dispatch }): Promise<Organization | null> => {
     try {
-      LOGGER.silly('updateOrganizationAction invoked');
+      console.log('updateOrganizationAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}`;
-      LOGGER.silly(`updateOrganizationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+      console.log(`updateOrganizationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, payload.updateOrganizationDto, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`updateOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`updateOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`updateOrganizationAction: Response didn't have data, returning null`);
+        console.log(`updateOrganizationAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`updateOrganizationAction: Error processing action: ${e.toString()}`);
+      console.log(`updateOrganizationAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
@@ -90,26 +90,26 @@ export const updateOrganizationAction = createAsyncThunk(
 
 export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetchOrganizationMembers', async (organizationId: string, { getState, dispatch }): Promise<OrganizationMember[]> => {
   try {
-    LOGGER.silly('fetchOrganizationMembers invoked');
+    console.log('fetchOrganizationMembers invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}/members`;
-    LOGGER.silly(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchOrganizationMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchOrganizationMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchOrganizationMembers: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchOrganizationMembers: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchOrganizationMembers: Response didn't have data, returning []`);
+      console.log(`fetchOrganizationMembers: Response didn't have data, returning []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchOrganizationMembers: Error processing action: ${e.toString()}`);
+    console.log(`fetchOrganizationMembers: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -117,26 +117,26 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
 
 export const createOrganizationAction = createAsyncThunk('organizations/createOrganization', async (organization: Organization, { getState, dispatch }): Promise<Organization | null> => {
   try {
-    LOGGER.silly('createOrganization invoked');
+    console.log('createOrganization invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations`;
-    LOGGER.silly(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, organization, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`createOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`createOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`createOrganization: Response didn't have data, returning null`);
+      console.log(`createOrganization: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`createOrganization: Error processing action: ${e.toString()}`);
+    console.log(`createOrganization: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -146,26 +146,26 @@ export const addUserToOrganizationAction = createAsyncThunk(
   'organizations/addUserToOrganization',
   async (payload: { organizationId: string; userId: string }, { getState, dispatch }): Promise<OrganizationMember[]> => {
     try {
-      LOGGER.silly('addUserToOrganization invoked');
+      console.log('addUserToOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
-      LOGGER.silly(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
+      console.log(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`addUserToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`addUserToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`addUserToOrganization: Response didn't have data, returning null`);
+        console.log(`addUserToOrganization: Response didn't have data, returning null`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`addUserToOrganization: Error processing action: ${e.toString()}`);
+      console.log(`addUserToOrganization: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -176,26 +176,26 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
   'organizations/removeUserFromOrganization',
   async (payload: { organizationId: string; userId: string }, { getState, dispatch }): Promise<OrganizationMember[]> => {
     try {
-      LOGGER.silly('removeUserFromOrganization invoked');
+      console.log('removeUserFromOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
-      LOGGER.silly(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
+      console.log(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`removeUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`removeUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`removeUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`removeUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`removeUserFromOrganization: Response didn't have data, returning null`);
+        console.log(`removeUserFromOrganization: Response didn't have data, returning null`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`removeUserFromOrganization: Error processing action: ${e.toString()}`);
+      console.log(`removeUserFromOrganization: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -206,26 +206,26 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
   'organizations/updateMembersRolesToOrganization',
   async (payload: { organizationId: string; data: UpdateOrganizationMembersDTO[] }, { getState, dispatch }): Promise<OrganizationMember[]> => {
     try {
-      LOGGER.silly('updateMembersRolesToOrganization invoked');
+      console.log('updateMembersRolesToOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members-roles`;
-      LOGGER.silly(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
+      console.log(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, payload.data, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateMembersRolesToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`updateMembersRolesToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateMembersRolesToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`updateMembersRolesToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`updateMembersRolesToOrganization: Response didn't have data, returning null`);
+        console.log(`updateMembersRolesToOrganization: Response didn't have data, returning null`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`updateMembersRolesToOrganization: Error processing action: ${e.toString()}`);
+      console.log(`updateMembersRolesToOrganization: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -236,26 +236,26 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
   'organizations/deleteRoleToUserFromOrganization',
   async (payload: { organizationId: string; userId: string; role: string }, { getState, dispatch }): Promise<OrganizationMember[]> => {
     try {
-      LOGGER.silly('deleteRoleToUserFromOrganization invoked');
+      console.log('deleteRoleToUserFromOrganization invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
-      LOGGER.silly(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
+      console.log(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`deleteRoleToUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`deleteRoleToUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`deleteRoleToUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`deleteRoleToUserFromOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`deleteRoleToUserFromOrganization: Response didn't have data, returning null`);
+        console.log(`deleteRoleToUserFromOrganization: Response didn't have data, returning null`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`deleteRoleToUserFromOrganization: Error processing action: ${e.toString()}`);
+      console.log(`deleteRoleToUserFromOrganization: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -264,28 +264,28 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
 
 export const updateOrganizationPictureAction = createAsyncThunk('user/updateOrganizationProfilePicture', async (args: { organizationId: string; file: File }, { dispatch, getState }): Promise<Organization | null> => {
   try {
-    LOGGER.silly('updateOrganizationPictureAction invoked');
+    console.log('updateOrganizationPictureAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/profile-picture`;
-    LOGGER.silly(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', args.file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, formData, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateOrganizationPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`updateOrganizationPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`updateOrganizationPictureAction: Response didn't have data, returning null`);
+      console.log(`updateOrganizationPictureAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
+    console.log(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }

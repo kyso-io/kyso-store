@@ -15,26 +15,26 @@ import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const createReportAction = createAsyncThunk('reports/createReport', async (createReportDto: CreateReportDTO, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.trace(`createReportAction invoked`);
+    console.log(`createReportAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
-    LOGGER.silly(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, createReportDto, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`createReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`createReportAction: Response didn't have data, returning null`);
+      console.log(`createReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`createReportAction: Error processing action: ${e.toString()}`);
+    console.log(`createReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -42,26 +42,26 @@ export const createReportAction = createAsyncThunk('reports/createReport', async
 
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.trace('fetchReportAction invoked');
+    console.log('fetchReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
-    LOGGER.silly(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
-      LOGGER.silly(`fetchReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchReportAction: Response didn't have data, returning null`);
+      console.log(`fetchReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`fetchReportAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -69,7 +69,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
 
 export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<ReportDTO[]> => {
   try {
-    LOGGER.silly('fetchReportsAction invoked');
+    console.log('fetchReportsAction invoked');
     const { auth } = getState() as RootState;
 
     const qs = new URLSearchParams({
@@ -80,23 +80,23 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
     });
 
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
-    LOGGER.silly(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data.data) {
-      LOGGER.silly(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchReportsAction: Response didn't have data, returning null`);
+      console.log(`fetchReportsAction: Response didn't have data, returning null`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchReportsAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchReportsAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -104,26 +104,26 @@ export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async
 
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.silly('updateReportAction invoked');
+    console.log('updateReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
-    LOGGER.silly(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    console.log(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`updateReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`updateReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`updateReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`updateReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`updateReportAction: Response didn't have data, returning null`);
+      console.log(`updateReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`updateReportAction: Error processing action: ${e.toString()}`);
+    console.log(`updateReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -131,26 +131,26 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
 
 export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', async (reportId: string, { getState, dispatch }): Promise<any[]> => {
   try {
-    LOGGER.silly('fetchBranchesAction invoked');
+    console.log('fetchBranchesAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/branches`;
-    LOGGER.silly(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchBranchesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchBranchesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchBranchesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchBranchesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchBranchesAction: Response didn't have data, returning []`);
+      console.log(`fetchBranchesAction: Response didn't have data, returning []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchBranchesAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchBranchesAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -158,26 +158,26 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
 
 export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async (payload: { reportId: string; branch: string }, { getState, dispatch }): Promise<any[]> => {
   try {
-    LOGGER.silly('fetchCommitsAction invoked');
+    console.log('fetchCommitsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/commits`;
-    LOGGER.silly(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchCommitsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchCommitsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchCommitsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchCommitsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchCommitsAction: Response didn't have data, returning []`);
+      console.log(`fetchCommitsAction: Response didn't have data, returning []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchCommitsAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchCommitsAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -187,26 +187,26 @@ export const fetchReportsTreeAction = createAsyncThunk(
   'reports/fetchReportsTree',
   async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
-      LOGGER.silly('fetchReportsTreeAction invoked');
+      console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree?path=${payload.filePath}`;
-      LOGGER.silly(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchReportsTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchReportsTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`fetchReportsTreeAction: Response didn't have data, returning null`);
+        console.log(`fetchReportsTreeAction: Response didn't have data, returning null`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`fetchReportsTreeAction: Error processing action: ${e.toString()}`);
+      console.log(`fetchReportsTreeAction: Error processing action: ${e.toString()}`);
       return [];
     }
   }
@@ -214,26 +214,26 @@ export const fetchReportsTreeAction = createAsyncThunk(
 
 export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.silly('deleteReportAction invoked');
+    console.log('deleteReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
-    LOGGER.silly(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    console.log(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`deleteReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`deleteReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`deleteReportAction: Response didn't have data, returning null`);
+      console.log(`deleteReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`deleteReportAction: Error processing action: ${e.toString()}`);
+    console.log(`deleteReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -241,26 +241,26 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
 
 export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserPinnedReports', async (userId: string, { getState, dispatch }): Promise<Report[]> => {
   try {
-    LOGGER.silly('fetchUserPinnedReportsAction invoked');
+    console.log('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/pinned`;
-    LOGGER.silly(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchUserPinnedReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchUserPinnedReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`fetchUserPinnedReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchUserPinnedReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`fetchUserPinnedReportsAction: Response didn't have data, returning []`);
+      console.log(`fetchUserPinnedReportsAction: Response didn't have data, returning []`);
       return [];
     }
   } catch (e: any) {
-    LOGGER.error(`fetchUserPinnedReportsAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchUserPinnedReportsAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
@@ -268,7 +268,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
 
 export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
-    LOGGER.silly('fetchFileContentAction invoked');
+    console.log('fetchFileContentAction invoked');
     const { auth } = getState() as RootState;
     const hash = payload.hash;
 
@@ -277,19 +277,19 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     //   hash = reports.tree[0].hash;
     // }
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
-    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data) {
-      LOGGER.silly(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
+      console.log(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
       return axiosResponse.data;
     } else {
-      LOGGER.silly(`fetchFileContentAction: Response didn't have data, returning null`);
+      console.log(`fetchFileContentAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`fetchFileContentAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -297,10 +297,10 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
 
 export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.silly('toggleUserPinReportAction invoked');
+    console.log('toggleUserPinReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-pin`;
-    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
       {},
@@ -309,18 +309,18 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
       }
     );
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`toggleUserPinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`toggleUserPinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`toggleUserPinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`toggleUserPinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`toggleUserPinReportAction: Response didn't have data, returning null`);
+      console.log(`toggleUserPinReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`toggleUserPinReportAction: Error processing action: ${e.toString()}`);
+    console.log(`toggleUserPinReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -328,10 +328,10 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
 
 export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserStarReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.silly('toggleUserStarReportAction invoked');
+    console.log('toggleUserStarReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-star`;
-    LOGGER.silly(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
       {},
@@ -340,18 +340,18 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
       }
     );
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`toggleUserStarReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`toggleUserStarReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`toggleUserStarReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`toggleUserStarReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`toggleUserStarReportAction: Response didn't have data, returning null`);
+      console.log(`toggleUserStarReportAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`toggleUserStarReportAction: Error processing action: ${e.toString()}`);
+    console.log(`toggleUserStarReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -365,10 +365,10 @@ export const createKysoReportAction = createAsyncThunk(
   ): Promise<ReportDTO | null> => {
     const zipedFiles: string[] = [];
     try {
-      LOGGER.trace(`createKysoReportAction invoked`);
+      console.log(`createKysoReportAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/kyso`;
-      LOGGER.silly(`createKysoReportAction: ${printAuthenticated(auth)} - POST ${url}`);
+      console.log(`createKysoReportAction: ${printAuthenticated(auth)} - POST ${url}`);
 
       const formData: FormData = new FormData();
       formData.append('title', payload.title);
@@ -405,18 +405,18 @@ export const createKysoReportAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`createKysoReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`createKysoReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`createKysoReportAction: Response didn't have data, returning null`);
+        console.log(`createKysoReportAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`createKysoReportAction: Error processing action: ${e.toString()}`);
+      console.log(`createKysoReportAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     } finally {
@@ -435,10 +435,10 @@ export const createKysoReportUIAction = createAsyncThunk(
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
-      LOGGER.trace(`createKysoReportUIAction invoked`);
+      console.log(`createKysoReportUIAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
-      LOGGER.silly(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
+      console.log(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData: FormData = new FormData();
       formData.append('title', payload.title);
       formData.append('description', payload.description);
@@ -457,19 +457,19 @@ export const createKysoReportUIAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`createKysoReportUIAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`createKysoReportUIAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`createKysoReportUIAction: Response didn't have data, returning null`);
+        console.log(`createKysoReportUIAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
       console.log(e);
-      LOGGER.error(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
+      console.log(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
@@ -478,10 +478,10 @@ export const createKysoReportUIAction = createAsyncThunk(
 
 export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async (repositoryName: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.trace(`importGithubRepositoryAction invoked`);
+    console.log(`importGithubRepositoryAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${repositoryName}`;
-    LOGGER.silly(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
       url,
       {},
@@ -490,18 +490,18 @@ export const importGithubRepositoryAction = createAsyncThunk('reports/importGith
       }
     );
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`importGithubRepositoryAction: Response didn't have data, returning null`);
+      console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+    console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -509,17 +509,17 @@ export const importGithubRepositoryAction = createAsyncThunk('reports/importGith
 
 export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
-    LOGGER.trace(`pullReportAction invoked`);
+    console.log(`pullReportAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
-    LOGGER.silly(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
       responseType: 'arraybuffer',
     });
     return axiosResponse.data;
   } catch (e: any) {
-    LOGGER.error(`pullReportAction: Error processing action: ${e.toString()}`);
+    console.log(`pullReportAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -529,28 +529,28 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
   'user/updateOrganizationProfilePicture',
   async (args: { reportId: string; file: File }, { dispatch, getState }): Promise<ReportDTO | null> => {
     try {
-      LOGGER.silly('updateReportPreviewPictureAction invoked');
+      console.log('updateReportPreviewPictureAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/preview-picture`;
-      LOGGER.silly(`updateReportPreviewPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+      console.log(`updateReportPreviewPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData = new FormData();
       formData.append('file', args.file);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`updateReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`updateReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`updateReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`updateReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`updateReportPreviewPictureAction: Response didn't have data, returning null`);
+        console.log(`updateReportPreviewPictureAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`updateReportPreviewPictureAction: Error processing action: ${e.toString()}`);
+      console.log(`updateReportPreviewPictureAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
@@ -559,26 +559,26 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
 
 export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteReportPreviewPicture', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
-    LOGGER.silly('deleteReportPreviewPictureAction invoked');
+    console.log('deleteReportPreviewPictureAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/preview-picture`;
-    LOGGER.silly(`deleteReportPreviewPictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    console.log(`deleteReportPreviewPictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`deleteReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`deleteReportPreviewPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`deleteReportPreviewPictureAction: Response didn't have data, returning null`);
+      console.log(`deleteReportPreviewPictureAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`deleteReportPreviewPictureAction: Error processing action: ${e.toString()}`);
+    console.log(`deleteReportPreviewPictureAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }

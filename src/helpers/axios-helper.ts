@@ -20,8 +20,8 @@ export const buildAuthHeaders = (auth: AuthState) => {
     headers['x-kyso-organization'] = organization;
   }
   
-  LOGGER.silly('Auth Headers')
-  LOGGER.silly(headers)
+  console.log('Auth Headers')
+  console.log(headers)
 
   return headers
 }

@@ -11,7 +11,7 @@ export const fetchInvitationsAction = createAsyncThunk(
   'tags/fetchInvitations',
   async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<Invitation[]> => {
     try {
-      LOGGER.silly('fetchInvitationsAction invoked');
+      console.log('fetchInvitationsAction invoked');
       const { auth } = getState() as RootState;
       const qs = new URLSearchParams({
         page: (payload?.page || 1).toString(),
@@ -20,23 +20,23 @@ export const fetchInvitationsAction = createAsyncThunk(
         ...payload?.filter,
       });
       const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations?${qs.toString()}`;
-      LOGGER.silly(`fetchInvitationsAction: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchInvitationsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchInvitationsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchInvitationsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchInvitationsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchInvitationsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`fetchInvitationsAction: Response didn't have data, returning an empty array []`);
+        console.log(`fetchInvitationsAction: Response didn't have data, returning an empty array []`);
         return [];
       }
     } catch (e: any) {
-      LOGGER.error(`fetchInvitationsAction: Error processing action: ${e.toString()}`);
+      console.log(`fetchInvitationsAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -47,26 +47,26 @@ export const fetchInvitationAction = createAsyncThunk(
   'tags/fetchInvitation',
   async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
     try {
-      LOGGER.silly('fetchInvitationAction invoked');
+      console.log('fetchInvitationAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
-      LOGGER.silly(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        LOGGER.silly(`fetchInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        LOGGER.silly(`fetchInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        LOGGER.silly(`fetchInvitationAction: Response didn't have data, returning null`);
+        console.log(`fetchInvitationAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      LOGGER.error(`fetchInvitationAction: Error processing action: ${e.toString()}`);
+      console.log(`fetchInvitationAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
@@ -75,26 +75,26 @@ export const fetchInvitationAction = createAsyncThunk(
 
 export const createInvitationAction = createAsyncThunk('tags/createInvitation', async (createInvitationDto: CreateInvitationDto, { getState, dispatch }): Promise<Invitation | null> => {
   try {
-    LOGGER.silly('createInvitationAction invoked');
+    console.log('createInvitationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations`;
-    LOGGER.silly(`createInvitationAction: ${printAuthenticated(auth)} - POST ${url}`);
+    console.log(`createInvitationAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.post(url, createInvitationDto, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`createInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`createInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`createInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`createInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`createInvitationAction: Response didn't have data, returning null`);
+      console.log(`createInvitationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`createInvitationAction: Error processing action: ${e.toString()}`);
+    console.log(`createInvitationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -102,26 +102,26 @@ export const createInvitationAction = createAsyncThunk('tags/createInvitation', 
 
 export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
   try {
-    LOGGER.silly('acceptInvitationAction invoked');
+    console.log('acceptInvitationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/accept-invitation/${invitationId}`;
-    LOGGER.silly(`acceptInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    console.log(`acceptInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(url, {}, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`acceptInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`acceptInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`acceptInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`acceptInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`acceptInvitationAction: Response didn't have data, returning null`);
+      console.log(`acceptInvitationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`acceptInvitationAction: Error processing action: ${e.toString()}`);
+    console.log(`acceptInvitationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -129,26 +129,26 @@ export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', 
 
 export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
   try {
-    LOGGER.silly('rejectInvitationAction invoked');
+    console.log('rejectInvitationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/reject-invitation/${invitationId}`;
-    LOGGER.silly(`rejectInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    console.log(`rejectInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(url, {}, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`rejectInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`rejectInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`rejectInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`rejectInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`rejectInvitationAction: Response didn't have data, returning null`);
+      console.log(`rejectInvitationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`rejectInvitationAction: Error processing action: ${e.toString()}`);
+    console.log(`rejectInvitationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -156,26 +156,26 @@ export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', 
 
 export const deleteInvitationAction = createAsyncThunk('tags/deleteInvitation', async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
   try {
-    LOGGER.silly('deleteInvitationAction invoked');
+    console.log('deleteInvitationAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
-    LOGGER.silly(`deleteInvitationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
+    console.log(`deleteInvitationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      LOGGER.silly(`deleteInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`deleteInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      LOGGER.silly(`deleteInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`deleteInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      LOGGER.silly(`deleteInvitationAction: Response didn't have data, returning null`);
+      console.log(`deleteInvitationAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    LOGGER.error(`deleteInvitationAction: Error processing action: ${e.toString()}`);
+    console.log(`deleteInvitationAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
