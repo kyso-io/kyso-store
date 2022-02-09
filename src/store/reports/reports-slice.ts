@@ -14,6 +14,7 @@ import {
   fetchReportsTreeAction,
   importGithubRepositoryAction,
   toggleUserPinReportAction,
+  toggleUserStarReportAction,
   updateReportAction,
 } from './reports-actions';
 
@@ -97,6 +98,13 @@ const reportsSlice = createSlice({
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
+      state.activeId = action.payload!.id;
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload!,
+      };
+    });
+    builder.addCase(toggleUserStarReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
       state.entities = {
         ...state.entities,
