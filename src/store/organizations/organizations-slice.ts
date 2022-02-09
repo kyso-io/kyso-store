@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
 import { fetchRelationsAction } from '../relations/relations-actions';
-import { fetchOrganizationAction } from './organizations-actions';
+import { fetchOrganizationAction, updateOrganizationAction } from './organizations-actions';
 
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -31,6 +31,9 @@ const organizationsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
+      state.activeId = action.payload!.id;
+    });
+    builder.addCase(updateOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchRelationsAction, (state: OrganizationsState, action: ActionWithPayload<Relations>) => {

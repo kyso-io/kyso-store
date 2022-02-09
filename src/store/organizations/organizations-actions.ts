@@ -2,7 +2,6 @@ import { NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganiza
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
@@ -262,31 +261,34 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
   }
 );
 
-export const updateOrganizationPictureAction = createAsyncThunk('user/updateOrganizationProfilePicture', async (args: { organizationId: string; file: File }, { dispatch, getState }): Promise<Organization | null> => {
-  try {
-    console.log('updateOrganizationPictureAction invoked');
-    const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/profile-picture`;
-    console.log(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const formData = new FormData();
-    formData.append('file', args.file);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, formData, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      console.log(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      console.log(`updateOrganizationPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      console.log(`updateOrganizationPictureAction: Response didn't have data, returning null`);
+export const updateOrganizationPictureAction = createAsyncThunk(
+  'user/updateOrganizationProfilePicture',
+  async (args: { organizationId: string; file: File }, { dispatch, getState }): Promise<Organization | null> => {
+    try {
+      console.log('updateOrganizationPictureAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/profile-picture`;
+      console.log(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const formData = new FormData();
+      formData.append('file', args.file);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, formData, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        console.log(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        console.log(`updateOrganizationPictureAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        console.log(`updateOrganizationPictureAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      console.log(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return null;
     }
-  } catch (e: any) {
-    console.log(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return null;
   }
-});
+);
