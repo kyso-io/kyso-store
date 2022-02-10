@@ -1,4 +1,4 @@
 include:
   - project: 'common/gitlab-ci'
-    ref: v0.3.1
+    ref: v0.3.6
     file: '/templates/npm-package.yml'
