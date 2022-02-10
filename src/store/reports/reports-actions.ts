@@ -7,7 +7,6 @@ import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
 import sha256File from 'sha256-file';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -299,7 +298,7 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
     // console.log('toggleUserPinReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-pin`;
-    // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    // console.log(`toggleUserPinReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
       {},
@@ -325,12 +324,43 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
   }
 });
 
+export const toggleGlobalPinReportAction = createAsyncThunk('reports/toggleGlobalPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
+  try {
+    // console.log('toggleGlobalPinReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pin`;
+    // console.log(`toggleGlobalPinReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.relations) {
+      // console.log(`toggleGlobalPinReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`toggleGlobalPinReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`toggleGlobalPinReportAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`toggleGlobalPinReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
 export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserStarReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
     // console.log('toggleUserStarReportAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-star`;
-    // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+    // console.log(`toggleUserStarReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
       {},

@@ -13,6 +13,7 @@ import {
   fetchReportsAction,
   fetchReportsTreeAction,
   importGithubRepositoryAction,
+  toggleGlobalPinReportAction,
   toggleUserPinReportAction,
   toggleUserStarReportAction,
   updateReportAction,
@@ -111,10 +112,19 @@ const reportsSlice = createSlice({
         [action.payload!.id as string]: action.payload!,
       };
     });
-    builder.addCase(updateReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
-      state.activeId = action.payload!.id;
-    });
     builder.addCase(toggleUserPinReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload!,
+      };
+    });
+    builder.addCase(toggleGlobalPinReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload!,
+      };
+    });
+    builder.addCase(updateReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchBranchesAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
