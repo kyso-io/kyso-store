@@ -505,11 +505,14 @@ export const createKysoReportUIAction = createAsyncThunk(
   }
 );
 
-export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async (repositoryName: string, { getState, dispatch }): Promise<ReportDTO | null> => {
+export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async(args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     // console.log(`importGithubRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${repositoryName}`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
+    if (args?.branch) {
+      url = `${url}?branch=${args.branch}`;
+    }
     // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
       url,
@@ -530,6 +533,7 @@ export const importGithubRepositoryAction = createAsyncThunk('reports/importGith
       return null;
     }
   } catch (e: any) {
+    console.log(e)
     // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
