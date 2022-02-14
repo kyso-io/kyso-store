@@ -2,17 +2,23 @@ import { NormalizedResponseDTO, Report, Team, TeamMember, UpdateTeamMembersDTO, 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (_, { getState, dispatch }): Promise<Team[]> => {
+export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<Team[]> => {
   try {
     // console.log('fetchTeamsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
+
+    const qs = new URLSearchParams({
+      page: (payload?.page || 1).toString(),
+      per_page: (payload?.per_page || 20).toString(),
+      sort: 'desc',
+      ...payload?.filter,
+    });
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams?${qs.toString()}`;
     // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
