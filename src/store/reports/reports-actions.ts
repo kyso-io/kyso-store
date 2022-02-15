@@ -649,3 +649,30 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
     return null;
   }
 });
+
+export const fetchEmbeddedReportAction = createAsyncThunk('reports/fetchEmbeddedReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
+  try {
+    // console.log('fetchEmbeddedReportAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/embedded`;
+    // console.log(`fetchEmbeddedReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchEmbeddedReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchEmbeddedReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchEmbeddedReportAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`fetchEmbeddedReportAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
