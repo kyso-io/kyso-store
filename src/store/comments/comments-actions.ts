@@ -2,9 +2,7 @@ import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -38,37 +36,35 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
 });
 
 export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Comment[]> => {
- try {
-   // console.log('fetchDiscussionComments invoked');
-   
-   const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
-   const { auth } = getState() as RootState;
-   
-   // console.log(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
-   
-   const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-     headers: buildAuthHeaders(auth)
-   });
-   
-   if (axiosResponse?.data?.relations) {
-     // console.log(`fetchDiscussionComments: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-     dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
-   }
+  try {
+    // console.log('fetchDiscussionComments invoked');
 
-   if (axiosResponse?.data?.data) {
-     // console.log(`fetchDiscussionComments: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-     return axiosResponse.data.data;
-   } else {
-     // console.log(`fetchDiscussionComments: Response didn't have data, returning null`);
-     return [];
-   }
- } catch (e: any) {
-   // console.log(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
-   return [];
- }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
+    const { auth } = getState() as RootState;
+
+    // console.log(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
+
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchDiscussionComments: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    }
+
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchDiscussionComments: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchDiscussionComments: Response didn't have data, returning null`);
+      return [];
+    }
+  } catch (e: any) {
+    // console.log(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
+    return [];
+  }
 });
-
-
 
 export const fetchCommentAction = createAsyncThunk('comments/fetchComment', async (commentId: string, { getState, dispatch }): Promise<Comment | null> => {
   try {

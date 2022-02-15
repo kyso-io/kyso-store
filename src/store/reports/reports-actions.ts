@@ -1,4 +1,4 @@
-import { CreateReportDTO, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { CreateReportDTO, File, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import { AxiosResponse } from 'axios';
@@ -505,40 +505,43 @@ export const createKysoReportUIAction = createAsyncThunk(
   }
 );
 
-export const importGithubRepositoryAction = createAsyncThunk('reports/importGithubRepository', async(args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-  try {
-    // console.log(`importGithubRepositoryAction invoked`);
-    const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
-    if (args?.branch) {
-      url = `${url}?branch=${args.branch}`;
-    }
-    // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-      url,
-      {},
-      {
-        headers: buildAuthHeaders(auth),
+export const importGithubRepositoryAction = createAsyncThunk(
+  'reports/importGithubRepository',
+  async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log(`importGithubRepositoryAction invoked`);
+      const { auth } = getState() as RootState;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
+      if (args?.branch) {
+        url = `${url}?branch=${args.branch}`;
       }
-    );
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
+      // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      console.log(e);
+      // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return null;
     }
-  } catch (e: any) {
-    console.log(e)
-    // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return null;
   }
-});
+);
 
 export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
@@ -612,6 +615,36 @@ export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteRep
     }
   } catch (e: any) {
     // console.log(`deleteReportPreviewPictureAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles', async (args: { reportId: string; version: number }, { getState, dispatch }): Promise<File[] | null> => {
+  try {
+    // console.log('fetchReportFilesAction invoked');
+    const { auth } = getState() as RootState;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/files`;
+    if (args.version && args.version > 0) {
+      url += `?version=${args.version}`;
+    }
+    // console.log(`fetchReportFilesAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<File[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchReportFilesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchReportFilesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchReportFilesAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`fetchReportFilesAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
