@@ -1,0 +1,6 @@
+# Disable eslint for now, the version used by code climate is 7.6.0 and that
+# does not support es2021 (see
+# https://github.com/standard/eslint-config-standard/issues/176)
+plugins: 
+  eslint:
+    enabled: false
