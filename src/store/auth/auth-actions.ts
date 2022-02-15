@@ -1,14 +1,12 @@
-import { CreateUserRequestDTO, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
+import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { refreshUserAction, RootState, setTokenAuthAction } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
-export const loginAction = createAsyncThunk('auth/login', async (credentials: { username: string; password: string; provider: string }, { dispatch }): Promise<string | null> => {
+export const loginAction = createAsyncThunk('auth/login', async (credentials: Login, { dispatch }): Promise<string | null> => {
   try {
     // console.log('loginAction invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
