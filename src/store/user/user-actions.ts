@@ -2,56 +2,57 @@ import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, U
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { LOGGER } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (payload: { userIds: string[], page: number, per_page: number, sort: string} , { dispatch, getState }): Promise<UserDTO[]> => {
-  try {
-    // console.log('fetchUsersAction invoked');
-    const { auth } = getState() as RootState;
+export const fetchUsersAction = createAsyncThunk(
+  'user/fetchUsers',
+  async (payload: { userIds: string[]; page: number; per_page: number; sort: string }, { dispatch, getState }): Promise<UserDTO[]> => {
+    try {
+      // console.log('fetchUsersAction invoked');
+      const { auth } = getState() as RootState;
 
-    if(!payload.page) {
-      payload.page = 1
-    }
+      if (!payload.page) {
+        payload.page = 1;
+      }
 
-    if(!payload.per_page) {
-      payload.per_page = 20
-    }
+      if (!payload.per_page) {
+        payload.per_page = 20;
+      }
 
-    if(!payload.sort) {
-      payload.sort = "desc"
-    }
-    
-    let userIdsQueryString = ""
-    if(payload.userIds) {
-      userIdsQueryString = payload.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + "&" + last )
-    }
-    
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users?page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}${userIdsQueryString}`;
-    // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchUsersAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchUsersAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`fetchUsersAction: Response didn't have data, returning an empty array []`);
+      if (!payload.sort) {
+        payload.sort = 'desc';
+      }
+
+      let userIdsQueryString = '';
+      if (payload.userIds) {
+        userIdsQueryString = payload.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
+      }
+
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/users?page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}${userIdsQueryString}`;
+      // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchUsersAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`fetchUsersAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchUsersAction: Response didn't have data, returning an empty array []`);
+        return [];
+      }
+    } catch (e: any) {
+      // console.log(`fetchTeamsAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return [];
     }
-  } catch (e: any) {
-    // console.log(`fetchTeamsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return [];
   }
-});
+);
 
 export const createUserAction = createAsyncThunk('user/createUser', async (user: User, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
@@ -107,32 +108,62 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
   }
 });
 
-export const updateUserAction = createAsyncThunk('user/updateUser', async (payload: { userId: string; updateUserRequestDto: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
+export const fetchUserProfileAction = createAsyncThunk('user/fetchUserProfile', async (username: string, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
-    // console.log('updateUserAction invoked');
+    // console.log('fetchUserProfileAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
-    // console.log(`updateUserAction: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.patch(url, payload.updateUserRequestDto, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${username}/profile`;
+    // console.log(`fetchUserProfileAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`updateUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      // console.log(`fetchUserProfileAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`updateUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      // console.log(`fetchUserProfileAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`updateUserAction: Response didn't have data, returning null`);
+      // console.log(`fetchUserProfileAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`updateUserAction: Error processing action: ${e.toString()}`);
+    // console.log(`fetchUserProfileAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
 });
+
+export const updateUserAction = createAsyncThunk(
+  'user/updateUser',
+  async (payload: { userId: string; updateUserRequestDto: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
+    try {
+      // console.log('updateUserAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
+      // console.log(`updateUserAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.patch(url, payload.updateUserRequestDto, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`updateUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`updateUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`updateUserAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`updateUserAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
 
 export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userId: string, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
