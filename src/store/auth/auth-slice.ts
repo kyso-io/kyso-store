@@ -5,12 +5,14 @@ export type AuthState = {
   token: string | null;
   team: string | null;
   organization: string | null;
+  organizationAuthOptions: any | null;
 };
 
 const initialState: AuthState = {
   token: null,
   team: null,
   organization: null,
+  organizationAuthOptions: null
 };
 
 const authSlice = createSlice({
@@ -31,9 +33,12 @@ const authSlice = createSlice({
     setOrganizationAuthAction: (state: AuthState, action: ActionWithPayload<string>) => {
       state.organization = action.payload;
     },
+    setOrganizationAuthOptionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
+      state.organizationAuthOptions = action.payload;
+    },
   },
 });
 
-export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction } = authSlice.actions;
+export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction } = authSlice.actions;
 
 export default authSlice.reducer;
