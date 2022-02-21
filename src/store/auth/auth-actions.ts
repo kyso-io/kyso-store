@@ -75,20 +75,20 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
 
 export const fetchOrganizationAuthOptions = createAsyncThunk('auth/fetchOrganizationAuthOptions', async (organizationSlugName: string, { dispatch }): Promise<string | null> => {
   try {
-    // console.log('loginAction invoked');
+    console.log('fetchOrganizationAuthOptions invoked');
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/organization/${organizationSlugName}/options`;
-    // console.log(`loginAction - POST ${url}`);
+    console.log(`fetchOrganizationAuthOptions - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
-      // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchOrganizationAuthOptions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       dispatch(setOrganizationAuthOptionsAction(axiosResponse.data.data));
       return axiosResponse.data.data;
     } else {
-      // console.log(`loginAction: Response didn't have data, returning null`);
+      // console.log(`fetchOrganizationAuthOptions: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`loginAction: Error processing action: ${e.toString()}`);
+    // console.log(`fetchOrganizationAuthOptions: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
