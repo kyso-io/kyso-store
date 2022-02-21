@@ -6,7 +6,7 @@ import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<Team[]> => {
+export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<Team[]> => {
   try {
     // console.log('fetchTeamsAction invoked');
     const { auth } = getState() as RootState;
@@ -14,7 +14,7 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payl
     const qs = new URLSearchParams({
       page: (payload?.page || 1).toString(),
       per_page: (payload?.per_page || 20).toString(),
-      sort: 'desc',
+      sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
       ...payload?.filter,
     });
 
