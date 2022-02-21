@@ -549,9 +549,9 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
     try {
       // console.log(`importBitbucketRepositoryAction invoked`);
       const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket/${args.repositoryName}`;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket?name=${args.repositoryName}`;
       if (args?.branch) {
-        url = `${url}?branch=${args.branch}`;
+        url += `&branch=${args.branch}`;
       }
       // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
