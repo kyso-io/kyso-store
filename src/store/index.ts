@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import auth from './auth/auth-slice';
+import bitbucketRepositories from './bitbucket/bitbucket-repositories-slice';
 import comments from './comments/comments-slice';
 import discussions from './discussions/discussions-slice';
 import error from './error/error-slice';
@@ -14,6 +15,7 @@ import user from './user/user-slice';
 
 export const reducer = combineReducers({
   auth,
+  bitbucketRepositories,
   comments,
   discussions,
   error,
@@ -44,6 +46,8 @@ export type AppDispatch = typeof store.dispatch;
 // Export actions
 export * from './auth/auth-actions';
 export * from './auth/auth-slice';
+export * from './bitbucket/bitbucket-actions';
+export * from './bitbucket/bitbucket-repositories-slice';
 export * from './comments/comments-actions';
 export * from './comments/comments-slice';
 export * from './discussions/discussions-actions';

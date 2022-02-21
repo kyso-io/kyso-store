@@ -524,7 +524,7 @@ export const importGithubRepositoryAction = createAsyncThunk(
         }
       );
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        // console.log(`importGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
@@ -537,6 +537,44 @@ export const importGithubRepositoryAction = createAsyncThunk(
     } catch (e: any) {
       console.log(e);
       // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
+
+export const importBitbucketRepositoryAction = createAsyncThunk(
+  'reports/importBitbucketRepository',
+  async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log(`importBitbucketRepositoryAction invoked`);
+      const { auth } = getState() as RootState;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket?name=${args.repositoryName}`;
+      if (args?.branch) {
+        url += `&branch=${args.branch}`;
+      }
+      // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        // console.log(`importBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`importBitbucketRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`importBitbucketRepositoryAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      console.log(e);
+      // console.log(`importBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
@@ -650,29 +688,32 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
   }
 });
 
-export const fetchEmbeddedReportAction = createAsyncThunk('reports/fetchEmbeddedReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
-  try {
-    // console.log('fetchEmbeddedReportAction invoked');
-    const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/embedded`;
-    // console.log(`fetchEmbeddedReportAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchEmbeddedReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchEmbeddedReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`fetchEmbeddedReportAction: Response didn't have data, returning null`);
+export const fetchEmbeddedReportAction = createAsyncThunk(
+  'reports/fetchEmbeddedReport',
+  async (args: { organizationName: string; teamName: string; reportName: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log('fetchEmbeddedReportAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/embedded/${args.organizationName}/${args.teamName}/${args.reportName}`;
+      // console.log(`fetchEmbeddedReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchEmbeddedReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`fetchEmbeddedReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchEmbeddedReportAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchEmbeddedReportAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return null;
     }
-  } catch (e: any) {
-    // console.log(`fetchEmbeddedReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return null;
   }
-});
+);
