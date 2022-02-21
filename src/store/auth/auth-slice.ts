@@ -34,7 +34,6 @@ const authSlice = createSlice({
       state.organization = action.payload;
     },
     setOrganizationAuthOptionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
-      console.log(action.payload)
       state.organizationAuthOptions = action.payload;
     },
   },
