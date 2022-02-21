@@ -524,7 +524,7 @@ export const importGithubRepositoryAction = createAsyncThunk(
         }
       );
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        // console.log(`importGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
@@ -537,6 +537,44 @@ export const importGithubRepositoryAction = createAsyncThunk(
     } catch (e: any) {
       console.log(e);
       // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
+
+export const importBitbucketRepositoryAction = createAsyncThunk(
+  'reports/importBitbucketRepository',
+  async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log(`importBitbucketRepositoryAction invoked`);
+      const { auth } = getState() as RootState;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket/${args.repositoryName}`;
+      if (args?.branch) {
+        url = `${url}?branch=${args.branch}`;
+      }
+      // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        // console.log(`importBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`importBitbucketRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`importBitbucketRepositoryAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      console.log(e);
+      // console.log(`importBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
