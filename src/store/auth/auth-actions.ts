@@ -2,18 +2,23 @@ import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
+import { LOGGER_DEBUG, LOGGER_ERROR, LOGGER_INFO, LOGGER_WARN } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
 export const loginAction = createAsyncThunk('auth/login', async (credentials: Login, { dispatch }): Promise<string | null> => {
   try {
-    // console.log('loginAction invoked');
+    LOGGER_DEBUG('loginAction invoked')
+    LOGGER_INFO('info test')
+    LOGGER_WARN('warn test')
+    LOGGER_ERROR('error test')
+    
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
-    // console.log(`loginAction - POST ${url}`);
+    LOGGER_DEBUG(`loginAction - POST ${url}`)
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
     if (axiosResponse?.data?.data) {
-      // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      LOGGER_DEBUG(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`)
       dispatch(setTokenAuthAction(axiosResponse.data.data));
       dispatch(refreshUserAction());
       return axiosResponse.data.data;
