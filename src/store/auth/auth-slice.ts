@@ -39,7 +39,7 @@ const authSlice = createSlice({
       state.organizationAuthOptions = action.payload;
     },
     setUserPermissionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
-      state.organizationAuthOptions = action.payload;
+      state.currentUserPermissions = action.payload;
     },
   },
 });
