@@ -7,6 +7,7 @@ import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
 import sha256File from 'sha256-file';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';

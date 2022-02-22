@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 

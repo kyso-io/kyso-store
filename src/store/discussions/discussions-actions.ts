@@ -3,11 +3,12 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { selectActiveTeam } from '../teams/teams-slice';
+import { printAuthenticated } from '../../helpers/logger-helper';
+
 /**
  * Fetch discussions based on team and user data in the Store. Pagination allowed using page and per_page parameters
  */
