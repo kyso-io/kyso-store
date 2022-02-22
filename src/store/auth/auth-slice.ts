@@ -6,13 +6,15 @@ export type AuthState = {
   team: string | null;
   organization: string | null;
   organizationAuthOptions: any | null;
+  currentUserPermissions: any | null;
 };
 
 const initialState: AuthState = {
   token: null,
   team: null,
   organization: null,
-  organizationAuthOptions: null
+  organizationAuthOptions: null,
+  currentUserPermissions: null
 };
 
 const authSlice = createSlice({
@@ -34,12 +36,14 @@ const authSlice = createSlice({
       state.organization = action.payload;
     },
     setOrganizationAuthOptionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
-      console.log(action.payload)
+      state.organizationAuthOptions = action.payload;
+    },
+    setUserPermissionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
       state.organizationAuthOptions = action.payload;
     },
   },
 });
 
-export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction } = authSlice.actions;
+export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction } = authSlice.actions;
 
 export default authSlice.reducer;
