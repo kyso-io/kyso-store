@@ -267,7 +267,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   }
 });
 
-export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string }, { getState, dispatch }): Promise<Buffer | null> => {
+export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     // console.log('fetchFileContentAction invoked');
     const { auth } = getState() as RootState;
@@ -277,7 +277,10 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     // if (reports.tree) {
     //   hash = reports.tree[0].hash;
     // }
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+    if (payload.path && payload.path.length > 0) {
+      url += `?path=${payload.path}`;
+    }
     // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
