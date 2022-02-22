@@ -1,39 +1,42 @@
-import { NormalizedResponseDTO } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, RepositoryProvider } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 
-export const fetchRepositoriesAction = createAsyncThunk('repos/fetchRepositories', async (_, { getState, dispatch }): Promise<any[]> => {
-  try {
-    // console.log('fetchRepositoriesAction invoked');
-    const { auth, repos } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}?page=${repos.page}&per_page=${repos.limit}`;
-    if (repos?.searchQuery && repos.searchQuery.length > 0) {
-      url += `&filter=${repos.searchQuery}`;
-    }
-    // console.log(`fetchRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchRepositoriesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`fetchRepositoriesAction: Response didn't have data, returning an empty array []`);
+export const fetchRepositoriesAction = createAsyncThunk(
+  'repos/fetchRepositories',
+  async (args: { provider: RepositoryProvider; page: number; per_page: number; query?: string }, { getState, dispatch }): Promise<any[]> => {
+    try {
+      // console.log('fetchRepositoriesAction invoked');
+      const { auth } = getState() as RootState;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${args.provider}?page=${args.page}&per_page=${args.per_page}`;
+      if (args?.query && args.query.length > 0) {
+        url += `&filter=${args.query}`;
+      }
+      // console.log(`fetchRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`fetchRepositoriesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchRepositoriesAction: Response didn't have data, returning an empty array []`);
+        return [];
+      }
+    } catch (e: any) {
+      // console.log(`fetchRepositoriesAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return [];
     }
-  } catch (e: any) {
-    // console.log(`fetchRepositoriesAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return [];
   }
-});
+);
 
 export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepositoryUser', async (_, { getState, dispatch }): Promise<any> => {
   try {

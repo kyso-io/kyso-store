@@ -8,11 +8,14 @@ import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (reportId: string, { getState, dispatch }): Promise<Comment[]> => {
+export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (args: { reportId: string, sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
     // console.log('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/comments`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/comments`;
+    if (args.sort) {
+      url += `?sort=${args.sort}`;
+    }
     // console.log(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -35,11 +38,14 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
   }
 });
 
-export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Comment[]> => {
+export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (args: { discussionId: string, sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
     // console.log('fetchDiscussionComments invoked');
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${payload.discussionId}/comments`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${args.discussionId}/comments`;
+    if (args.sort) {
+      url += `?sort=${args.sort}`;
+    }
     const { auth } = getState() as RootState;
 
     // console.log(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
