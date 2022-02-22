@@ -1,9 +1,8 @@
 import { CreateInvitationDto, Invitation, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { LOGGER, RootState, setError } from '../..';
+import { RootState, setError } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
