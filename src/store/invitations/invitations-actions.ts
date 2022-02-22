@@ -8,14 +8,14 @@ import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const fetchInvitationsAction = createAsyncThunk(
   'tags/fetchInvitations',
-  async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<Invitation[]> => {
+  async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<Invitation[]> => {
     try {
       // console.log('fetchInvitationsAction invoked');
       const { auth } = getState() as RootState;
       const qs = new URLSearchParams({
         page: (payload?.page || 1).toString(),
         per_page: (payload?.per_page || 20).toString(),
-        sort: 'desc',
+        sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
         ...payload?.filter,
       });
       const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations?${qs.toString()}`;
@@ -42,35 +42,32 @@ export const fetchInvitationsAction = createAsyncThunk(
   }
 );
 
-export const fetchInvitationAction = createAsyncThunk(
-  'tags/fetchInvitation',
-  async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
-    try {
-      // console.log('fetchInvitationAction invoked');
-      const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
-      // console.log(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data?.relations) {
-        // console.log(`fetchInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
-      }
-      if (axiosResponse?.data?.data) {
-        // console.log(`fetchInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-        return axiosResponse.data.data;
-      } else {
-        // console.log(`fetchInvitationAction: Response didn't have data, returning null`);
-        return null;
-      }
-    } catch (e: any) {
-      // console.log(`fetchInvitationAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+export const fetchInvitationAction = createAsyncThunk('tags/fetchInvitation', async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {
+  try {
+    // console.log('fetchInvitationAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
+    // console.log(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchInvitationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchInvitationAction: Response didn't have data, returning null`);
       return null;
     }
+  } catch (e: any) {
+    // console.log(`fetchInvitationAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
   }
-);
+});
 
 export const createInvitationAction = createAsyncThunk('tags/createInvitation', async (createInvitationDto: CreateInvitationDto, { getState, dispatch }): Promise<Invitation | null> => {
   try {
@@ -105,9 +102,13 @@ export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', 
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/accept-invitation/${invitationId}`;
     // console.log(`acceptInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(url, {}, {
-      headers: buildAuthHeaders(auth),
-    });
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
     if (axiosResponse?.data?.relations) {
       // console.log(`acceptInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -132,9 +133,13 @@ export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', 
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/reject-invitation/${invitationId}`;
     // console.log(`rejectInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(url, {}, {
-      headers: buildAuthHeaders(auth),
-    });
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
     if (axiosResponse?.data?.relations) {
       // console.log(`rejectInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));

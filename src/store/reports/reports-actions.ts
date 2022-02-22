@@ -65,40 +65,43 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
   }
 });
 
-export const fetchReportsAction = createAsyncThunk('reports/fetchReports', async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<ReportDTO[]> => {
-  try {
-    // console.log('fetchReportsAction invoked');
-    const { auth } = getState() as RootState;
+export const fetchReportsAction = createAsyncThunk(
+  'reports/fetchReports',
+  async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<ReportDTO[]> => {
+    try {
+      // console.log('fetchReportsAction invoked');
+      const { auth } = getState() as RootState;
 
-    const qs = new URLSearchParams({
-      page: (payload?.page || 1).toString(),
-      per_page: (payload?.per_page || 20).toString(),
-      sort: 'desc',
-      ...payload?.filter,
-    });
+      const qs = new URLSearchParams({
+        page: (payload?.page || 1).toString(),
+        per_page: (payload?.per_page || 20).toString(),
+        sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
+        ...payload?.filter,
+      });
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
-    // console.log(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data.data) {
-      // console.log(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`fetchReportsAction: Response didn't have data, returning null`);
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
+      // console.log(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data.data) {
+        // console.log(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchReportsAction: Response didn't have data, returning null`);
+        return [];
+      }
+    } catch (e: any) {
+      // console.log(`fetchReportsAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return [];
     }
-  } catch (e: any) {
-    // console.log(`fetchReportsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return [];
   }
-});
+);
 
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
