@@ -10,7 +10,7 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
   'github/fetchGithubRepositories',
   async (payload: { filter?: object; page?: number; per_page?: number }, { getState, dispatch }): Promise<GithubRepository[]> => {
     try {
-      // console.log('fetchGithubRepositoriesAction invoked');
+      console.log('fetchGithubRepositoriesAction invoked');
       const { auth } = getState() as RootState;
 
       const qs = new URLSearchParams({
@@ -21,23 +21,23 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
       });
 
       const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github?${qs.toString()}`;
-      // console.log(`fetchGithubRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchGithubRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchGithubRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchGithubRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        // console.log(`fetchGithubRepositoriesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchGithubRepositoriesAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        // console.log(`fetchGithubRepositoriesAction: Response didn't have data, returning an empty array []`);
+        console.log(`fetchGithubRepositoriesAction: Response didn't have data, returning an empty array []`);
         return [];
       }
     } catch (e: any) {
-      // console.log(`fetchGithubRepositoriesAction: Error processing action: ${e.toString()}`);
+      console.log(`fetchGithubRepositoriesAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -46,26 +46,26 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
 
 export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', async (_, { getState, dispatch }): Promise<GithubAccount | null> => {
   try {
-    // console.log('fetchGithubUserAction invoked');
+    console.log('fetchGithubUserAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user`;
-    // console.log(`fetchGithubUserAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchGithubUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchGithubUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchGithubUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchGithubUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchGithubUserAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchGithubUserAction: Response didn't have data, returning null`);
+      console.log(`fetchGithubUserAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`fetchGithubUserAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchGithubUserAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -73,26 +73,26 @@ export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', 
 
 export const fetchGithubRepositoryAction = createAsyncThunk('github/fetchGithubRepository', async (repositoryName: string, { getState, dispatch }): Promise<GithubRepository | null> => {
   try {
-    // console.log('fetchGithubRepositoryAction invoked');
+    console.log('fetchGithubRepositoryAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${repositoryName}`;
-    // console.log(`fetchGithubRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchGithubRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchGithubRepositoryAction: Response didn't have data, returning null`);
+      console.log(`fetchGithubRepositoryAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`fetchGithubRepositoryAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchGithubRepositoryAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -102,26 +102,26 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
   'github/fetchgithubRepositoryTree',
   async (payload: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
-      // console.log('fetchGithubRepositoryTreeAction invoked');
+      console.log('fetchGithubRepositoryTreeAction invoked');
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
-      // console.log(`fetchGithubRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
+      console.log(`fetchGithubRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchGithubRepositoryTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        console.log(`fetchGithubRepositoryTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        // console.log(`fetchGithubRepositoryTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        console.log(`fetchGithubRepositoryTreeAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        // console.log(`fetchGithubRepositoryTreeAction: Response didn't have data, returning an empty array []`);
+        console.log(`fetchGithubRepositoryTreeAction: Response didn't have data, returning an empty array []`);
         return [];
       }
     } catch (e: any) {
-      // console.log(`fetchGithubRepositoryTreeAction: Error processing action: ${e.toString()}`);
+      console.log(`fetchGithubRepositoryTreeAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return [];
     }
@@ -130,26 +130,26 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
 
 export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetchGithubUserByAccessToken', async (accessToken: string, { getState, dispatch }): Promise<any> => {
   try {
-    // console.log('fetchGithubUserByAccessTokenAction invoked');
+    console.log('fetchGithubUserByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/access-token/${accessToken}`;
-    // console.log(`fetchGithubUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchGithubUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchGithubUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchGithubUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchGithubUserByAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchGithubUserByAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchGithubUserByAccessTokenAction: Response didn't have data, returning null`);
+      console.log(`fetchGithubUserByAccessTokenAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`fetchGithubUserByAccessTokenAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchGithubUserByAccessTokenAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }
@@ -157,26 +157,26 @@ export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetch
 
 export const fetchGithubUserEmailsByAccessTokenAction = createAsyncThunk('github/fetchGithubUserEmailsByAccessToken', async (accessToken: string, { getState, dispatch }): Promise<GithubEmail[]> => {
   try {
-    // console.log('fetchGithubUserEmailsByAccessTokenAction invoked');
+    console.log('fetchGithubUserEmailsByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/emails/access-token/${accessToken}`;
-    // console.log(`fetchGithubUserEmailsByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
+    console.log(`fetchGithubUserEmailsByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubEmail[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchGithubUserEmailsByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      console.log(`fetchGithubUserEmailsByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchGithubUserEmailsByAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchGithubUserEmailsByAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchGithubUserEmailsByAccessTokenAction: Response didn't have data, returning null`);
+      console.log(`fetchGithubUserEmailsByAccessTokenAction: Response didn't have data, returning null`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`fetchGithubUserEmailsByAccessTokenAction: Error processing action: ${e.toString()}`);
+    console.log(`fetchGithubUserEmailsByAccessTokenAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
