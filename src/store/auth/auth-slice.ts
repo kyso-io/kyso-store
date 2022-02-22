@@ -1,5 +1,6 @@
 import { ActionWithPayload } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '..';
 
 export type AuthState = {
   token: string | null;
@@ -46,5 +47,9 @@ const authSlice = createSlice({
 });
 
 export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction } = authSlice.actions;
+
+export const selectCurrentUserPermissions = (state: RootState) => {
+  return state.auth.currentUserPermissions
+};
 
 export default authSlice.reducer;
