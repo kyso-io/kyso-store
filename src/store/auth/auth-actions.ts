@@ -1,7 +1,7 @@
 import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction } from '..';
+import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
@@ -89,6 +89,31 @@ export const fetchOrganizationAuthOptions = createAsyncThunk('auth/fetchOrganiza
     }
   } catch (e: any) {
     // console.log(`fetchOrganizationAuthOptions: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions', async (username: string, { getState, dispatch }): Promise<string | null> => {
+  try {
+    const { auth } = getState() as RootState;
+    // console.log('loginAction invoked');
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/user/${username}/permissions`;
+    // console.log(`loginAction - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.data) {
+      console.log(`fetchUserPermissions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      dispatch(setUserPermissionsAction(axiosResponse.data.data));
+      dispatch(refreshUserAction());
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`loginAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`loginAction: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return null;
   }

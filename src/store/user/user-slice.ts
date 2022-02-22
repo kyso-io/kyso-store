@@ -51,7 +51,7 @@ const userSlice = createSlice({
 
 export const selectUser = (state: RootState) => {
   return state.user.user
-}
+};
 
 export const { setUser } = userSlice.actions;
 

@@ -1,4 +1,3 @@
-import { LOGGER } from "..";
 import { AuthState } from "../store/auth/auth-slice"
 
 export const buildAuthHeaders = (auth: AuthState) => {

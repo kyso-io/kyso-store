@@ -1,18 +1,21 @@
 import { ActionWithPayload } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '..';
 
 export type AuthState = {
   token: string | null;
   team: string | null;
   organization: string | null;
   organizationAuthOptions: any | null;
+  currentUserPermissions: any | null;
 };
 
 const initialState: AuthState = {
   token: null,
   team: null,
   organization: null,
-  organizationAuthOptions: null
+  organizationAuthOptions: null,
+  currentUserPermissions: null
 };
 
 const authSlice = createSlice({
@@ -34,12 +37,19 @@ const authSlice = createSlice({
       state.organization = action.payload;
     },
     setOrganizationAuthOptionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
-      console.log(action.payload)
       state.organizationAuthOptions = action.payload;
+    },
+    setUserPermissionsAction: (state: AuthState, action: ActionWithPayload<any>) => {
+      console.log(action.payload)
+      state.currentUserPermissions = action.payload;
     },
   },
 });
 
-export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction } = authSlice.actions;
+export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction } = authSlice.actions;
+
+export const selectCurrentUserPermissions = (state: RootState) => {
+  return state.auth.currentUserPermissions
+};
 
 export default authSlice.reducer;
