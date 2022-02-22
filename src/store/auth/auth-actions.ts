@@ -104,7 +104,7 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
-      // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      console.log(`fetchUserPermissions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       dispatch(setUserPermissionsAction(axiosResponse.data.data));
       dispatch(refreshUserAction());
       return axiosResponse.data.data;
