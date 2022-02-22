@@ -1,7 +1,7 @@
 import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
-import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissions } from '..';
+import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
@@ -105,7 +105,7 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
     });
     if (axiosResponse?.data?.data) {
       // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      dispatch(setUserPermissions(axiosResponse.data.data));
+      // dispatch(setUserPermissions(axiosResponse.data.data));
       dispatch(refreshUserAction());
       return axiosResponse.data.data;
     } else {
