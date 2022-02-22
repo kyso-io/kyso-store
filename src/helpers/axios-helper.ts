@@ -19,8 +19,8 @@ export const buildAuthHeaders = (auth: AuthState) => {
     headers['x-kyso-organization'] = organization;
   }
   
-  console.log('Auth Headers')
-  console.log(headers)
+  // console.log('Auth Headers')
+  // console.log(headers)
 
   return headers
 }
