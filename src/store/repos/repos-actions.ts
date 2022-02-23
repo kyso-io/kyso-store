@@ -173,3 +173,30 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
     return null;
   }
 });
+
+export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUserUserByAccessToken', async (accessToken: string, { getState, dispatch }): Promise<any> => {
+  try {
+    // console.log(`fetchUserUserByAccessTokenAction: accessToken ${accessToken}`);
+    const { auth, repos } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/access-token/${accessToken}`;
+    // console.log(`fetchUserUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchUserUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchUserUserByAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchUserUserByAccessTokenAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`fetchUserUserByAccessTokenAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
