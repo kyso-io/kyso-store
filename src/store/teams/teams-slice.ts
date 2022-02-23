@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
 import { fetchRelationsAction } from '../relations/relations-actions';
-import { fetchTeamAction } from './teams-actions';
+import { fetchTeamAction, updateTeamAction } from './teams-actions';
 
 export type TeamsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -34,6 +34,13 @@ const teamsSlice = createSlice({
       state.entities = {
         ...state.entities,
         [action.payload!.id as string]: action.payload
+      };
+      state.activeId = action.payload!.id;
+    });
+    builder.addCase(updateTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
+      state.entities = {
+        ...state.entities,
+        [action.payload!.id as string]: action.payload,
       };
       state.activeId = action.payload!.id;
     });
