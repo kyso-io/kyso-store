@@ -174,11 +174,11 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
   }
 });
 
-export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUserUserByAccessToken', async (accessToken: string, { getState, dispatch }): Promise<any> => {
+export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUserUserByAccessToken', async (args: { provider: string; accessToken: string }, { getState, dispatch }): Promise<any> => {
   try {
     // console.log(`fetchUserUserByAccessTokenAction: accessToken ${accessToken}`);
-    const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/access-token/${accessToken}`;
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${args.provider}/user/access-token/${args.accessToken}`;
     // console.log(`fetchUserUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

@@ -67,6 +67,9 @@ export const selectTeamByFilter = (state: RootState, filter: { key: string; valu
 };
 
 export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
+  if (!name) {
+    return null;
+  }
   return Object.values(state.teams.entities!).find((team: { name: string }) => {
     return slugify(team.name) === name;
   });
