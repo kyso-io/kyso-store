@@ -7,7 +7,6 @@ import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
 import sha256File from 'sha256-file';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -268,37 +267,40 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   }
 });
 
-export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
-  try {
-    // console.log('fetchFileContentAction invoked');
-    const { auth } = getState() as RootState;
-    const hash = payload.hash;
+export const fetchFileContentAction = createAsyncThunk(
+  'reports/fetchFileContent',
+  async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
+    try {
+      // console.log('fetchFileContentAction invoked');
+      const { auth } = getState() as RootState;
+      const hash = payload.hash;
 
-    // what is this, I have no idea?
-    // if (reports.tree) {
-    //   hash = reports.tree[0].hash;
-    // }
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
-    if (payload.path && payload.path.length > 0) {
-      url += `?path=${payload.path}`;
-    }
-    // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data) {
-      // console.log(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
-      return axiosResponse.data;
-    } else {
-      // console.log(`fetchFileContentAction: Response didn't have data, returning null`);
+      // what is this, I have no idea?
+      // if (reports.tree) {
+      //   hash = reports.tree[0].hash;
+      // }
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
+      if (payload.path && payload.path.length > 0) {
+        url += `?path=${payload.path}`;
+      }
+      // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data) {
+        // console.log(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
+        return axiosResponse.data;
+      } else {
+        // console.log(`fetchFileContentAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
       return null;
     }
-  } catch (e: any) {
-    // console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return null;
   }
-});
+);
 
 export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {

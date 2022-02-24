@@ -65,11 +65,15 @@ const commentSlice = createSlice({
 
 export const selectCommentsByParent = (state: RootState, parentId: string | null = null) => {
   const values: Comment[] = Object.values(state.comments.entities!);
-  if (values.length === 0) return [];
-
-  const filtered = values.filter((comment: Comment) => {
-    return comment!.comment_id === parentId;
-  });
+  if (values.length === 0) {
+    return [];
+  }
+  let filtered: Comment[] = values;
+  if (parentId) {
+    filtered = filtered.filter((comment: Comment) => {
+      return comment!.comment_id === parentId;
+    });
+  }
   // Sort comments by created_at asc
   filtered.sort((a: Comment, b: Comment) => {
     return a.created_at! > b.created_at! ? 1 : -1;
