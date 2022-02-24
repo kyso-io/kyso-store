@@ -7,7 +7,6 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { selectActiveTeam } from '../teams/teams-slice';
-import { printAuthenticated } from '../../helpers/logger-helper';
 
 /**
  * Fetch discussions based on team and user data in the Store. Pagination allowed using page and per_page parameters
@@ -59,9 +58,12 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
         payload.sort = 'desc';
       }
 
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}`;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/discussions?team_id=${payload.team_id}&page=${payload.page}&per_page=${payload.per_page}`;
       if (payload.search && payload.search.length > 0) {
         url += `&search=${payload.search}`;
+      }
+      if (payload.sort && payload.sort.length > 0) {
+        url += `&sort=${payload.sort}`;
       }
       // console.log(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
 

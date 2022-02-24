@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { ActionWithPayload, Discussion } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
@@ -82,14 +83,27 @@ export const selectDiscussionById = (state: RootState, id: string) => {
   return state.discussions.entities![id];
 };
 
-export const getActiveDiscussions = (state: RootState): Discussion[] => {
+export const getActiveDiscussions = (state: RootState, args?: { sortBy: string; mode: 'asc' | 'desc' }): Discussion[] => {
   const discussions: Discussion[] = [];
   state.discussions.activeIds.forEach((id: string) => {
-    // eslint-disable-next-line no-prototype-builtins
     if (state.discussions.entities.hasOwnProperty(id)) {
       discussions.push(state.discussions.entities![id] as Discussion);
     }
   });
+  if (args && args?.sortBy && args.sortBy.length > 0 && args?.mode && (args.mode === 'asc' || args.mode === 'desc')) {
+    return discussions.sort((a: any, b: any) => {
+      if (!a.hasOwnProperty(args.sortBy) || !b.hasOwnProperty(args.sortBy)) {
+        return 0;
+      }
+      if (a[args.sortBy] < b[args.sortBy]) {
+        return args.mode === 'asc' ? -1 : 1;
+      }
+      if (a[args.sortBy] > b[args.sortBy]) {
+        return args.mode === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
   return discussions;
 };
 
