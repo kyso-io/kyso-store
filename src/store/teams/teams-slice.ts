@@ -70,8 +70,8 @@ export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
   if (!name) {
     return null;
   }
-  return Object.values(state.teams.entities!).find((team: { name: string }) => {
-    return slugify(team.name) === name;
+  return Object.values(state.teams.entities!).find((team: { name: string; sluglified_name: string }) => {
+    return slugify(team.name) === name || team?.sluglified_name === name;
   });
 };
 
