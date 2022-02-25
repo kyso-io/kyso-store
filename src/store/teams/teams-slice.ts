@@ -33,7 +33,7 @@ const teamsSlice = createSlice({
     builder.addCase(fetchTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
       state.entities = {
         ...state.entities,
-        [action.payload!.id as string]: action.payload
+        [action.payload!.id as string]: action.payload,
       };
       state.activeId = action.payload!.id;
     });
@@ -71,7 +71,7 @@ export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
     return null;
   }
   return Object.values(state.teams.entities!).find((team: { name: string; sluglified_name: string }) => {
-    return slugify(team.name) === name || team?.sluglified_name === name;
+    return (team?.name && team.name !== '' && slugify(team.name) === name) || team?.sluglified_name === name;
   });
 };
 
