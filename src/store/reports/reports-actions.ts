@@ -697,6 +697,36 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
   }
 });
 
+export const fetchReportVersionsAction = createAsyncThunk(
+  'reports/fetchReportVersions',
+  async (reportId: string, { getState, dispatch }): Promise<{ version: number; created_at: Date; num_files: number }[]> => {
+    try {
+      // console.log('fetchReportVersionsAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/versions`;
+      // console.log(`fetchReportVersionsAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchReportVersionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`fetchReportVersionsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchReportVersionsAction: Response didn't have data, returning null`);
+        return [];
+      }
+    } catch (e: any) {
+      // console.log(`fetchReportVersionsAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return [];
+    }
+  }
+);
+
 export const fetchEmbeddedReportAction = createAsyncThunk(
   'reports/fetchEmbeddedReport',
   async (args: { organizationName: string; teamName: string; reportName: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
