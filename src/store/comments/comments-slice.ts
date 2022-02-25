@@ -68,12 +68,9 @@ export const selectCommentsByParent = (state: RootState, parentId: string | null
   if (values.length === 0) {
     return [];
   }
-  let filtered: Comment[] = values;
-  if (parentId) {
-    filtered = filtered.filter((comment: Comment) => {
-      return comment!.comment_id === parentId;
-    });
-  }
+  const filtered: Comment[] = values.filter((comment: Comment) => {
+    return comment!.comment_id === parentId;
+  });
   // Sort comments by created_at asc
   filtered.sort((a: Comment, b: Comment) => {
     return a.created_at! > b.created_at! ? 1 : -1;
