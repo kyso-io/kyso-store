@@ -124,26 +124,53 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
 
 export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', async (teamId: string, { getState, dispatch }): Promise<TeamMember[]> => {
   try {
-    // console.log(`fetchTeamMembers invoked`);
+    // console.log(`fetchTeamMembersAction invoked`);
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/members`;
-    // console.log(`fetchTeamMembers: ${printAuthenticated(auth)} - GET ${url}`);
+    // console.log(`fetchTeamMembersAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchTeamMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      // console.log(`fetchTeamMembersAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchTeamMembers: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      // console.log(`fetchTeamMembersAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchTeamMembers: Response didn't have data, returning null`);
+      // console.log(`fetchTeamMembersAction: Response didn't have data, returning null`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`fetchTeamMembers: Error processing action: ${e.toString()}`);
+    // console.log(`fetchTeamMembersAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
+  }
+});
+
+export const fetchTeamAssigneesAction = createAsyncThunk('team/fetchTeamAssignees', async (teamId: string, { getState, dispatch }): Promise<TeamMember[]> => {
+  try {
+    // console.log(`fetchTeamAssignees invoked`);
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/assignees`;
+    // console.log(`fetchTeamAssignees: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`fetchTeamAssignees: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchTeamAssignees: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchTeamAssignees: Response didn't have data, returning null`);
+      return [];
+    }
+  } catch (e: any) {
+    // console.log(`fetchTeamAssignees: Error processing action: ${e.toString()}`);
     dispatch(setError(e.toString()));
     return [];
   }
