@@ -118,3 +118,51 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
     return null;
   }
 });
+
+export const fetchApiVersionAction = createAsyncThunk('auth/fetchApiVersion', async (_, { dispatch }): Promise<string | null> => {
+  try {
+    // console.log('fetchApiVersionAction invoked');
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/version`;
+    // console.log(`fetchApiVersionAction - GET ${url}`);
+    const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
+    return axiosResponse.data;
+  } catch (e: any) {
+    // console.log(`fetchApiVersionAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const fetchDbVersionAction = createAsyncThunk('auth/fetchDbVersion', async (_, { dispatch }): Promise<string | null> => {
+  try {
+    // console.log('fetchDbVersionAction invoked');
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/db`;
+    // console.log(`fetchDbVersionAction - GET ${url}`);
+    const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
+    return axiosResponse.data;
+  } catch (e: any) {
+    // console.log(`fetchDbVersionAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
+
+export const fetchOrganizationLoginOptions = createAsyncThunk('auth/fetchOrganizationLoginOptions', async (organizationSlugName: string, { dispatch }): Promise<string | null> => {
+  try {
+    // console.log('fetchOrganizationLoginOptions invoked');
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/organization/${organizationSlugName}/options`;
+    // console.log(`fetchOrganizationLoginOptions - GET ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
+    if (axiosResponse?.data?.data) {
+      // console.log(`fetchOrganizationLoginOptions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`fetchOrganizationLoginOptions: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`fetchOrganizationLoginOptions: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return null;
+  }
+});
