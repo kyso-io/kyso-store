@@ -1,9 +1,8 @@
-import { NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
+import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -141,35 +140,32 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
   }
 });
 
-export const addUserToOrganizationAction = createAsyncThunk(
-  'organizations/addUserToOrganization',
-  async (payload: { organizationId: string; userId: string }, { getState, dispatch }): Promise<OrganizationMember[]> => {
-    try {
-      // console.log('addUserToOrganization invoked');
-      const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
-      // console.log(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, {
-        headers: buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data?.relations) {
-        // console.log(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
-      }
-      if (axiosResponse?.data?.data) {
-        // console.log(`addUserToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-        return axiosResponse.data.data;
-      } else {
-        // console.log(`addUserToOrganization: Response didn't have data, returning null`);
-        return [];
-      }
-    } catch (e: any) {
-      // console.log(`addUserToOrganization: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+export const addUserToOrganizationAction = createAsyncThunk('organizations/addUserToOrganization', async (data: AddUserOrganizationDto, { getState, dispatch }): Promise<OrganizationMember[]> => {
+  try {
+    // console.log('addUserToOrganization invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/members`;
+    // console.log(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, data, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`addUserToOrganization: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`addUserToOrganization: Response didn't have data, returning null`);
       return [];
     }
+  } catch (e: any) {
+    // console.log(`addUserToOrganization: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return [];
   }
-);
+});
 
 export const removeUserFromOrganizationAction = createAsyncThunk(
   'organizations/removeUserFromOrganization',

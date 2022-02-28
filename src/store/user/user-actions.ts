@@ -3,7 +3,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -23,7 +22,7 @@ export const fetchUsersAction = createAsyncThunk(
       }
 
       if (!payload.sort) {
-        payload.sort = 'desc';
+        payload.sort = 'created_at';
       }
 
       let userIdsQueryString = '';
