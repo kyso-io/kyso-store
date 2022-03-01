@@ -756,3 +756,20 @@ export const fetchEmbeddedReportAction = createAsyncThunk(
     }
   }
 );
+
+export const checkReportExistsAction = createAsyncThunk('reports/checkReportExists', async (args: { teamId: string; reportName: string }, { getState, dispatch }): Promise<boolean> => {
+  try {
+    // console.log('checkReportExistsAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportName}/${args.teamId}/exists`;
+    // console.log(`checkReportExistsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<boolean> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    return axiosResponse.data;
+  } catch (e: any) {
+    // console.log(`checkReportExistsAction: Error processing action: ${e.toString()}`);
+    dispatch(setError(e.toString()));
+    return false;
+  }
+});
