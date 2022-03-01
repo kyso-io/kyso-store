@@ -1,4 +1,5 @@
-import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, OrganizationMember, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
+
+import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, OrganizationMember, OrganizationOptions, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -80,6 +81,36 @@ export const updateOrganizationAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateOrganizationAction: Error processing action: ${e.toString()}`);
+      dispatch(setError(e.toString()));
+      return null;
+    }
+  }
+);
+
+export const updateOrganizationOptionsAction = createAsyncThunk(
+  'organizations/updateOrganizationOptions',
+  async (args: { organizationId: string; options: OrganizationOptions }, { getState, dispatch }): Promise<Organization | null> => {
+    try {
+      // console.log('updateOrganizationOptionsAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/options`;
+      // console.log(`updateOrganizationOptionsAction: ${printAuthenticated(auth)} - PATCH ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, args.options, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`updateOrganizationOptionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`updateOrganizationOptionsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`updateOrganizationOptionsAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`updateOrganizationOptionsAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
       return null;
     }
