@@ -1,5 +1,6 @@
 import { ActionWithPayload, Comment, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import moment from 'moment';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -71,9 +72,9 @@ export const selectCommentsByParent = (state: RootState, parentId: string | null
   const filtered: Comment[] = values.filter((comment: Comment) => {
     return comment!.comment_id === parentId;
   });
-  // Sort comments by created_at asc
+  // Sort comments by created_at desc
   filtered.sort((a: Comment, b: Comment) => {
-    return a.created_at! > b.created_at! ? 1 : -1;
+    return moment(a.created_at!).isAfter(moment(b.created_at!)) ? -1 : 1;
   });
   return filtered;
 };

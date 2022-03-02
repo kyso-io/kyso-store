@@ -1,4 +1,4 @@
-import { CreateReportDTO, File, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { File, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import { AxiosResponse } from 'axios';
@@ -10,33 +10,6 @@ import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
-
-export const createReportAction = createAsyncThunk('reports/createReport', async (createReportDto: CreateReportDTO, { getState, dispatch }): Promise<ReportDTO | null> => {
-  try {
-    // console.log(`createReportAction invoked`);
-    const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports`;
-    // console.log(`createReportAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, createReportDto, {
-      headers: buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`createReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`createReportAction: Response didn't have data, returning null`);
-      return null;
-    }
-  } catch (e: any) {
-    // console.log(`createReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
-    return null;
-  }
-});
 
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
@@ -398,10 +371,10 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (
-    payload: { title: string; organization: string; team: string; description: string; tags: string[]; filePaths: string[]; basePath: string | null },
+    payload: { title: string; organization: string; team: string; description: string; tags: string[]; filePaths: string[]; basePath: string | null; mainFile: string | null },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
-    const zipedFiles: string[] = [];
+    const zippedFiles: string[] = [];
     try {
       // console.log(`createKysoReportAction invoked`);
       const { auth } = getState() as RootState;
@@ -413,6 +386,7 @@ export const createKysoReportAction = createAsyncThunk(
       formData.append('description', payload.description);
       formData.append('organization', payload.organization);
       formData.append('team', payload.team);
+      formData.append('main_file', payload.mainFile);
       payload.tags.forEach((tag: string) => {
         formData.append('tags', tag);
       });
@@ -425,7 +399,7 @@ export const createKysoReportAction = createAsyncThunk(
         zip.addFile(filename, content);
         const outputFilePath = `/tmp/${filename}.zip`;
         zip.writeZip(outputFilePath);
-        zipedFiles.push(outputFilePath);
+        zippedFiles.push(outputFilePath);
         formData.append('files', createReadStream(outputFilePath), {
           filename,
           knownLength: statSync(outputFilePath).size,
@@ -456,11 +430,11 @@ export const createKysoReportAction = createAsyncThunk(
     } catch (e: any) {
       // console.log(`createKysoReportAction: Error processing action: ${e.toString()}`);
       dispatch(setError(e.toString()));
-      return null;
+      return e;
     } finally {
       // Delete zip files
-      for (const zipedFile of zipedFiles) {
-        unlinkSync(zipedFile);
+      for (const zippedFile of zippedFiles) {
+        unlinkSync(zippedFile);
       }
     }
   }
@@ -517,76 +491,75 @@ export const createKysoReportUIAction = createAsyncThunk(
 export const importGithubRepositoryAction = createAsyncThunk(
   'reports/importGithubRepository',
   async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-    try {
-      // console.log(`importGithubRepositoryAction invoked`);
-      const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
-      if (args?.branch) {
-        url = `${url}?branch=${args.branch}`;
+    // try {
+    // console.log(`importGithubRepositoryAction invoked`);
+    const { auth } = getState() as RootState;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
+    if (args?.branch) {
+      url = `${url}?branch=${args.branch}`;
+    }
+    // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
       }
-      // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-        url,
-        {},
-        {
-          headers: buildAuthHeaders(auth),
-        }
-      );
-      if (axiosResponse?.data?.relations) {
-        // console.log(`importGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
-      }
-      if (axiosResponse?.data?.data) {
-        // console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-        return axiosResponse.data.data;
-      } else {
-        // console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
-        return null;
-      }
-    } catch (e: any) {
-      // console.log(e);
-      // console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+    );
+    if (axiosResponse?.data?.relations) {
+      // console.log(`importGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
       return null;
     }
+    // } catch (e: any) {
+    //   console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
+    //   dispatch(setError(e.toString()));
+    //   return null;
+    // }
   }
 );
 
 export const importBitbucketRepositoryAction = createAsyncThunk(
   'reports/importBitbucketRepository',
   async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-    try {
-      // console.log(`importBitbucketRepositoryAction invoked`);
-      const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket?name=${args.repositoryName}`;
-      if (args?.branch) {
-        url += `&branch=${args.branch}`;
+    // try {
+    // console.log(`importBitbucketRepositoryAction invoked`);
+    const { auth } = getState() as RootState;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket?name=${args.repositoryName}`;
+    if (args?.branch) {
+      url += `&branch=${args.branch}`;
+    }
+    // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
       }
-      // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-        url,
-        {},
-        {
-          headers: buildAuthHeaders(auth),
-        }
-      );
-      if (axiosResponse?.data?.relations) {
-        // console.log(`importBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
-      }
-      if (axiosResponse?.data?.data) {
-        // console.log(`importBitbucketRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-        return axiosResponse.data.data;
-      } else {
-        // console.log(`importBitbucketRepositoryAction: Response didn't have data, returning null`);
-        return null;
-      }
-    } catch (e: any) {
-      // console.log(e);
-      // console.log(`importBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+    );
+    if (axiosResponse?.data?.relations) {
+      // console.log(`importBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`importBitbucketRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`importBitbucketRepositoryAction: Response didn't have data, returning null`);
       return null;
     }
+    // } catch (e: any) {
+    //   // console.log(e);
+    //   // console.log(`importBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
+    //   dispatch(setError(e.toString()));
+    //   return null;
+    // }
   }
 );
 
