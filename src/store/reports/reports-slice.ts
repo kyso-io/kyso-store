@@ -4,7 +4,6 @@ import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import {
-  createReportAction,
   deleteReportAction,
   fetchBranchesAction,
   fetchCommitsAction,
@@ -95,9 +94,6 @@ const reportsSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(createReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
-      state.activeId = action.payload!.id;
-    });
     builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
       state.entities = {
@@ -217,6 +213,25 @@ export const selectFileToRender = (state: RootState, routerPath: string) => {
   });
 
   return fileToRender;
+};
+
+export const selectFileToRenderGivenList = (state: RootState, list: string[]) => {
+  if (!state.reports.tree) {
+    return null;
+  }
+  const validFiles = state.reports.tree.filter((item: any) => item.type === 'file');
+  for (const element of list) {
+    if (!element) {
+      continue;
+    }
+    const fileToRender = validFiles.find((item: any) => {
+      return item.path === element;
+    });
+    if (fileToRender) {
+      return fileToRender;
+    }
+  }
+  return null;
 };
 
 export default reportsSlice.reducer;
