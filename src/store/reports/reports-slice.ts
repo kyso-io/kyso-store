@@ -184,12 +184,12 @@ export const selectActiveReport = (state: RootState) => {
 export const selectActiveReports = (state: RootState) => {
   if (state.reports.activeIds.length === 0) return null;
   if (Object.keys(state.reports.entities!).length === 0) return null;
-  const reports: ReportDTO[] = state.reports.activeIds.map(id => state.reports.entities![id] as ReportDTO);
+  const reports: ReportDTO[] = state.reports.activeIds.map((id: any) => state.reports.entities![id] as ReportDTO);
   if (state.reports.selectedTags.length === 0) {
     return reports;
   } else {
     return reports.filter((report: ReportDTO) => {
-      return state.reports.selectedTags.some(tag => report.tags.includes(tag));
+      return state.reports.selectedTags.some((tag: any) => report.tags.includes(tag));
     });
   }
 };

@@ -62,7 +62,7 @@ export const selectOrganizationBySlugifiedName = (state: RootState, name: string
   if (!name) {
     return null;
   }
-  return Object.values(state.organizations.entities).find((org: { name: string; sluglified_name: string }) => {
+  return Object.values(state.organizations.entities).find((org: any /*{ name: string; sluglified_name: string }*/) => {
     return (org?.name && org.name !== '' && slugify(org.name) === name) || org?.sluglified_name === name;
   });
 };
