@@ -29,7 +29,7 @@ export const reducer = combineReducers({
   user,
 });
 
-export const store = configureStore({
+export const store: any = configureStore({
   reducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
