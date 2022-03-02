@@ -63,14 +63,14 @@ export const selectActiveTeam = (state: RootState) => {
 
 export const selectTeamByFilter = (state: RootState, filter: { key: string; value: string }) => {
   if (state.teams.entities!.length === 0) return null;
-  return Object.values(state.teams.entities!).find(team => team[filter.key] === filter.value);
+  return Object.values(state.teams.entities!).find((team: any) => team[filter.key] === filter.value);
 };
 
 export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
   if (!name) {
     return null;
   }
-  return Object.values(state.teams.entities!).find((team: { name: string; sluglified_name: string }) => {
+  return Object.values(state.teams.entities!).find((team: any/*{ name: string; sluglified_name: string }*/) => {
     return (team?.name && team.name !== '' && slugify(team.name) === name) || team?.sluglified_name === name;
   });
 };
