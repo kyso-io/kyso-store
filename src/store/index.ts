@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, EnhancedStore } from '@reduxjs/toolkit';
 import auth from './auth/auth-slice';
 import bitbucketRepositories from './bitbucket/bitbucket-repositories-slice';
 import comments from './comments/comments-slice';
@@ -29,7 +29,7 @@ export const reducer = combineReducers({
   user,
 });
 
-export const store: any = configureStore({
+export const store: EnhancedStore = configureStore({
   reducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
