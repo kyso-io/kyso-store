@@ -33,10 +33,10 @@ export const fetchRepositoriesAction = createAsyncThunk(
     } catch (e: any) {
       // console.log(`fetchRepositoriesAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }

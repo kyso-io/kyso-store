@@ -1,4 +1,4 @@
-import { combineReducers, configureStore, EnhancedStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import auth from './auth/auth-slice';
 import bitbucketRepositories from './bitbucket/bitbucket-repositories-slice';
 import comments from './comments/comments-slice';
@@ -64,6 +64,7 @@ export * from './reports/reports-actions';
 export * from './reports/reports-slice';
 export * from './repos/repos-actions';
 export * from './repos/repos-slice';
+export * from './settings/settings-actions';
 export * from './tags/tags-actions';
 export * from './teams/teams-actions';
 export * from './teams/teams-slice';
