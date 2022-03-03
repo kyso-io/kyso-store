@@ -1,6 +1,6 @@
 import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount, UserDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -48,7 +48,11 @@ export const fetchUsersAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchTeamsAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -76,7 +80,11 @@ export const createUserAction = createAsyncThunk('user/createUser', async (user:
     }
   } catch (e: any) {
     // console.log(`createUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -103,7 +111,11 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
     }
   } catch (e: any) {
     // console.log(`fetchUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -130,7 +142,11 @@ export const fetchUserProfileAction = createAsyncThunk('user/fetchUserProfile', 
     }
   } catch (e: any) {
     // console.log(`fetchUserProfileAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -159,7 +175,11 @@ export const updateUserAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateUserAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -187,7 +207,11 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
     }
   } catch (e: any) {
     // console.log(`deleteUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -214,7 +238,11 @@ export const addAccountToUser = createAsyncThunk('user/addAccountToUser', async 
     }
   } catch (e: any) {
     // console.log(`addAccountToUser: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return false;
   }
 });
@@ -243,7 +271,11 @@ export const removeAccountFromUser = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`removeAccountFromUser: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return false;
     }
   }
@@ -273,7 +305,11 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
     }
   } catch (e: any) {
     // console.log(`updateUserProfilePictureAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -299,7 +335,11 @@ export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { ge
     }
   } catch (e: any) {
     // console.log(`refreshUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

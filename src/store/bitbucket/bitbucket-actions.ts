@@ -1,9 +1,8 @@
 import { GithubAccount, GithubFileHash, GithubRepository, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 
 export const fetchBitbucketRepositoriesAction = createAsyncThunk(
@@ -38,7 +37,11 @@ export const fetchBitbucketRepositoriesAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchBitbucketRepositoriesAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -66,7 +69,11 @@ export const fetchBitbucketUserAction = createAsyncThunk('bitbucket/fetchBitbuck
     }
   } catch (e: any) {
     // console.log(`fetchBitbucketUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -93,7 +100,11 @@ export const fetchBitbucketRepositoryAction = createAsyncThunk('bitbucket/fetchB
     }
   } catch (e: any) {
     // console.log(`fetchBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -122,7 +133,11 @@ export const fetchBitbucketRepositoryTreeAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchBitbucketRepositoryTreeAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }

@@ -1,9 +1,8 @@
 import { GithubAccount, GithubEmail, GithubFileHash, GithubRepository, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -39,7 +38,11 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchGithubRepositoriesAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -67,7 +70,11 @@ export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', 
     }
   } catch (e: any) {
     // console.log(`fetchGithubUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -94,7 +101,11 @@ export const fetchGithubRepositoryAction = createAsyncThunk('github/fetchGithubR
     }
   } catch (e: any) {
     // console.log(`fetchGithubRepositoryAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -123,7 +134,11 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchGithubRepositoryTreeAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -151,7 +166,11 @@ export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetch
     }
   } catch (e: any) {
     // console.log(`fetchGithubUserByAccessTokenAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -178,7 +197,11 @@ export const fetchGithubUserEmailsByAccessTokenAction = createAsyncThunk('github
     }
   } catch (e: any) {
     // console.log(`fetchGithubUserEmailsByAccessTokenAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });

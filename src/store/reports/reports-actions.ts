@@ -1,7 +1,7 @@
 import { File, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
 import sha256File from 'sha256-file';
@@ -33,7 +33,11 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
     }
   } catch (e: any) {
     // console.log(`fetchReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -70,7 +74,11 @@ export const fetchReportsAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchReportsAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -98,7 +106,11 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
     }
   } catch (e: any) {
     // console.log(`updateReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -125,7 +137,11 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
     }
   } catch (e: any) {
     // console.log(`fetchBranchesAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -152,7 +168,11 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
     }
   } catch (e: any) {
     // console.log(`fetchCommitsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -208,7 +228,11 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
     }
   } catch (e: any) {
     // console.log(`deleteReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -235,7 +259,11 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
     }
   } catch (e: any) {
     // console.log(`fetchUserPinnedReportsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -269,7 +297,11 @@ export const fetchFileContentAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -301,7 +333,11 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
     }
   } catch (e: any) {
     // console.log(`toggleUserPinReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -332,7 +368,11 @@ export const toggleGlobalPinReportAction = createAsyncThunk('reports/toggleGloba
     }
   } catch (e: any) {
     // console.log(`toggleGlobalPinReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -363,7 +403,11 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
     }
   } catch (e: any) {
     // console.log(`toggleUserStarReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -429,7 +473,11 @@ export const createKysoReportAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`createKysoReportAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return e;
     } finally {
       // Delete zip files
@@ -482,7 +530,11 @@ export const createKysoReportUIAction = createAsyncThunk(
     } catch (e: any) {
       // console.log(e);
       // console.log(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -576,7 +628,11 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     return axiosResponse.data;
   } catch (e: any) {
     // console.log(`pullReportAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -607,7 +663,11 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateReportPreviewPictureAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -635,7 +695,11 @@ export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteRep
     }
   } catch (e: any) {
     // console.log(`deleteReportPreviewPictureAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -665,7 +729,11 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
     }
   } catch (e: any) {
     // console.log(`fetchReportFilesAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -694,7 +762,11 @@ export const fetchReportVersionsAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchReportVersionsAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -724,7 +796,11 @@ export const fetchEmbeddedReportAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchEmbeddedReportAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -742,7 +818,11 @@ export const checkReportExistsAction = createAsyncThunk('reports/checkReportExis
     return axiosResponse.data;
   } catch (e: any) {
     // console.log(`checkReportExistsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return false;
   }
 });

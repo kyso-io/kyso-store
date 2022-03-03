@@ -1,9 +1,8 @@
 import { CreateInvitationDto, Invitation, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -37,7 +36,11 @@ export const fetchInvitationsAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchInvitationsAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -65,7 +68,11 @@ export const fetchInvitationAction = createAsyncThunk('tags/fetchInvitation', as
     }
   } catch (e: any) {
     // console.log(`fetchInvitationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -92,7 +99,11 @@ export const createInvitationAction = createAsyncThunk('tags/createInvitation', 
     }
   } catch (e: any) {
     // console.log(`createInvitationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -123,7 +134,11 @@ export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', 
     }
   } catch (e: any) {
     // console.log(`acceptInvitationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -154,7 +169,11 @@ export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', 
     }
   } catch (e: any) {
     // console.log(`rejectInvitationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -181,7 +200,11 @@ export const deleteInvitationAction = createAsyncThunk('tags/deleteInvitation', 
     }
   } catch (e: any) {
     // console.log(`deleteInvitationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

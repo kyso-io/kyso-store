@@ -1,7 +1,6 @@
-
 import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, OrganizationMember, OrganizationOptions, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -29,7 +28,11 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
     }
   } catch (e: any) {
     // console.log(`fetchOrganizationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -52,7 +55,11 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
     }
   } catch (e: any) {
     // console.log(`deleteOrganizationAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -81,7 +88,11 @@ export const updateOrganizationAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateOrganizationAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -111,7 +122,11 @@ export const updateOrganizationOptionsAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateOrganizationOptionsAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -139,7 +154,11 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
     }
   } catch (e: any) {
     // console.log(`fetchOrganizationMembers: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -166,7 +185,11 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
     }
   } catch (e: any) {
     // console.log(`createOrganization: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -193,7 +216,11 @@ export const addUserToOrganizationAction = createAsyncThunk('organizations/addUs
     }
   } catch (e: any) {
     // console.log(`addUserToOrganization: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -222,7 +249,11 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`removeUserFromOrganization: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -252,7 +283,11 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateMembersRolesToOrganization: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -282,7 +317,11 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`deleteRoleToUserFromOrganization: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -314,7 +353,11 @@ export const updateOrganizationPictureAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateOrganizationPictureAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }

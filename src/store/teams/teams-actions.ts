@@ -1,6 +1,6 @@
 import { NormalizedResponseDTO, Report, Team, TeamMember, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -36,7 +36,11 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payl
     }
   } catch (e: any) {
     // console.log(`fetchTeamsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -63,7 +67,11 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
     }
   } catch (e: any) {
     // console.log(`fetchTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -90,7 +98,11 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
     }
   } catch (e: any) {
     // console.log(`createTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -117,7 +129,11 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
     }
   } catch (e: any) {
     // console.log(`deleteTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -144,7 +160,11 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
     }
   } catch (e: any) {
     // console.log(`fetchTeamMembersAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -171,7 +191,11 @@ export const fetchTeamAssigneesAction = createAsyncThunk('team/fetchTeamAssignee
     }
   } catch (e: any) {
     // console.log(`fetchTeamAssignees: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -194,7 +218,11 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
     }
   } catch (e: any) {
     // console.log(`checkMemberBelongsToTheTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return false;
   }
 });
@@ -217,7 +245,11 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
     }
   } catch (e: any) {
     // console.log(`addMemberToTheTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -240,7 +272,11 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
     }
   } catch (e: any) {
     // console.log(`deleteMemberFromTheTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -267,7 +303,11 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
     }
   } catch (e: any) {
     // console.log(`updateTeamAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -290,7 +330,11 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
     }
   } catch (e: any) {
     // console.log(`checkTeamNameIsUniqueAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return false;
   }
 });
@@ -317,7 +361,11 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
     }
   } catch (e: any) {
     // console.log(`fetchTeamReportsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -346,7 +394,11 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`updateRoleToMembersOfTeamAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -376,7 +428,11 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`deleteRoleOfMembersOfTeamAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -406,7 +462,11 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
     }
   } catch (e: any) {
     // console.log(`updateTeamProfilePictureAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -433,7 +493,11 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
     }
   } catch (e: any) {
     // console.log(`deleteTeamProfilePictureAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

@@ -1,6 +1,6 @@
 import { NormalizedResponseDTO, RepositoryProvider } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -32,7 +32,11 @@ export const fetchRepositoriesAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchRepositoriesAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
       dispatch(setError(e.toString()));
+    }
       return [];
     }
   }
@@ -60,7 +64,11 @@ export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepository
     }
   } catch (e: any) {
     // console.log(`fetchRepositoryUserAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -87,7 +95,11 @@ export const fetchRepositoryAction = createAsyncThunk('repos/fetchRepository', a
     }
   } catch (e: any) {
     // console.log(`fetchRepositoryAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -114,7 +126,11 @@ export const fetchRepositoryTreeAction = createAsyncThunk('repos/fetchRepository
     }
   } catch (e: any) {
     // console.log(`fetchRepositoryTreeAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -141,7 +157,11 @@ export const fetchUserByAccessTokenAction = createAsyncThunk('repos/fetchUserByA
     }
   } catch (e: any) {
     // console.log(`fetchUserByAccessTokenAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -168,7 +188,11 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
     }
   } catch (e: any) {
     // console.log(`fetchUserEmailsByAccessToken: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -195,7 +219,11 @@ export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUse
     }
   } catch (e: any) {
     // console.log(`fetchUserUserByAccessTokenAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

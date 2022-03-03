@@ -1,15 +1,14 @@
 import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (args: { reportId: string, sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
+export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (args: { reportId: string; sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
     // console.log('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
@@ -34,12 +33,16 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
     }
   } catch (e: any) {
     // console.log(`fetchReportCommentsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
 
-export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (args: { discussionId: string, sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
+export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (args: { discussionId: string; sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
     // console.log('fetchDiscussionComments invoked');
 
@@ -69,6 +72,11 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
     }
   } catch (e: any) {
     // console.log(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -95,7 +103,11 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
     }
   } catch (e: any) {
     // console.log(`Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -120,7 +132,11 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
     }
   } catch (e: any) {
     // console.log(`createCommentAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -147,7 +163,11 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
     }
   } catch (e: any) {
     // console.log(`updateCommentAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -172,7 +192,11 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
     }
   } catch (e: any) {
     // console.log(`deleteCommentAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

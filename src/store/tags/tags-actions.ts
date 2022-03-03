@@ -1,10 +1,9 @@
 import { NormalizedResponseDTO, Tag, TagAssign } from '@kyso-io/kyso-model';
 import { EntityEnum } from '@kyso-io/kyso-model/dist/enums/entity.enum';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '../..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
-import { printAuthenticated } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -30,7 +29,11 @@ export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (_, { ge
     }
   } catch (e: any) {
     // console.log(`fetchTagsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -57,7 +60,11 @@ export const createTagAction = createAsyncThunk('tags/createTag', async (tag: Ta
     }
   } catch (e: any) {
     // console.log(`createTagAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -84,7 +91,11 @@ export const fetchTagAction = createAsyncThunk('tags/fetchTags', async (tagId: s
     }
   } catch (e: any) {
     // console.log(`fetchTagsAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -107,7 +118,11 @@ export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (t
     }
   } catch (e: any) {
     // console.log(`checkTagNameAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return false;
   }
 });
@@ -134,7 +149,11 @@ export const updateTagActions = createAsyncThunk('tags/updateTag', async (payloa
     }
   } catch (e: any) {
     // console.log(`updateTagActions: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -161,7 +180,11 @@ export const deleteTagAction = createAsyncThunk('tags/deleteTag', async (tagId: 
     }
   } catch (e: any) {
     // console.log(`deleteTagAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -190,7 +213,11 @@ export const assignTagToEntityAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`assignTagToEntityAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }
@@ -220,7 +247,11 @@ export const unassignTagFromEntityAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`unassignTagFromEntityAction: Error processing action: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
   }

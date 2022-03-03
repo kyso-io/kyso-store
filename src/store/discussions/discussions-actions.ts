@@ -1,6 +1,6 @@
 import { CreateDiscussionRequestDTO, Discussion, NormalizedResponseDTO, UpdateDiscussionRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -39,7 +39,11 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     }
   } catch (e: any) {
     // console.log(`Error processing action fetchDiscussionsAction: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return [];
   }
 });
@@ -84,7 +88,11 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`Error processing action fetchTeamDiscussions: ${e.toString()}`);
-      dispatch(setError(e.toString()));
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return [];
     }
   }
@@ -116,7 +124,11 @@ export const fetchDiscussionById = createAsyncThunk('discussions/fetchDiscussion
     }
   } catch (e: any) {
     // console.log(`fetchDiscussionById: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -143,7 +155,11 @@ export const createDiscussion = createAsyncThunk('discussions/createDiscussion',
     }
   } catch (e: any) {
     // console.log(`createDiscussion: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });

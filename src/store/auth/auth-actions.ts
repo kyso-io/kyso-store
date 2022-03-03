@@ -1,6 +1,6 @@
 import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -23,7 +23,11 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: Lo
     }
   } catch (e: any) {
     // console.log(`loginAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -43,7 +47,11 @@ export const signUpAction = createAsyncThunk('auth/signup', async (payload: Crea
     }
   } catch (e: any) {
     // console.log(`signUpAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -68,7 +76,11 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
     }
   } catch (e: any) {
     // console.log(`refreshTokenAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -89,7 +101,11 @@ export const fetchOrganizationAuthOptions = createAsyncThunk('auth/fetchOrganiza
     }
   } catch (e: any) {
     // console.log(`fetchOrganizationAuthOptions: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -114,7 +130,11 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
     }
   } catch (e: any) {
     // console.log(`loginAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -128,7 +148,11 @@ export const fetchApiVersionAction = createAsyncThunk('auth/fetchApiVersion', as
     return axiosResponse.data;
   } catch (e: any) {
     // console.log(`fetchApiVersionAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -142,7 +166,11 @@ export const fetchDbVersionAction = createAsyncThunk('auth/fetchDbVersion', asyn
     return axiosResponse.data;
   } catch (e: any) {
     // console.log(`fetchDbVersionAction: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
@@ -162,7 +190,11 @@ export const fetchOrganizationLoginOptions = createAsyncThunk('auth/fetchOrganiz
     }
   } catch (e: any) {
     // console.log(`fetchOrganizationLoginOptions: Error processing action: ${e.toString()}`);
-    dispatch(setError(e.toString()));
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
     return null;
   }
 });
