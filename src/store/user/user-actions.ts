@@ -1,4 +1,4 @@
-import { LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount, UserDTO } from '@kyso-io/kyso-model';
+import { CreateKysoAccessTokenDto, KysoUserAccessToken, LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount, UserDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -341,5 +341,125 @@ export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { ge
       dispatch(setError(e.toString()));
     }
     return null;
+  }
+});
+
+export const getAccessTokensAction = createAsyncThunk('user/getAccessTokens', async (_, { getState, dispatch }): Promise<KysoUserAccessToken[]> => {
+  try {
+    // console.log('getAccessTokensAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-tokens`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`getAccessTokensAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`getAccessTokensAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`getAccessTokensAction: Response didn't have data, returning null`);
+      return [];
+    }
+  } catch (e: any) {
+    // console.log(`getAccessTokensAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
+  }
+});
+
+export const createAccessTokenAction = createAsyncThunk('user/createAccessToken', async (args: CreateKysoAccessTokenDto, { dispatch, getState }): Promise<KysoUserAccessToken | null> => {
+  try {
+    // console.log('createAccessTokenAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken>> = await httpClient.post(url, args, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`createAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`createAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`createAccessTokenAction: Response didn't have data, returning null`);
+      return null;
+    }
+  } catch (e: any) {
+    // console.log(`createAccessTokenAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
+  }
+});
+
+export const deleteAllAccessTokenAction = createAsyncThunk('user/deleteAllAccessToken', async (_, { dispatch, getState }): Promise<KysoUserAccessToken[]> => {
+  try {
+    // console.log('deleteAllAccessTokenAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.delete(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`deleteAllAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`deleteAllAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`deleteAllAccessTokenAction: Response didn't have data, returning false`);
+      return [];
+    }
+  } catch (e: any) {
+    // console.log(`deleteAllAccessTokenAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
+  }
+});
+
+export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken', async (tokenId: string, { dispatch, getState }): Promise<KysoUserAccessToken[]> => {
+  try {
+    // console.log('deleteAccessTokenAction invoked');
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token/${tokenId}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.delete(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      // console.log(`deleteAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      // console.log(`deleteAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      return axiosResponse.data.data;
+    } else {
+      // console.log(`deleteAccessTokenAction: Response didn't have data, returning false`);
+      return [];
+    }
+  } catch (e: any) {
+    // console.log(`deleteAccessTokenAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
   }
 });
