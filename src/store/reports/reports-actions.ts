@@ -510,6 +510,19 @@ export const createKysoReportUIAction = createAsyncThunk(
       payload.files.forEach((file: File) => {
         formData.append('files', file);
       });
+      
+      // Create kyso.json on the flye
+      const kysoConfigFile = {
+        main: '',
+        title: payload.title,
+        description: payload.description,
+        organization: payload.organization,
+        team: payload.team,
+        tags: payload.tags,
+      };
+      const blob: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
+      formData.append('files', blob, 'kyso.json');
+
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
