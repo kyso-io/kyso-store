@@ -179,11 +179,14 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
 
 export const fetchReportsTreeAction = createAsyncThunk(
   'reports/fetchReportsTree',
-  async (payload: { reportId: string; branch: string; filePath: string }, { getState, dispatch }): Promise<GithubFileHash[]> => {
+  async (args: { reportId: string; branch: string; filePath: string, version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
       // console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/tree?path=${payload.filePath}`;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/${args.branch}/tree?path=${args.filePath}`;
+      if (args.version) {
+        url += `&version=${args.version}`;
+      }
       // console.log(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
