@@ -404,27 +404,31 @@ export const createAccessTokenAction = createAsyncThunk('user/createAccessToken'
   }
 });
 
-export const deleteAllAccessTokenAction = createAsyncThunk('user/deleteAllAccessToken', async (_, { dispatch, getState }): Promise<KysoUserAccessToken[]> => {
+export const revokeAllAccessTokenAction = createAsyncThunk('user/revokeAllAccessToken', async (_, { dispatch, getState }): Promise<KysoUserAccessToken[]> => {
   try {
-    // console.log('deleteAllAccessTokenAction invoked');
+    // console.log('revokeAllAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
-    });
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token/revoke-all`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.patch(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
     if (axiosResponse?.data?.relations) {
-      // console.log(`deleteAllAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      // console.log(`revokeAllAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`deleteAllAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      // console.log(`revokeAllAccessTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`deleteAllAccessTokenAction: Response didn't have data, returning false`);
+      // console.log(`revokeAllAccessTokenAction: Response didn't have data, returning false`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`deleteAllAccessTokenAction: Error processing action: ${e.toString()}`);
+    // console.log(`revokeAllAccessTokenAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
