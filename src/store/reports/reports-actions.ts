@@ -84,6 +84,40 @@ export const fetchReportsAction = createAsyncThunk(
   }
 );
 
+export const fetchReportByReportNameAndTeamName = createAsyncThunk(
+  'reports/fetchReportByReportNameAndTeamName',
+  async (args: { reportName: string; teamName: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log('fetchReportByReportNameAndTeamNameAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportName}/${args.teamName}`;
+      // console.log(`fetchReportByReportNameAndTeamNameAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data.data) {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchReportByReportNameAndTeamNameAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     // console.log('updateReportAction invoked');
@@ -179,7 +213,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
 
 export const fetchReportsTreeAction = createAsyncThunk(
   'reports/fetchReportsTree',
-  async (args: { reportId: string; branch: string; filePath: string, version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
+  async (args: { reportId: string; branch: string; filePath: string; version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
       // console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
@@ -494,7 +528,7 @@ export const createKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    payload: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null },
+    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null; mainContent: string | null },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
@@ -503,28 +537,33 @@ export const createKysoReportUIAction = createAsyncThunk(
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
       // console.log(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData: FormData = new FormData();
-      formData.append('title', payload.title);
-      formData.append('description', payload.description);
-      formData.append('organization', payload.organization);
-      formData.append('team', payload.team);
-      payload.tags.forEach((tag: string) => {
+      formData.append('title', args.title);
+      formData.append('description', args.description);
+      formData.append('organization', args.organization);
+      formData.append('team', args.team);
+      args.tags.forEach((tag: string) => {
         formData.append('tags', tag);
       });
-      payload.files.forEach((file: File) => {
+      args.files.forEach((file: File) => {
         formData.append('files', file);
       });
-      
+
       // Create kyso.json on the flye
       const kysoConfigFile = {
         main: '',
-        title: payload.title,
-        description: payload.description,
-        organization: payload.organization,
-        team: payload.team,
-        tags: payload.tags,
+        title: args.title,
+        description: args.description,
+        organization: args.organization,
+        team: args.team,
+        tags: args.tags,
       };
-      const blob: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
-      formData.append('files', blob, 'kyso.json');
+      if (args.mainContent && args.mainContent.length > 0) {
+        const blobReaadme: Blob = new Blob([JSON.stringify(args.mainContent, null, 2)], { type: 'plain/text' });
+        formData.append('files', blobReaadme, 'README.md');
+        kysoConfigFile.main = 'README.md';
+      }
+      const blobKysoConfigFile: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
+      formData.append('files', blobKysoConfigFile, 'kyso.json');
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
