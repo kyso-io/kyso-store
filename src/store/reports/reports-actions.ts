@@ -84,6 +84,40 @@ export const fetchReportsAction = createAsyncThunk(
   }
 );
 
+export const fetchReportByReportNameAndTeamName = createAsyncThunk(
+  'reports/fetchReportByReportNameAndTeamName',
+  async (args: { reportName: string; teamName: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log('fetchReportByReportNameAndTeamNameAction invoked');
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportName}/${args.teamName}`;
+      // console.log(`fetchReportByReportNameAndTeamNameAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data.data) {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`fetchReportByReportNameAndTeamNameAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchReportByReportNameAndTeamNameAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     // console.log('updateReportAction invoked');
@@ -179,7 +213,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
 
 export const fetchReportsTreeAction = createAsyncThunk(
   'reports/fetchReportsTree',
-  async (args: { reportId: string; branch: string; filePath: string, version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
+  async (args: { reportId: string; branch: string; filePath: string; version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
       // console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
@@ -300,6 +334,45 @@ export const fetchFileContentAction = createAsyncThunk(
       }
     } catch (e: any) {
       // console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
+export const fetchEmbeddedFileContentAction = createAsyncThunk(
+  'reports/fetchEmbeddedFileContent',
+  async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
+    try {
+      // console.log('fetchEmbeddedFileContentAction invoked');
+      const { auth } = getState() as RootState;
+      const hash = payload.hash;
+
+      // what is this, I have no idea?
+      // if (reports.tree) {
+      //   hash = reports.tree[0].hash;
+      // }
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/embedded/${payload.reportId}/file/${hash}`;
+      if (payload.path && payload.path.length > 0) {
+        url += `?path=${payload.path}`;
+      }
+      // console.log(`fetchEmbeddedFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data) {
+        // console.log(`fetchEmbeddedFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
+        return axiosResponse.data;
+      } else {
+        // console.log(`fetchEmbeddedFileContentAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchEmbeddedFileContentAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
@@ -494,7 +567,7 @@ export const createKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    payload: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null },
+    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null; mainContent: string | null },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
@@ -503,28 +576,33 @@ export const createKysoReportUIAction = createAsyncThunk(
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
       // console.log(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData: FormData = new FormData();
-      formData.append('title', payload.title);
-      formData.append('description', payload.description);
-      formData.append('organization', payload.organization);
-      formData.append('team', payload.team);
-      payload.tags.forEach((tag: string) => {
+      formData.append('title', args.title);
+      formData.append('description', args.description);
+      formData.append('organization', args.organization);
+      formData.append('team', args.team);
+      args.tags.forEach((tag: string) => {
         formData.append('tags', tag);
       });
-      payload.files.forEach((file: File) => {
+      args.files.forEach((file: File) => {
         formData.append('files', file);
       });
-      
+
       // Create kyso.json on the flye
       const kysoConfigFile = {
         main: '',
-        title: payload.title,
-        description: payload.description,
-        organization: payload.organization,
-        team: payload.team,
-        tags: payload.tags,
+        title: args.title,
+        description: args.description,
+        organization: args.organization,
+        team: args.team,
+        tags: args.tags,
       };
-      const blob: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
-      formData.append('files', blob, 'kyso.json');
+      if (args.mainContent && args.mainContent.length > 0) {
+        const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
+        formData.append('files', blobReadme, 'README.md');
+        kysoConfigFile.main = 'README.md';
+      }
+      const blobKysoConfigFile: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
+      formData.append('files', blobKysoConfigFile, 'kyso.json');
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
@@ -533,7 +611,7 @@ export const createKysoReportUIAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        // console.log(`createKysoReportUIAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
@@ -546,6 +624,48 @@ export const createKysoReportUIAction = createAsyncThunk(
     } catch (e: any) {
       // console.log(e);
       // console.log(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
+export const updateMainFileReportAction = createAsyncThunk(
+  'reports/updateMainFileReportAction',
+  async (args: { reportId: string; mainContent: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log(`updateMainFileReportAction invoked`);
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui/main-file/${args.reportId}`;
+      // console.log(`updateMainFileReportAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const formData: FormData = new FormData();
+      const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
+      formData.append('file', blobReadme, 'README.md');
+
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
+        headers: {
+          ...buildAuthHeaders(auth),
+          headers: { 'content-type': 'multipart/form-data' },
+        },
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`updateMainFileReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`updateMainFileReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`updateMainFileReportAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(e);
+      // console.log(`updateMainFileReportAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
@@ -644,6 +764,28 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     return axiosResponse.data;
   } catch (e: any) {
     // console.log(`pullReportAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
+  }
+});
+
+export const downloadReportAction = createAsyncThunk('reports/downloadReport', async (reportId: string, { getState, dispatch }): Promise<Buffer | null> => {
+  try {
+    // console.log(`downloadReportAction invoked`);
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/download`;
+    // console.log(`downloadReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+      responseType: 'arraybuffer',
+    });
+    return axiosResponse.data;
+  } catch (e: any) {
+    // console.log(`downloadReportAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -756,11 +898,14 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
 
 export const fetchReportVersionsAction = createAsyncThunk(
   'reports/fetchReportVersions',
-  async (reportId: string, { getState, dispatch }): Promise<{ version: number; created_at: Date; num_files: number }[]> => {
+  async (args: { reportId: string; sort: string }, { getState, dispatch }): Promise<{ version: number; created_at: Date; num_files: number }[]> => {
     try {
       // console.log('fetchReportVersionsAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/versions`;
+      const qs = new URLSearchParams({
+        sort: args?.sort && args.sort.length > 0 ? args.sort : '-created_at',
+      });
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/versions?${qs.toString()}`;
       // console.log(`fetchReportVersionsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
