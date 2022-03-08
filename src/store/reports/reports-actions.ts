@@ -558,8 +558,8 @@ export const createKysoReportUIAction = createAsyncThunk(
         tags: args.tags,
       };
       if (args.mainContent && args.mainContent.length > 0) {
-        const blobReaadme: Blob = new Blob([JSON.stringify(args.mainContent, null, 2)], { type: 'plain/text' });
-        formData.append('files', blobReaadme, 'README.md');
+        const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
+        formData.append('files', blobReadme, 'README.md');
         kysoConfigFile.main = 'README.md';
       }
       const blobKysoConfigFile: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
@@ -572,7 +572,7 @@ export const createKysoReportUIAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        // console.log(`createKysoReportUIAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
@@ -585,6 +585,48 @@ export const createKysoReportUIAction = createAsyncThunk(
     } catch (e: any) {
       // console.log(e);
       // console.log(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
+export const updateMainFileReportAction = createAsyncThunk(
+  'reports/updateMainFileReportAction',
+  async (args: { reportId: string; mainContent: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    try {
+      // console.log(`updateMainFileReportAction invoked`);
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui/main-file/${args.reportId}`;
+      // console.log(`updateMainFileReportAction: ${printAuthenticated(auth)} - POST ${url}`);
+      const formData: FormData = new FormData();
+      const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
+      formData.append('file', blobReadme, 'README.md');
+
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
+        headers: {
+          ...buildAuthHeaders(auth),
+          headers: { 'content-type': 'multipart/form-data' },
+        },
+      });
+      if (axiosResponse?.data?.relations) {
+        // console.log(`updateMainFileReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        // console.log(`updateMainFileReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+        return axiosResponse.data.data;
+      } else {
+        // console.log(`updateMainFileReportAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(e);
+      // console.log(`updateMainFileReportAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
@@ -795,11 +837,14 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
 
 export const fetchReportVersionsAction = createAsyncThunk(
   'reports/fetchReportVersions',
-  async (reportId: string, { getState, dispatch }): Promise<{ version: number; created_at: Date; num_files: number }[]> => {
+  async (args: { reportId: string; sort: string }, { getState, dispatch }): Promise<{ version: number; created_at: Date; num_files: number }[]> => {
     try {
       // console.log('fetchReportVersionsAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/versions`;
+      const qs = new URLSearchParams({
+        sort: args?.sort && args.sort.length > 0 ? args.sort : '-created_at',
+      });
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/versions?${qs.toString()}`;
       // console.log(`fetchReportVersionsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
