@@ -773,6 +773,28 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
   }
 });
 
+export const downloadReportAction = createAsyncThunk('reports/downloadReport', async (reportId: string, { getState, dispatch }): Promise<Buffer | null> => {
+  try {
+    // console.log(`downloadReportAction invoked`);
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/download`;
+    // console.log(`downloadReportAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+      responseType: 'arraybuffer',
+    });
+    return axiosResponse.data;
+  } catch (e: any) {
+    // console.log(`downloadReportAction: Error processing action: ${e.toString()}`);
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
+  }
+});
+
 export const updateReportPreviewPictureAction = createAsyncThunk(
   'user/updateOrganizationProfilePicture',
   async (args: { reportId: string; file: File }, { dispatch, getState }): Promise<ReportDTO | null> => {
