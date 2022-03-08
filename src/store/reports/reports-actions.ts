@@ -344,6 +344,45 @@ export const fetchFileContentAction = createAsyncThunk(
   }
 );
 
+export const fetchEmbeddedFileContentAction = createAsyncThunk(
+  'reports/fetchEmbeddedFileContent',
+  async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
+    try {
+      // console.log('fetchEmbeddedFileContentAction invoked');
+      const { auth } = getState() as RootState;
+      const hash = payload.hash;
+
+      // what is this, I have no idea?
+      // if (reports.tree) {
+      //   hash = reports.tree[0].hash;
+      // }
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/embedded/${payload.reportId}/file/${hash}`;
+      if (payload.path && payload.path.length > 0) {
+        url += `?path=${payload.path}`;
+      }
+      // console.log(`fetchEmbeddedFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data) {
+        // console.log(`fetchEmbeddedFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
+        return axiosResponse.data;
+      } else {
+        // console.log(`fetchEmbeddedFileContentAction: Response didn't have data, returning null`);
+        return null;
+      }
+    } catch (e: any) {
+      // console.log(`fetchEmbeddedFileContentAction: Error processing action: ${e.toString()}`);
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
 export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
     // console.log('toggleUserPinReportAction invoked');
