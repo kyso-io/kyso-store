@@ -225,6 +225,38 @@ export const addUserToOrganizationAction = createAsyncThunk('organizations/addUs
   }
 });
 
+export const joinUserToOrganizationAction = createAsyncThunk(
+  'organizations/joinUserToOrganization',
+  async (
+    args: {
+      organizationName: string;
+      invitationCode: string;
+    },
+    { getState, dispatch }
+  ): Promise<any> => {
+    try {
+      const { auth } = getState() as RootState;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationName}/join/${args.invitationCode}`;
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      return axiosResponse?.data?.data;
+    } catch (e: any) {
+      if (axios.isAxiosError(e) && e.response?.data?.message) {
+        dispatch(setError(e.response.data.message));
+        return e.response.data;
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return false;
+    }
+  }
+);
+
 export const removeUserFromOrganizationAction = createAsyncThunk(
   'organizations/removeUserFromOrganization',
   async (payload: { organizationId: string; userId: string }, { getState, dispatch }): Promise<OrganizationMember[]> => {
