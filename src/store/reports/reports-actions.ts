@@ -721,7 +721,7 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     });
     return axiosResponse.data;
   } catch (e: any) {
-    // console.log(`pullReportAction: Error processing action: ${e.toString()}`);
+    console.log(`pullReportAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
