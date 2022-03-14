@@ -1,10 +1,11 @@
-import { File, GithubFileHash, NormalizedResponseDTO, Report, ReportDTO, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { GithubFileHash, KysoConfigFile, NormalizedResponseDTO, Report, ReportDTO, ReportType, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios, { AxiosResponse } from 'axios';
 import FormData from 'form-data';
-import { createReadStream, readFileSync, statSync, unlinkSync } from 'fs';
-import sha256File from 'sha256-file';
+import { createReadStream, readFileSync, statSync } from 'fs';
+import JSZip from 'jszip';
+import { v4 as uuidv4 } from 'uuid';
 import { RootState } from '..';
 import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -490,45 +491,23 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (
-    payload: { title: string; organization: string; team: string; description: string; tags: string[]; filePaths: string[]; basePath: string | null; mainFile: string | null },
-    { getState, dispatch }
-  ): Promise<ReportDTO | null> => {
-    const zippedFiles: string[] = [];
+  async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
     try {
-      // console.log(`createKysoReportAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/kyso`;
-      // console.log(`createKysoReportAction: ${printAuthenticated(auth)} - POST ${url}`);
-
       const formData: FormData = new FormData();
-      formData.append('title', payload.title);
-      formData.append('description', payload.description);
-      formData.append('organization', payload.organization);
-      formData.append('team', payload.team);
-      formData.append('main_file', payload.mainFile);
-      payload.tags.forEach((tag: string) => {
-        formData.append('tags', tag);
-      });
-
+      const zipFileName = `${uuidv4()}.zip`;
+      const outputFilePath = `/tmp/${zipFileName}`;
+      const zip = new AdmZip();
       for (const file of payload.filePaths) {
-        const zip = new AdmZip();
-        const sha: string = sha256File(file);
-        const content: Buffer = readFileSync(file);
         const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
-        zip.addFile(filename, content);
-        const outputFilePath = `/tmp/${filename}.zip`;
-        zip.writeZip(outputFilePath);
-        zippedFiles.push(outputFilePath);
-        formData.append('files', createReadStream(outputFilePath), {
-          filename,
-          knownLength: statSync(outputFilePath).size,
-        });
-        formData.append('original_shas', sha);
-        formData.append('original_sizes', statSync(file).size.toString());
-        formData.append('original_names', filename);
+        zip.addFile(filename, readFileSync(file));
       }
-
+      zip.writeZip(outputFilePath);
+      formData.append('file', createReadStream(outputFilePath), {
+        filename: zipFileName,
+        knownLength: statSync(outputFilePath).size,
+      });
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -537,29 +516,20 @@ export const createKysoReportAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        // console.log(`createKysoReportAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        // console.log(`createKysoReportAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      // console.log(`createKysoReportAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
         dispatch(setError(e.toString()));
       }
       return e;
-    } finally {
-      // Delete zip files
-      for (const zippedFile of zippedFiles) {
-        unlinkSync(zippedFile);
-      }
     }
   }
 );
@@ -567,43 +537,36 @@ export const createKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; basePath: string | null; mainContent: string | null },
+    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
-      // console.log(`createKysoReportUIAction invoked`);
       const { auth } = getState() as RootState;
       const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
-      // console.log(`createKysoReportUIAction: ${printAuthenticated(auth)} - POST ${url}`);
-      const formData: FormData = new FormData();
-      formData.append('title', args.title);
-      formData.append('description', args.description);
-      formData.append('organization', args.organization);
-      formData.append('team', args.team);
-      args.tags.forEach((tag: string) => {
-        formData.append('tags', tag);
-      });
-      args.files.forEach((file: File) => {
-        formData.append('files', file);
-      });
-
-      // Create kyso.json on the flye
-      const kysoConfigFile = {
+      const zip = new JSZip();
+      // Create kyso.json on the fly
+      const kysoConfigFile: KysoConfigFile = {
         main: '',
         title: args.title,
         description: args.description,
         organization: args.organization,
         team: args.team,
         tags: args.tags,
+        type: args.reportType,
       };
       if (args.mainContent && args.mainContent.length > 0) {
         const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
-        formData.append('files', blobReadme, 'README.md');
+        zip.file('README.md', blobReadme);
         kysoConfigFile.main = 'README.md';
       }
       const blobKysoConfigFile: Blob = new Blob([JSON.stringify(kysoConfigFile, null, 2)], { type: 'plain/text' });
-      formData.append('files', blobKysoConfigFile, 'kyso.json');
-
+      zip.file('kyso.json', blobKysoConfigFile);
+      for (const file of args.files) {
+        zip.file(file.name, file);
+      }
+      const blobZip = await zip.generateAsync({ type: 'blob' });
+      const formData = new FormData();
+      formData.append('file', blobZip);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -611,19 +574,14 @@ export const createKysoReportUIAction = createAsyncThunk(
         },
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`createKysoReportUIAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        // console.log(`createKysoReportUIAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
       } else {
-        // console.log(`createKysoReportUIAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      // console.log(e);
-      // console.log(`createKysoReportUIAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {

@@ -216,28 +216,28 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
   }
 });
 
-export const addAccountToUser = createAsyncThunk('user/addAccountToUser', async (payload: { userId: string; userAccount: UserAccount }, { dispatch, getState }): Promise<boolean> => {
+export const addUserAccountAction = createAsyncThunk('user/addUserAccount', async (userAccount: UserAccount, { dispatch, getState }): Promise<boolean> => {
   try {
-    // console.log('addAccountToUser invoked');
+    // console.log('addUserAccountAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}/accounts`;
-    // console.log(`addAccountToUser: ${printAuthenticated(auth)} - PATCH ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.patch(url, payload.userAccount, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/accounts`;
+    // console.log(`addUserAccountAction: ${printAuthenticated(auth)} - POST ${url}`);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, userAccount, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`addAccountToUser: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+      // console.log(`addUserAccountAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`addAccountToUser: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      // console.log(`addUserAccountAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`addAccountToUser: Response didn't have data, returning false`);
+      // console.log(`addUserAccountAction: Response didn't have data, returning false`);
       return false;
     }
   } catch (e: any) {
-    // console.log(`addAccountToUser: Error processing action: ${e.toString()}`);
+    // console.log(`addUserAccountAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
