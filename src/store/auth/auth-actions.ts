@@ -32,6 +32,27 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: Lo
   }
 });
 
+export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch, getState }): Promise<void> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`;
+    await httpClient.post(
+      url,
+      {},
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    dispatch(setTokenAuthAction(null));
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+  }
+});
+
 export const signUpAction = createAsyncThunk('auth/signup', async (payload: CreateUserRequestDTO, { dispatch }): Promise<User | null> => {
   try {
     // console.log('signUpAction invoked');
