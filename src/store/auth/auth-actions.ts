@@ -14,8 +14,8 @@ export const loginAction = createAsyncThunk('auth/login', async (credentials: Lo
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
     if (axiosResponse?.data?.data) {
       // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`)
-      dispatch(setTokenAuthAction(axiosResponse.data.data));
-      dispatch(refreshUserAction());
+      await dispatch(setTokenAuthAction(axiosResponse.data.data));
+      await dispatch(refreshUserAction());
       return axiosResponse.data.data;
     } else {
       // console.log(`loginAction: Response didn't have data, returning null`);
@@ -88,8 +88,8 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
     });
     if (axiosResponse?.data?.data) {
       // console.log(`refreshTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      dispatch(setTokenAuthAction(axiosResponse.data.data));
-      dispatch(refreshUserAction());
+      await dispatch(setTokenAuthAction(axiosResponse.data.data));
+      await dispatch(refreshUserAction());
       return axiosResponse.data.data;
     } else {
       // console.log(`refreshTokenAction: Response didn't have data, returning null`);
