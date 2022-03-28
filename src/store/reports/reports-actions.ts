@@ -709,6 +709,41 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
   }
 );
 
+export const importGitlabRepository = createAsyncThunk('reports/importGitlabRepository', async (args: { repositoryId: number; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+  // try {
+  // console.log(`importGitlabRepositoryAction invoked`);
+  const { auth } = getState() as RootState;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/gitlab/${args.repositoryId}`;
+  if (args?.branch) {
+    url = `${url}?branch=${args.branch}`;
+  }
+  // console.log(`importGitlabRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
+  const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+    url,
+    {},
+    {
+      headers: buildAuthHeaders(auth),
+    }
+  );
+  if (axiosResponse?.data?.relations) {
+    // console.log(`importGitlabRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
+    dispatch(fetchRelationsAction(axiosResponse.data.relations));
+  }
+  if (axiosResponse?.data?.data) {
+    // console.log(`importGitlabRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+    return axiosResponse.data.data;
+  } else {
+    // console.log(`importGitlabRepositoryAction: Response didn't have data, returning null`);
+    return null;
+  }
+  // } catch (e: any) {
+  //   // console.log(e);
+  //   // console.log(`importGitlabRepositoryAction: Error processing action: ${e.toString()}`);
+  //   dispatch(setError(e.toString()));
+  //   return null;
+  // }
+});
+
 export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     // console.log(`pullReportAction invoked`);
