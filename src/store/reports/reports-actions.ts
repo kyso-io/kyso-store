@@ -709,7 +709,7 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
   }
 );
 
-export const importGitlabRepository = createAsyncThunk('reports/importGitlabRepository', async (args: { repositoryId: number; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+export const importGitlabRepositoryAction = createAsyncThunk('reports/importGitlabRepository', async (args: { repositoryId: number; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
   // try {
   // console.log(`importGitlabRepositoryAction invoked`);
   const { auth } = getState() as RootState;

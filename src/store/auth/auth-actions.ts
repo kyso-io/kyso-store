@@ -6,12 +6,12 @@ import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
-export const loginAction = createAsyncThunk('auth/login', async (credentials: Login, { dispatch }): Promise<string | null> => {
+export const loginAction = createAsyncThunk('auth/login', async (login: Login, { dispatch }): Promise<string | null> => {
   try {
     // console.log('loginAction invoked')
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
     // console.log(`loginAction - POST ${url}`)
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, { ...credentials });
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, login);
     if (axiosResponse?.data?.data) {
       // console.log(`loginAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`)
       await dispatch(setTokenAuthAction(axiosResponse.data.data));
