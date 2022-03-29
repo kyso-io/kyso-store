@@ -711,11 +711,11 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
 
 export const importGitlabRepositoryAction = createAsyncThunk(
   'reports/importGitlabRepository',
-  async (args: { repositoryId: number | string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+  async (args: { repositoryName: number | string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
     // try {
     // console.log(`importGitlabRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/gitlab?${args.repositoryId}`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/gitlab?id=${args.repositoryName}`;
     if (args?.branch) {
       url = `${url}&branch=${args.branch}`;
     }
