@@ -219,3 +219,53 @@ export const fetchOrganizationLoginOptions = createAsyncThunk('auth/fetchOrganiz
     return null;
   }
 });
+
+export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (args: { email: string; token: string }, { dispatch }): Promise<boolean> => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, args);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      console.log(e.response?.data);
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
+
+export const sendVerificationEmailAction = createAsyncThunk('auth/sendVerificationEmail', async (_, { dispatch, getState }): Promise<boolean> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/send-verification-email`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
+      url,
+      {},
+      {
+        headers: {
+          ...buildAuthHeaders(auth),
+          headers: { 'content-type': 'multipart/form-data' },
+        },
+      }
+    );
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      console.log(e.response?.data);
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
