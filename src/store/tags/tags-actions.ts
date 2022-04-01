@@ -7,28 +7,28 @@ import { buildAuthHeaders } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (_, { getState, dispatch }): Promise<Tag[]> => {
+export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<Tag[]> => {
   try {
-    // console.log('fetchTagsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags`;
-    // console.log(`fetchTagsAction: ${printAuthenticated(auth)} - GET ${url}`);
+    const qs = new URLSearchParams({
+      page: (payload?.page || 1).toString(),
+      per_page: (payload?.per_page || 20).toString(),
+      sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
+      ...payload?.filter,
+    });
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags?${qs.toString()}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
-      // console.log(`fetchTagsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
     }
     if (axiosResponse?.data?.data) {
-      // console.log(`fetchTagsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
       return axiosResponse.data.data;
     } else {
-      // console.log(`fetchTagsAction: Response didn't have data, returning an empty array []`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`fetchTagsAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
