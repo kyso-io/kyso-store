@@ -747,11 +747,14 @@ export const importGitlabRepositoryAction = createAsyncThunk(
   }
 );
 
-export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string }, { getState, dispatch }): Promise<Buffer | null> => {
+export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string, version?: number }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     // console.log(`pullReportAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
+    if (payload.version) {
+      url = `${url}?version=${payload.version}`;
+    }
     // console.log(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
