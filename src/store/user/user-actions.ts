@@ -467,3 +467,30 @@ export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken'
     return [];
   }
 });
+
+export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async (token: string, { dispatch, getState }): Promise<any> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/verify-captcha`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.post(url, {
+      token,
+    }, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
