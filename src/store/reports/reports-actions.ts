@@ -214,11 +214,11 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
 
 export const fetchReportsTreeAction = createAsyncThunk(
   'reports/fetchReportsTree',
-  async (args: { reportId: string; branch: string; filePath: string; version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
+  async (args: { reportId: string; filePath: string; version?: number }, { getState, dispatch }): Promise<GithubFileHash[]> => {
     try {
       // console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/${args.branch}/tree?path=${args.filePath}`;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/tree?path=${args.filePath}`;
       if (args.version) {
         url += `&version=${args.version}`;
       }
@@ -308,72 +308,19 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
 
 export const fetchFileContentAction = createAsyncThunk(
   'reports/fetchFileContent',
-  async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
+  async (fileId: string, { getState, dispatch }): Promise<Buffer | null> => {
     try {
-      // console.log('fetchFileContentAction invoked');
       const { auth } = getState() as RootState;
-      const hash = payload.hash;
-
-      // what is this, I have no idea?
-      // if (reports.tree) {
-      //   hash = reports.tree[0].hash;
-      // }
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/file/${hash}`;
-      if (payload.path && payload.path.length > 0) {
-        url += `?path=${payload.path}`;
-      }
-      // console.log(`fetchFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/file/${fileId}`;
       const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data) {
-        // console.log(`fetchFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
         return axiosResponse.data;
       } else {
-        // console.log(`fetchFileContentAction: Response didn't have data, returning null`);
         return null;
       }
     } catch (e: any) {
-      // console.log(`fetchFileContentAction: Error processing action: ${e.toString()}`);
-      if (axios.isAxiosError(e)) {
-        dispatch(setError(e.response?.data.message));
-      } else {
-        dispatch(setError(e.toString()));
-      }
-      return null;
-    }
-  }
-);
-
-export const fetchEmbeddedFileContentAction = createAsyncThunk(
-  'reports/fetchEmbeddedFileContent',
-  async (payload: { reportId: string; hash: string; path?: string }, { getState, dispatch }): Promise<Buffer | null> => {
-    try {
-      // console.log('fetchEmbeddedFileContentAction invoked');
-      const { auth } = getState() as RootState;
-      const hash = payload.hash;
-
-      // what is this, I have no idea?
-      // if (reports.tree) {
-      //   hash = reports.tree[0].hash;
-      // }
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/embedded/${payload.reportId}/file/${hash}`;
-      if (payload.path && payload.path.length > 0) {
-        url += `?path=${payload.path}`;
-      }
-      // console.log(`fetchEmbeddedFileContentAction: ${printAuthenticated(auth)} - GET ${url}`);
-      const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data) {
-        // console.log(`fetchEmbeddedFileContentAction: axiosResponse ${JSON.stringify(axiosResponse.data)}`);
-        return axiosResponse.data;
-      } else {
-        // console.log(`fetchEmbeddedFileContentAction: Response didn't have data, returning null`);
-        return null;
-      }
-    } catch (e: any) {
-      // console.log(`fetchEmbeddedFileContentAction: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
