@@ -1,8 +1,6 @@
-import { ActionWithPayload, KysoSetting, Relations, ReportDTO } from '@kyso-io/kyso-model';
+import { ActionWithPayload, KysoSetting } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
-import { fetchRelationsAction } from '../relations/relations-actions';
 import { fetchPublicKysoSettings } from './settings-actions';
 
 export type KysoSettingsState = {
@@ -18,7 +16,7 @@ const kysoSettingsSlice = createSlice({
   name: 'kyso-settings',
   initialState,
   reducers: {
-    setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<ReportDTO[]>) => {
+    setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       state.publicSettings = {
         ...state.publicSettings,
         ...listToKeyVal(action.payload),

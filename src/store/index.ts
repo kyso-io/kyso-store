@@ -12,6 +12,7 @@ import repos from './repos/repos-slice';
 import tags from './tags/tags-slice';
 import teams from './teams/teams-slice';
 import user from './user/user-slice';
+import kysoSettings from './settings/settings-slice';
 
 export const reducer = combineReducers({
   auth,
@@ -27,6 +28,7 @@ export const reducer = combineReducers({
   tags,
   teams,
   user,
+  kysoSettings
 });
 
 export const store: any = configureStore({
@@ -66,6 +68,7 @@ export * from './reports/reports-slice';
 export * from './repos/repos-actions';
 export * from './repos/repos-slice';
 export * from './settings/settings-actions';
+export * from './settings/settings-slice';
 export * from './tags/tags-actions';
 export * from './teams/teams-actions';
 export * from './teams/teams-slice';
