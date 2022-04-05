@@ -19,7 +19,7 @@ const kysoSettingsSlice = createSlice({
     setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       state.publicSettings = {
         ...state.publicSettings,
-        ...listToKeyVal(action.payload),
+        ...action.payload
       };
     },
   },
