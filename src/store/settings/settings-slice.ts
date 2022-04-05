@@ -25,7 +25,6 @@ const kysoSettingsSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(fetchPublicKysoSettings.fulfilled, (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
-      console.log(action.payload)
       if(action && action.payload) {
         state.publicSettings = {
           ...state.publicSettings,
