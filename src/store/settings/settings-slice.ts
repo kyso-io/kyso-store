@@ -18,7 +18,6 @@ const kysoSettingsSlice = createSlice({
     setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       if(action && action.payload) {
         state.publicSettings = [
-          ...state.publicSettings,
           ...action.payload,
         ];
       }
@@ -28,7 +27,6 @@ const kysoSettingsSlice = createSlice({
     builder.addCase(fetchPublicKysoSettings.fulfilled, (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       if(action && action.payload) {
         state.publicSettings = [
-          ...state.publicSettings,
           ...action.payload,
         ];
       }
