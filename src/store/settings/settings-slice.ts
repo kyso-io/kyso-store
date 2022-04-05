@@ -1,6 +1,5 @@
 import { ActionWithPayload, KysoSetting } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
-import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchPublicKysoSettings } from './settings-actions';
 
 export type KysoSettingsState = {
@@ -8,7 +7,7 @@ export type KysoSettingsState = {
 };
 
 const initialState: KysoSettingsState = {
-  publicSettings: [],
+  publicSettings: []
   
 };
 
@@ -17,19 +16,21 @@ const kysoSettingsSlice = createSlice({
   initialState,
   reducers: {
     setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
-      state.publicSettings = {
-        ...state.publicSettings,
-        ...action.payload
-      };
+      if(action && action.payload) {
+        state.publicSettings = [
+          ...state.publicSettings,
+          ...action.payload,
+        ];
+      }
     },
   },
   extraReducers: builder => {
     builder.addCase(fetchPublicKysoSettings.fulfilled, (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       if(action && action.payload) {
-        state.publicSettings = {
+        state.publicSettings = [
           ...state.publicSettings,
           ...action.payload,
-        };
+        ];
       }
 
     });
