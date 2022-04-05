@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO } from '@kyso-io/kyso-model';
+import { KysoSetting, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { setError } from '..';
@@ -22,3 +22,23 @@ export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoC
     return null;
   }
 });
+
+export const fetchPublicKysoSettings = createAsyncThunk('settings/fetchPublicKysoSettings', async (_, { dispatch }): Promise<KysoSetting[] | null> => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/kyso-settings/public`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data as any
+    } else {
+      return [];
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
+  }
+});
+
