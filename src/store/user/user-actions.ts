@@ -1,4 +1,15 @@
-import { CreateKysoAccessTokenDto, KysoUserAccessToken, LoginProviderEnum, NormalizedResponseDTO, UpdateUserRequestDTO, User, UserAccount, UserDTO } from '@kyso-io/kyso-model';
+import {
+  CreateKysoAccessTokenDto,
+  EmailUserChangePasswordDTO,
+  KysoUserAccessToken,
+  LoginProviderEnum,
+  NormalizedResponseDTO,
+  UpdateUserRequestDTO,
+  User,
+  UserAccount,
+  UserChangePasswordDTO,
+  UserDTO,
+} from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -468,18 +479,63 @@ export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken'
   }
 });
 
-export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async (token: string, { dispatch, getState }): Promise<any> => {
+export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async (token: string, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/verify-captcha`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.post(url, {
-      token,
-    }, {
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
+      url,
+      {
+        token,
+      },
+      {
+        headers: buildAuthHeaders(auth),
+      }
+    );
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
+
+export const emailRecoveryPasswordAction = createAsyncThunk('user/emailRecoveryPassword', async (emailUserChangePasswordDTO: EmailUserChangePasswordDTO, { dispatch, getState }): Promise<boolean> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/email-recovery-password`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, emailUserChangePasswordDTO, {
       headers: buildAuthHeaders(auth),
     });
-    if (axiosResponse?.data?.relations) {
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
     }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
+
+export const changePasswordAction = createAsyncThunk('user/changePassword', async (userChangePasswordDto: UserChangePasswordDTO, { dispatch, getState }): Promise<boolean> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/change-password`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, userChangePasswordDto, {
+      headers: buildAuthHeaders(auth),
+    });
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
     } else {
