@@ -2,7 +2,7 @@ import { GithubAccount, GithubFileHash, GithubRepository, NormalizedResponseDTO 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 
 export const fetchBitbucketRepositoriesAction = createAsyncThunk(
@@ -19,7 +19,7 @@ export const fetchBitbucketRepositoriesAction = createAsyncThunk(
         filter: payload?.filter || '',
       });
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/bitbucket?${qs.toString()}`;
+      const url = `${getAPIBaseURL()}/repos/bitbucket?${qs.toString()}`;
       // console.log(`fetchBitbucketRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -51,7 +51,7 @@ export const fetchBitbucketUserAction = createAsyncThunk('bitbucket/fetchBitbuck
   try {
     // console.log('fetchBitbucketUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/bitbucket/user`;
+    const url = `${getAPIBaseURL()}/repos/bitbucket/user`;
     // console.log(`fetchBitbucketUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -82,7 +82,7 @@ export const fetchBitbucketRepositoryAction = createAsyncThunk('bitbucket/fetchB
   try {
     // console.log('fetchBitbucketRepositoryAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/bitbucket/repository?name=${repositoryName}`;
+    const url = `${getAPIBaseURL()}/repos/bitbucket/repository?name=${repositoryName}`;
     // console.log(`fetchBitbucketRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -115,7 +115,7 @@ export const fetchBitbucketRepositoryTreeAction = createAsyncThunk(
     try {
       // console.log('fetchBitbucketRepositoryTreeAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/bitbucket/${payload.branch}/tree?name=${payload.repositoryName}`;
+      const url = `${getAPIBaseURL()}/repos/bitbucket/${payload.branch}/tree?name=${payload.repositoryName}`;
       // console.log(`fetchBitbucketRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),

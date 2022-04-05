@@ -25,3 +25,7 @@ export const buildAuthHeaders = (auth: AuthState) => {
   return headers
 }
 
+export const getAPIBaseURL = () => {
+  return process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL : '/api/v1'
+}
+

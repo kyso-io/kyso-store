@@ -2,12 +2,13 @@ import { KysoSetting, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { setError } from '..';
+import { getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setPublicSettings } from './settings-slice';
 
 export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoConfigValues', async (key: string, { dispatch }): Promise<string | null> => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/kyso-settings/${key}`;
+    const url = `${getAPIBaseURL()}/kyso-settings/${key}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
@@ -26,7 +27,7 @@ export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoC
 
 export const fetchPublicKysoSettings = createAsyncThunk('settings/fetchPublicKysoSettings', async (_, { dispatch }): Promise<KysoSetting[] | null> => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/kyso-settings/public`;
+    const url = `${getAPIBaseURL()}/kyso-settings/public`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
       await dispatch(setPublicSettings(axiosResponse.data.data as any));

@@ -3,7 +3,7 @@ import { EntityEnum } from '@kyso-io/kyso-model/dist/enums/entity.enum';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '../..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -16,7 +16,7 @@ export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (payload
       sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
       ...payload?.filter,
     });
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags?${qs.toString()}`;
+    const url = `${getAPIBaseURL()}/tags?${qs.toString()}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -42,7 +42,7 @@ export const createTagAction = createAsyncThunk('tags/createTag', async (tag: Ta
   try {
     // console.log('createTagAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags`;
+    const url = `${getAPIBaseURL()}/tags`;
     // console.log(`createTagAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.post(url, tag, {
       headers: buildAuthHeaders(auth),
@@ -73,7 +73,7 @@ export const fetchTagAction = createAsyncThunk('tags/fetchTags', async (tagId: s
   try {
     // console.log('fetchTagsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${tagId}`;
+    const url = `${getAPIBaseURL()}/tags/${tagId}`;
     // console.log(`fetchTagsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -104,7 +104,7 @@ export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (t
   try {
     // console.log('checkTagNameAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/check/${tagName}`;
+    const url = `${getAPIBaseURL()}/tags/check/${tagName}`;
     // console.log(`checkTagNameAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -131,7 +131,7 @@ export const updateTagActions = createAsyncThunk('tags/updateTag', async (payloa
   try {
     // console.log('updateTagActions invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}`;
+    const url = `${getAPIBaseURL()}/tags/${payload.tagId}`;
     // console.log(`updateTagActions: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.patch(url, payload.tag, {
       headers: buildAuthHeaders(auth),
@@ -162,7 +162,7 @@ export const deleteTagAction = createAsyncThunk('tags/deleteTag', async (tagId: 
   try {
     // console.log('deleteTagAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${tagId}`;
+    const url = `${getAPIBaseURL()}/tags/${tagId}`;
     // console.log(`deleteTagAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -195,7 +195,7 @@ export const assignTagToEntityAction = createAsyncThunk(
     try {
       // console.log('assignTagToEntityAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}/assign/${payload.entityId}/${payload.entityEnum}`;
+      const url = `${getAPIBaseURL()}/tags/${payload.tagId}/assign/${payload.entityId}/${payload.entityEnum}`;
       // console.log(`assignTagToEntityAction: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.post(url, null, {
         headers: buildAuthHeaders(auth),
@@ -229,7 +229,7 @@ export const unassignTagFromEntityAction = createAsyncThunk(
     try {
       // console.log('unassignTagFromEntityAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/tags/${payload.tagId}/unassign/${payload.entityId}`;
+      const url = `${getAPIBaseURL()}/tags/${payload.tagId}/unassign/${payload.entityId}`;
       // console.log(`unassignTagFromEntityAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),

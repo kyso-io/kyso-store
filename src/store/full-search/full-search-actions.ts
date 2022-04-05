@@ -2,7 +2,7 @@ import { FullTextSearchDTO, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '../..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 
 export const fullTextSearchAction = createAsyncThunk(
@@ -22,7 +22,7 @@ export const fullTextSearchAction = createAsyncThunk(
   ): Promise<FullTextSearchDTO | null> => {
     try {
       const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/search?type=${args.type}&terms=${args.terms}&page=${args.page}`;
+      let url = `${getAPIBaseURL()}/search?type=${args.type}&terms=${args.terms}&page=${args.page}`;
       if (args.perPage) {
         url += `&perPage=${args.perPage}`;
       }

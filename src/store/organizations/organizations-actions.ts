@@ -2,7 +2,7 @@ import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, Organizati
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -10,7 +10,7 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
   try {
     // console.log('fetchOrganizationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
+    const url = `${getAPIBaseURL()}/organizations/${organizationId}`;
     // console.log(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -41,7 +41,7 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
   try {
     // console.log('deleteOrganizationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}`;
+    const url = `${getAPIBaseURL()}/organizations/${organizationId}`;
     // console.log(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -70,7 +70,7 @@ export const updateOrganizationAction = createAsyncThunk(
     try {
       // console.log('updateOrganizationAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}`;
+      const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}`;
       // console.log(`updateOrganizationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, payload.updateOrganizationDto, {
         headers: buildAuthHeaders(auth),
@@ -104,7 +104,7 @@ export const updateOrganizationOptionsAction = createAsyncThunk(
     try {
       // console.log('updateOrganizationOptionsAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/options`;
+      const url = `${getAPIBaseURL()}/organizations/${args.organizationId}/options`;
       // console.log(`updateOrganizationOptionsAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, args.options, {
         headers: buildAuthHeaders(auth),
@@ -136,7 +136,7 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
   try {
     // console.log('fetchOrganizationMembers invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${organizationId}/members`;
+    const url = `${getAPIBaseURL()}/organizations/${organizationId}/members`;
     // console.log(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -167,7 +167,7 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
   try {
     // console.log('createOrganization invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations`;
+    const url = `${getAPIBaseURL()}/organizations`;
     // console.log(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, organization, {
       headers: buildAuthHeaders(auth),
@@ -198,7 +198,7 @@ export const addUserToOrganizationAction = createAsyncThunk('organizations/addUs
   try {
     // console.log('addUserToOrganization invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/members`;
+    const url = `${getAPIBaseURL()}/organizations/members`;
     // console.log(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, data, {
       headers: buildAuthHeaders(auth),
@@ -236,7 +236,7 @@ export const joinUserToOrganizationAction = createAsyncThunk(
   ): Promise<any> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationName}/join/${args.invitationCode}`;
+      const url = `${getAPIBaseURL()}/organizations/${args.organizationName}/join/${args.invitationCode}`;
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
         url,
         {},
@@ -263,7 +263,7 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
     try {
       // console.log('removeUserFromOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}`;
+      const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members/${payload.userId}`;
       // console.log(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -297,7 +297,7 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
     try {
       // console.log('updateMembersRolesToOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members-roles`;
+      const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members-roles`;
       // console.log(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, payload.data, {
         headers: buildAuthHeaders(auth),
@@ -331,7 +331,7 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
     try {
       // console.log('deleteRoleToUserFromOrganization invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
+      const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
       // console.log(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -365,7 +365,7 @@ export const updateOrganizationPictureAction = createAsyncThunk(
     try {
       // console.log('updateOrganizationPictureAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/organizations/${args.organizationId}/profile-picture`;
+      const url = `${getAPIBaseURL()}/organizations/${args.organizationId}/profile-picture`;
       // console.log(`updateOrganizationPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData = new FormData();
       formData.append('file', args.file);

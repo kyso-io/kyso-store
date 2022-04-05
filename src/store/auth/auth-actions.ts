@@ -2,14 +2,14 @@ import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 
 export const loginAction = createAsyncThunk('auth/login', async (login: Login, { dispatch }): Promise<string | null> => {
   try {
     // console.log('loginAction invoked')
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
+    const url = `${getAPIBaseURL()}/auth/login`;
     // console.log(`loginAction - POST ${url}`)
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, login);
     if (axiosResponse?.data?.data) {
@@ -35,7 +35,7 @@ export const loginAction = createAsyncThunk('auth/login', async (login: Login, {
 export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch, getState }): Promise<void> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`;
+    const url = `${getAPIBaseURL()}/auth/logout`;
     await httpClient.post(
       url,
       {},
@@ -56,7 +56,7 @@ export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch
 export const signUpAction = createAsyncThunk('auth/signup', async (payload: CreateUserRequestDTO, { dispatch }): Promise<User | null> => {
   try {
     // console.log('signUpAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/sign-up`;
+    const url = `${getAPIBaseURL()}/auth/sign-up`;
     // console.log(`signUpAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<User>> = await httpClient.post(url, payload);
     if (axiosResponse?.data?.data) {
@@ -81,7 +81,7 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
   try {
     // console.log('refreshTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`;
+    const url = `${getAPIBaseURL()}/auth/refresh-token`;
     // console.log(`refreshTokenAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, undefined, {
       headers: buildAuthHeaders(auth),
@@ -109,7 +109,7 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
 export const fetchOrganizationAuthOptions = createAsyncThunk('auth/fetchOrganizationAuthOptions', async (organizationSlugName: string, { dispatch }): Promise<string | null> => {
   try {
     // console.log('fetchOrganizationAuthOptions invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/organization/${organizationSlugName}/options`;
+    const url = `${getAPIBaseURL()}/auth/organization/${organizationSlugName}/options`;
     // console.log(`fetchOrganizationAuthOptions - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
@@ -135,7 +135,7 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
   try {
     const { auth } = getState() as RootState;
     // console.log('loginAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/user/${username}/permissions`;
+    const url = `${getAPIBaseURL()}/auth/user/${username}/permissions`;
     // console.log(`loginAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -163,7 +163,7 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
 export const fetchApiVersionAction = createAsyncThunk('auth/fetchApiVersion', async (_, { dispatch }): Promise<string | null> => {
   try {
     // console.log('fetchApiVersionAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/version`;
+    const url = `${getAPIBaseURL()}/auth/version`;
     // console.log(`fetchApiVersionAction - GET ${url}`);
     const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
     return axiosResponse.data;
@@ -181,7 +181,7 @@ export const fetchApiVersionAction = createAsyncThunk('auth/fetchApiVersion', as
 export const fetchDbVersionAction = createAsyncThunk('auth/fetchDbVersion', async (_, { dispatch }): Promise<string | null> => {
   try {
     // console.log('fetchDbVersionAction invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/db`;
+    const url = `${getAPIBaseURL()}/auth/db`;
     // console.log(`fetchDbVersionAction - GET ${url}`);
     const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
     return axiosResponse.data;
@@ -199,7 +199,7 @@ export const fetchDbVersionAction = createAsyncThunk('auth/fetchDbVersion', asyn
 export const fetchOrganizationLoginOptions = createAsyncThunk('auth/fetchOrganizationLoginOptions', async (organizationSlugName: string, { dispatch }): Promise<string | null> => {
   try {
     // console.log('fetchOrganizationLoginOptions invoked');
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/organization/${organizationSlugName}/options`;
+    const url = `${getAPIBaseURL()}/auth/organization/${organizationSlugName}/options`;
     // console.log(`fetchOrganizationLoginOptions - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
@@ -222,7 +222,7 @@ export const fetchOrganizationLoginOptions = createAsyncThunk('auth/fetchOrganiz
 
 export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (args: { email: string; token: string }, { dispatch }): Promise<boolean> => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email`;
+    const url = `${getAPIBaseURL()}/auth/verify-email`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, args);
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
@@ -243,7 +243,7 @@ export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (arg
 export const sendVerificationEmailAction = createAsyncThunk('auth/sendVerificationEmail', async (_, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/send-verification-email`;
+    const url = `${getAPIBaseURL()}/auth/send-verification-email`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
       url,
       {},

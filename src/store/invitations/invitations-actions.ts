@@ -2,7 +2,7 @@ import { CreateInvitationDto, Invitation, NormalizedResponseDTO } from '@kyso-io
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '../..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -18,7 +18,7 @@ export const fetchInvitationsAction = createAsyncThunk(
         sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
         ...payload?.filter,
       });
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations?${qs.toString()}`;
+      const url = `${getAPIBaseURL()}/invitations?${qs.toString()}`;
       // console.log(`fetchInvitationsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -50,7 +50,7 @@ export const fetchInvitationAction = createAsyncThunk('tags/fetchInvitation', as
   try {
     // console.log('fetchInvitationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
+    const url = `${getAPIBaseURL()}/invitations/${invitationId}`;
     // console.log(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -81,7 +81,7 @@ export const createInvitationAction = createAsyncThunk('tags/createInvitation', 
   try {
     // console.log('createInvitationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations`;
+    const url = `${getAPIBaseURL()}/invitations`;
     // console.log(`createInvitationAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.post(url, createInvitationDto, {
       headers: buildAuthHeaders(auth),
@@ -112,7 +112,7 @@ export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', 
   try {
     // console.log('acceptInvitationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/accept-invitation/${invitationId}`;
+    const url = `${getAPIBaseURL()}/invitations/accept-invitation/${invitationId}`;
     // console.log(`acceptInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(
       url,
@@ -147,7 +147,7 @@ export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', 
   try {
     // console.log('rejectInvitationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/reject-invitation/${invitationId}`;
+    const url = `${getAPIBaseURL()}/invitations/reject-invitation/${invitationId}`;
     // console.log(`rejectInvitationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.patch(
       url,
@@ -182,7 +182,7 @@ export const deleteInvitationAction = createAsyncThunk('tags/deleteInvitation', 
   try {
     // console.log('deleteInvitationAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/invitations/${invitationId}`;
+    const url = `${getAPIBaseURL()}/invitations/${invitationId}`;
     // console.log(`deleteInvitationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),

@@ -2,7 +2,7 @@ import { NormalizedResponseDTO, RepositoryProvider } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 
 export const fetchRepositoriesAction = createAsyncThunk(
@@ -11,7 +11,7 @@ export const fetchRepositoriesAction = createAsyncThunk(
     try {
       // console.log('fetchRepositoriesAction invoked');
       const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${args.provider}?page=${args.page}&per_page=${args.per_page}`;
+      let url = `${getAPIBaseURL()}/repos/${args.provider}?page=${args.page}&per_page=${args.per_page}`;
       if (args?.query && args.query.length > 0) {
         url += `&filter=${args.query}`;
       }
@@ -46,7 +46,7 @@ export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepository
   try {
     // console.log('fetchRepositoryUserAction invoked');
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user`;
+    const url = `${getAPIBaseURL()}/repos/${repos.provider}/user`;
     // console.log(`fetchRepositoryUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -77,7 +77,7 @@ export const fetchRepositoryAction = createAsyncThunk('repos/fetchRepository', a
   try {
     // console.log(`fetchRepositoryAction: repoName ${repoName}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/${repoName}`;
+    const url = `${getAPIBaseURL()}/repos/${repos.provider}/${repoName}`;
     // console.log(`fetchRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -108,7 +108,7 @@ export const fetchRepositoryTreeAction = createAsyncThunk('repos/fetchRepository
   try {
     // console.log(`fetchRepositoryTreeAction: repoName ${payload.repoName} branch ${payload.branch}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/${payload.repoName}/${payload.branch}/tree`;
+    const url = `${getAPIBaseURL()}/repos/${repos.provider}/${payload.repoName}/${payload.branch}/tree`;
     // console.log(`fetchRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -139,7 +139,7 @@ export const fetchUserByAccessTokenAction = createAsyncThunk('repos/fetchUserByA
   try {
     // console.log(`fetchUserByAccessTokenAction: accessToken ${accessToken}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/${accessToken}`;
+    const url = `${getAPIBaseURL()}/repos/${repos.provider}/user/${accessToken}`;
     // console.log(`fetchUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -170,7 +170,7 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
   try {
     // console.log(`fetchUserEmailsByAccessToken: accessToken ${accessToken}`);
     const { auth, repos } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${repos.provider}/user/emails/${accessToken}`;
+    const url = `${getAPIBaseURL()}/repos/${repos.provider}/user/emails/${accessToken}`;
     // console.log(`fetchUserEmailsByAccessToken: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -201,7 +201,7 @@ export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUse
   try {
     // console.log(`fetchUserUserByAccessTokenAction: accessToken ${accessToken}`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/${args.provider}/user/access-token/${args.accessToken}`;
+    const url = `${getAPIBaseURL()}/repos/${args.provider}/user/access-token/${args.accessToken}`;
     // console.log(`fetchUserUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

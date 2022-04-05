@@ -7,7 +7,7 @@ import { createReadStream, readFileSync, statSync } from 'fs';
 import JSZip from 'jszip';
 import { v4 as uuidv4 } from 'uuid';
 import { RootState } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -16,7 +16,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
   try {
     // console.log('fetchReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}`;
     // console.log(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -57,7 +57,7 @@ export const fetchReportsAction = createAsyncThunk(
         ...payload?.filter,
       });
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports?${qs.toString()}`;
+      const url = `${getAPIBaseURL()}/reports?${qs.toString()}`;
       // console.log(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -91,7 +91,7 @@ export const fetchReportByReportNameAndTeamName = createAsyncThunk(
     try {
       // console.log('fetchReportByReportNameAndTeamNameAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportName}/${args.teamName}`;
+      const url = `${getAPIBaseURL()}/reports/${args.reportName}/${args.teamName}`;
       // console.log(`fetchReportByReportNameAndTeamNameAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -123,7 +123,7 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
   try {
     // console.log('updateReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}`;
+    const url = `${getAPIBaseURL()}/reports/${payload.reportId}`;
     // console.log(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
@@ -154,7 +154,7 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
   try {
     // console.log('fetchBranchesAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/branches`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/branches`;
     // console.log(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -185,7 +185,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
   try {
     // console.log('fetchCommitsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportId}/${payload.branch}/commits`;
+    const url = `${getAPIBaseURL()}/reports/${payload.reportId}/${payload.branch}/commits`;
     // console.log(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -218,7 +218,7 @@ export const fetchReportsTreeAction = createAsyncThunk(
     try {
       // console.log('fetchReportsTreeAction invoked');
       const { auth } = getState() as RootState;
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/tree?path=${args.filePath}`;
+      let url = `${getAPIBaseURL()}/reports/${args.reportId}/tree?path=${args.filePath}`;
       if (args.version) {
         url += `&version=${args.version}`;
       }
@@ -248,7 +248,7 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
   try {
     // console.log('deleteReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}`;
     // console.log(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -279,7 +279,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   try {
     // console.log('fetchUserPinnedReportsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/pinned`;
+    const url = `${getAPIBaseURL()}/pinned`;
     // console.log(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -311,7 +311,7 @@ export const fetchFileContentAction = createAsyncThunk(
   async (fileId: string, { getState, dispatch }): Promise<Buffer | null> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/file/${fileId}`;
+      const url = `${getAPIBaseURL()}/reports/file/${fileId}`;
       const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
       });
@@ -335,7 +335,7 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
   try {
     // console.log('toggleUserPinReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-pin`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/user-pin`;
     // console.log(`toggleUserPinReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
@@ -370,7 +370,7 @@ export const toggleGlobalPinReportAction = createAsyncThunk('reports/toggleGloba
   try {
     // console.log('toggleGlobalPinReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/pin`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/pin`;
     // console.log(`toggleGlobalPinReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
@@ -405,7 +405,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
   try {
     // console.log('toggleUserStarReportAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/user-star`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/user-star`;
     // console.log(`toggleUserStarReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(
       url,
@@ -441,7 +441,7 @@ export const createKysoReportAction = createAsyncThunk(
   async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/kyso`;
+      const url = `${getAPIBaseURL()}/reports/kyso`;
       const formData: FormData = new FormData();
       const zipFileName = `${uuidv4()}.zip`;
       const outputFilePath = `/tmp/${zipFileName}`;
@@ -489,7 +489,7 @@ export const createKysoReportUIAction = createAsyncThunk(
   ): Promise<ReportDTO | null> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui`;
+      const url = `${getAPIBaseURL()}/reports/ui`;
       const zip = new JSZip();
       // Create kyso.json on the fly
       const kysoConfigFile: KysoConfigFile = {
@@ -545,7 +545,7 @@ export const updateMainFileReportAction = createAsyncThunk(
     try {
       // console.log(`updateMainFileReportAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/ui/main-file/${args.reportId}`;
+      const url = `${getAPIBaseURL()}/reports/ui/main-file/${args.reportId}`;
       // console.log(`updateMainFileReportAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData: FormData = new FormData();
       const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
@@ -587,7 +587,7 @@ export const importGithubRepositoryAction = createAsyncThunk(
     // try {
     // console.log(`importGithubRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/github/${args.repositoryName}`;
+    let url = `${getAPIBaseURL()}/reports/github/${args.repositoryName}`;
     if (args?.branch) {
       url = `${url}?branch=${args.branch}`;
     }
@@ -624,7 +624,7 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
     // try {
     // console.log(`importBitbucketRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/bitbucket?name=${args.repositoryName}`;
+    let url = `${getAPIBaseURL()}/reports/bitbucket?name=${args.repositoryName}`;
     if (args?.branch) {
       url += `&branch=${args.branch}`;
     }
@@ -662,7 +662,7 @@ export const importGitlabRepositoryAction = createAsyncThunk(
     // try {
     // console.log(`importGitlabRepositoryAction invoked`);
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/gitlab?id=${args.repositoryName}`;
+    let url = `${getAPIBaseURL()}/reports/gitlab?id=${args.repositoryName}`;
     if (args?.branch) {
       url = `${url}&branch=${args.branch}`;
     }
@@ -698,7 +698,7 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
   try {
     // console.log(`pullReportAction invoked`);
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${payload.reportName}/${payload.teamName}/pull`;
+    let url = `${getAPIBaseURL()}/reports/${payload.reportName}/${payload.teamName}/pull`;
     if (payload.version) {
       url = `${url}?version=${payload.version}`;
     }
@@ -723,7 +723,7 @@ export const downloadReportAction = createAsyncThunk('reports/downloadReport', a
   try {
     // console.log(`downloadReportAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/download`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/download`;
     // console.log(`downloadReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -747,7 +747,7 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
     try {
       // console.log('updateReportPreviewPictureAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/preview-picture`;
+      const url = `${getAPIBaseURL()}/reports/${args.reportId}/preview-picture`;
       // console.log(`updateReportPreviewPictureAction: ${printAuthenticated(auth)} - POST ${url}`);
       const formData = new FormData();
       formData.append('file', args.file);
@@ -781,7 +781,7 @@ export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteRep
   try {
     // console.log('deleteReportPreviewPictureAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${reportId}/preview-picture`;
+    const url = `${getAPIBaseURL()}/reports/${reportId}/preview-picture`;
     // console.log(`deleteReportPreviewPictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -812,7 +812,7 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
   try {
     // console.log('fetchReportFilesAction invoked');
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/files`;
+    let url = `${getAPIBaseURL()}/reports/${args.reportId}/files`;
     if (args.version && args.version > 0) {
       url += `?version=${args.version}`;
     }
@@ -851,7 +851,7 @@ export const fetchReportVersionsAction = createAsyncThunk(
       const qs = new URLSearchParams({
         sort: args?.sort && args.sort.length > 0 ? args.sort : '-created_at',
       });
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/versions?${qs.toString()}`;
+      const url = `${getAPIBaseURL()}/reports/${args.reportId}/versions?${qs.toString()}`;
       // console.log(`fetchReportVersionsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -885,7 +885,7 @@ export const fetchEmbeddedReportAction = createAsyncThunk(
     try {
       // console.log('fetchEmbeddedReportAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/embedded/${args.organizationName}/${args.teamName}/${args.reportName}`;
+      const url = `${getAPIBaseURL()}/reports/embedded/${args.organizationName}/${args.teamName}/${args.reportName}`;
       // console.log(`fetchEmbeddedReportAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -917,7 +917,7 @@ export const checkReportExistsAction = createAsyncThunk('reports/checkReportExis
   try {
     // console.log('checkReportExistsAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportName}/${args.teamId}/exists`;
+    const url = `${getAPIBaseURL()}/reports/${args.reportName}/${args.teamId}/exists`;
     // console.log(`checkReportExistsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<boolean> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

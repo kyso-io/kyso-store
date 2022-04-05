@@ -13,7 +13,7 @@ import {
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -41,7 +41,7 @@ export const fetchUsersAction = createAsyncThunk(
         userIdsQueryString = payload.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
       }
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/users?page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}${userIdsQueryString}`;
+      const url = `${getAPIBaseURL()}/users?page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}${userIdsQueryString}`;
       // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -73,7 +73,7 @@ export const createUserAction = createAsyncThunk('user/createUser', async (user:
   try {
     // console.log('createUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users`;
+    const url = `${getAPIBaseURL()}/users`;
     // console.log(`createUserAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.post(url, user, {
       headers: buildAuthHeaders(auth),
@@ -104,7 +104,7 @@ export const fetchUserAction = createAsyncThunk('user/fetchUser', async (userId:
   try {
     // console.log('fetchUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
+    const url = `${getAPIBaseURL()}/users/${userId}`;
     // console.log(`fetchUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -135,7 +135,7 @@ export const fetchUserProfileAction = createAsyncThunk('user/fetchUserProfile', 
   try {
     // console.log('fetchUserProfileAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${username}/profile`;
+    const url = `${getAPIBaseURL()}/users/${username}/profile`;
     // console.log(`fetchUserProfileAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -168,7 +168,7 @@ export const updateUserAction = createAsyncThunk(
     try {
       // console.log('updateUserAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}`;
+      const url = `${getAPIBaseURL()}/users/${payload.userId}`;
       // console.log(`updateUserAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.patch(url, payload.updateUserRequestDto, {
         headers: buildAuthHeaders(auth),
@@ -200,7 +200,7 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
   try {
     // console.log('deleteUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`;
+    const url = `${getAPIBaseURL()}/users/${userId}`;
     // console.log(`deleteUserAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -231,7 +231,7 @@ export const addUserAccountAction = createAsyncThunk('user/addUserAccount', asyn
   try {
     // console.log('addUserAccountAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/accounts`;
+    const url = `${getAPIBaseURL()}/users/accounts`;
     // console.log(`addUserAccountAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, userAccount, {
       headers: buildAuthHeaders(auth),
@@ -264,7 +264,7 @@ export const removeAccountFromUser = createAsyncThunk(
     try {
       // console.log('removeAccountFromUser invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
+      const url = `${getAPIBaseURL()}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
       // console.log(`removeAccountFromUser: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -296,7 +296,7 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
   try {
     // console.log('updateUserProfilePictureAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/profile-picture`;
+    const url = `${getAPIBaseURL()}/users/profile-picture`;
     // console.log(`updateUserProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', file);
@@ -329,7 +329,7 @@ export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { ge
   try {
     // console.log('refreshUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/user`;
+    const url = `${getAPIBaseURL()}/user`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -359,7 +359,7 @@ export const getAccessTokensAction = createAsyncThunk('user/getAccessTokens', as
   try {
     // console.log('getAccessTokensAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-tokens`;
+    const url = `${getAPIBaseURL()}/users/access-tokens`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -389,7 +389,7 @@ export const createAccessTokenAction = createAsyncThunk('user/createAccessToken'
   try {
     // console.log('createAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token`;
+    const url = `${getAPIBaseURL()}/users/access-token`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken>> = await httpClient.post(url, args, {
       headers: buildAuthHeaders(auth),
     });
@@ -419,7 +419,7 @@ export const revokeAllAccessTokenAction = createAsyncThunk('user/revokeAllAccess
   try {
     // console.log('revokeAllAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token/revoke-all`;
+    const url = `${getAPIBaseURL()}/users/access-token/revoke-all`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.patch(
       url,
       {},
@@ -453,7 +453,7 @@ export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken'
   try {
     // console.log('deleteAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/access-token/${tokenId}`;
+    const url = `${getAPIBaseURL()}/users/access-token/${tokenId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoUserAccessToken[]>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
     });
@@ -482,7 +482,7 @@ export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken'
 export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async (token: string, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/verify-captcha`;
+    const url = `${getAPIBaseURL()}/users/verify-captcha`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(
       url,
       {
@@ -510,7 +510,7 @@ export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async 
 export const emailRecoveryPasswordAction = createAsyncThunk('user/emailRecoveryPassword', async (emailUserChangePasswordDTO: EmailUserChangePasswordDTO, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/email-recovery-password`;
+    const url = `${getAPIBaseURL()}/users/email-recovery-password`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, emailUserChangePasswordDTO, {
       headers: buildAuthHeaders(auth),
     });
@@ -532,7 +532,7 @@ export const emailRecoveryPasswordAction = createAsyncThunk('user/emailRecoveryP
 export const changePasswordAction = createAsyncThunk('user/changePassword', async (userChangePasswordDto: UserChangePasswordDTO, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/change-password`;
+    const url = `${getAPIBaseURL()}/users/change-password`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.post(url, userChangePasswordDto, {
       headers: buildAuthHeaders(auth),
     });

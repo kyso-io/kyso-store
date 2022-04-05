@@ -2,7 +2,7 @@ import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -12,7 +12,7 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
   try {
     // console.log('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/reports/${args.reportId}/comments`;
+    let url = `${getAPIBaseURL()}/reports/${args.reportId}/comments`;
     if (args.sort) {
       url += `?sort=${args.sort}`;
     }
@@ -46,7 +46,7 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
   try {
     // console.log('fetchDiscussionComments invoked');
 
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/discussions/${args.discussionId}/comments`;
+    let url = `${getAPIBaseURL()}/discussions/${args.discussionId}/comments`;
     if (args.sort) {
       url += `?sort=${args.sort}`;
     }
@@ -85,7 +85,7 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
   try {
     // console.log('fetchCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
+    const url = `${getAPIBaseURL()}/comments/${commentId}`;
     // console.log(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -116,7 +116,7 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
   try {
     // console.log('createCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments`;
+    const url = `${getAPIBaseURL()}/comments`;
     // console.log(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
@@ -145,7 +145,7 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
   try {
     // console.log('updateCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.commentId}`;
+    const url = `${getAPIBaseURL()}/comments/${payload.commentId}`;
     // console.log(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.patch(url, payload.comment, {
       headers: buildAuthHeaders(auth),
@@ -176,7 +176,7 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
   try {
     // console.log('deleteCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`;
+    const url = `${getAPIBaseURL()}/comments/${commentId}`;
     // console.log(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {

@@ -2,7 +2,7 @@ import { GithubAccount, GithubEmail, GithubFileHash, GithubRepository, Normalize
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -20,7 +20,7 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
         ...payload?.filter,
       });
 
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github?${qs.toString()}`;
+      const url = `${getAPIBaseURL()}/repos/github?${qs.toString()}`;
       // console.log(`fetchGithubRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -52,7 +52,7 @@ export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', 
   try {
     // console.log('fetchGithubUserAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user`;
+    const url = `${getAPIBaseURL()}/repos/github/user`;
     // console.log(`fetchGithubUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -83,7 +83,7 @@ export const fetchGithubRepositoryAction = createAsyncThunk('github/fetchGithubR
   try {
     // console.log('fetchGithubRepositoryAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${repositoryName}`;
+    const url = `${getAPIBaseURL()}/repos/github/${repositoryName}`;
     // console.log(`fetchGithubRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -116,7 +116,7 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
     try {
       // console.log('fetchGithubRepositoryTreeAction invoked');
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
+      const url = `${getAPIBaseURL()}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
       // console.log(`fetchGithubRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
         headers: buildAuthHeaders(auth),
@@ -148,7 +148,7 @@ export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetch
   try {
     // console.log('fetchGithubUserByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/access-token/${accessToken}`;
+    const url = `${getAPIBaseURL()}/repos/github/user/access-token/${accessToken}`;
     // console.log(`fetchGithubUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -179,7 +179,7 @@ export const fetchGithubUserEmailsByAccessTokenAction = createAsyncThunk('github
   try {
     // console.log('fetchGithubUserEmailsByAccessTokenAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/repos/github/user/emails/access-token/${accessToken}`;
+    const url = `${getAPIBaseURL()}/repos/github/user/emails/access-token/${accessToken}`;
     // console.log(`fetchGithubUserEmailsByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubEmail[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),

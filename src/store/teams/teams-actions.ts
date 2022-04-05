@@ -2,7 +2,7 @@ import { NormalizedResponseDTO, Report, Team, TeamMember, UpdateTeamMembersDTO, 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
-import { buildAuthHeaders } from '../../helpers/axios-helper';
+import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
@@ -18,7 +18,7 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payl
       ...payload?.filter,
     });
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams?${qs.toString()}`;
+    const url = `${getAPIBaseURL()}/teams?${qs.toString()}`;
     // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -49,7 +49,7 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
   try {
     // console.log(`fetchTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}`;
     // console.log(`fetchTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -80,7 +80,7 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
   try {
     // console.log(`createTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams`;
+    const url = `${getAPIBaseURL()}/teams`;
     // console.log(`createTeamAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, team, {
       headers: buildAuthHeaders(auth),
@@ -111,7 +111,7 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
   try {
     // console.log(`deleteTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}`;
     // console.log(`deleteTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -142,7 +142,7 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
   try {
     // console.log(`fetchTeamMembersAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/members`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}/members`;
     // console.log(`fetchTeamMembersAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -173,7 +173,7 @@ export const fetchTeamAssigneesAction = createAsyncThunk('team/fetchTeamAssignee
   try {
     // console.log(`fetchTeamAssignees invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/assignees`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}/assignees`;
     // console.log(`fetchTeamAssignees: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -204,7 +204,7 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
   try {
     // console.log(`checkMemberBelongsToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`checkMemberBelongsToTheTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -231,7 +231,7 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
   try {
     // console.log(`addMemberToTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`addMemberToTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
       headers: buildAuthHeaders(auth),
@@ -258,7 +258,7 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
   try {
     // console.log(`deleteMemberFromTheTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members/${payload.userId}`;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
@@ -285,7 +285,7 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
   try {
     // console.log(`updateTeamAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}`;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}`;
     // console.log(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.patch(url, payload.data, {
       headers: buildAuthHeaders(auth),
@@ -316,7 +316,7 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
   try {
     // console.log(`checkTeamNameIsUniqueAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/check-name/${teamName}`;
+    const url = `${getAPIBaseURL()}/teams/check-name/${teamName}`;
     // console.log(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -343,7 +343,7 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
   try {
     // console.log(`fetchTeamReportsAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/reports`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}/reports`;
     // console.log(`fetchTeamReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
@@ -376,7 +376,7 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
     try {
       // console.log(`updateRoleToMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles`;
+      const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members-roles`;
       // console.log(`updateRoleToMembersOfTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload.data, {
         headers: buildAuthHeaders(auth),
@@ -410,7 +410,7 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
     try {
       // console.log(`deleteRoleOfMembersOfTeamAction invoked`);
       const { auth } = getState() as RootState;
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
+      const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
       // console.log(`deleteRoleOfMembersOfTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
@@ -442,7 +442,7 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
   try {
     // console.log(`updateTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${payload.teamId}/profile-picture`;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}/profile-picture`;
     // console.log(`updateTeamProfilePictureAction: ${printAuthenticated(auth)} - POST ${url}`);
     const formData = new FormData();
     formData.append('file', payload.file);
@@ -475,7 +475,7 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
   try {
     // console.log(`deleteTeamProfilePictureAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/teams/${teamId}/profile-picture`;
+    const url = `${getAPIBaseURL()}/teams/${teamId}/profile-picture`;
     // console.log(`deleteTeamProfilePictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
       headers: buildAuthHeaders(auth),
