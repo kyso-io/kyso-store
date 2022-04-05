@@ -38,4 +38,6 @@ const kysoSettingsSlice = createSlice({
 });
 
 
+export const { setPublicSettings } = kysoSettingsSlice.actions;
+
 export default kysoSettingsSlice.reducer;

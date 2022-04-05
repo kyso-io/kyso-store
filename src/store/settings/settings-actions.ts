@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { setError } from '..';
 import httpClient from '../../services/http-client';
+import { setPublicSettings } from './settings-slice';
 
 export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoConfigValues', async (key: string, { dispatch }): Promise<string | null> => {
   try {
@@ -28,6 +29,7 @@ export const fetchPublicKysoSettings = createAsyncThunk('settings/fetchPublicKys
     const url = `${process.env.NEXT_PUBLIC_API_URL}/kyso-settings/public`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
     if (axiosResponse?.data?.data) {
+      await dispatch(setPublicSettings(axiosResponse.data.data as any));
       return axiosResponse.data.data as any
     } else {
       return [];
