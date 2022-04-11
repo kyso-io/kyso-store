@@ -26,6 +26,10 @@ export const buildAuthHeaders = (auth: AuthState) => {
 }
 
 export const getAPIBaseURL = () => {
+  if(process.env.KYSO_API) {
+    return process.env.KYSO_API
+  }
+  
   return process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL : '/api/v1'
 }
 
