@@ -1,4 +1,13 @@
-import { AddUserOrganizationDto, NormalizedResponseDTO, Organization, OrganizationMember, OrganizationOptions, UpdateOrganizationDTO, UpdateOrganizationMembersDTO } from '@kyso-io/kyso-model';
+import {
+  AddUserOrganizationDto,
+  NormalizedResponseDTO,
+  NumMembersAndReportsOrg,
+  Organization,
+  OrganizationMember,
+  OrganizationOptions,
+  UpdateOrganizationDTO,
+  UpdateOrganizationMembersDTO,
+} from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -391,6 +400,34 @@ export const updateOrganizationPictureAction = createAsyncThunk(
         dispatch(setError(e.toString()));
       }
       return null;
+    }
+  }
+);
+
+export const getNumMembersAndReportsByOrganizationAction = createAsyncThunk(
+  'organization/getNumMembersAndReportsByOrganization',
+  async (organizationId: string, { getState, dispatch }): Promise<NumMembersAndReportsOrg[]> => {
+    try {
+      const { auth } = getState() as RootState;
+      let url = `${getAPIBaseURL()}/organizations/number-of-members-and-reports`;
+      if (organizationId) {
+        url += `?organizationId=${organizationId}`;
+      }
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<NumMembersAndReportsOrg[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return [];
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return [];
     }
   }
 );
