@@ -9,10 +9,10 @@ import invitations from './invitations/invitations-slice';
 import organizations from './organizations/organizations-slice';
 import reports from './reports/reports-slice';
 import repos from './repos/repos-slice';
+import kysoSettings from './settings/settings-slice';
 import tags from './tags/tags-slice';
 import teams from './teams/teams-slice';
 import user from './user/user-slice';
-import kysoSettings from './settings/settings-slice';
 
 export const reducer = combineReducers({
   auth,
@@ -28,7 +28,7 @@ export const reducer = combineReducers({
   tags,
   teams,
   user,
-  kysoSettings
+  kysoSettings,
 });
 
 export const store: any = configureStore({
@@ -59,6 +59,7 @@ export * from './feedback/feedback-actions';
 export * from './full-search/full-search-actions';
 export * from './github/github-actions';
 export * from './github/github-repositories-slice';
+export * from './inline-comments/inline-comments-actions';
 export * from './invitations/invitations-actions';
 export * from './invitations/invitations-slice';
 export * from './organizations/organizations-actions';
