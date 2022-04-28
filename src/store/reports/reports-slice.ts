@@ -189,7 +189,13 @@ export const selectActiveReports = (state: RootState) => {
     return reports;
   } else {
     return reports.filter((report: ReportDTO) => {
-      return state.reports.selectedTags.some((tag: any) => report.tags.includes(tag));
+      return state.reports.selectedTags.some((tag: any) => {
+        if(report && report.tags && tag) {
+          return report.tags.includes(tag)
+        } else {
+          return []
+        }
+      });
     });
   }
 };
