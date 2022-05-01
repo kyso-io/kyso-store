@@ -501,3 +501,27 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
     return null;
   }
 });
+
+export const uploadMarkdownImageAction = createAsyncThunk('team/uploadMarkdownImage', async (payload: { teamId: string; file: File }, { getState, dispatch }): Promise<string | null> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${getAPIBaseURL()}/teams/${payload.teamId}/upload-markdown-image`;
+    const formData = new FormData();
+    formData.append('file', payload.file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, formData, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
+  }
+});
