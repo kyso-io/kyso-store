@@ -13,6 +13,7 @@ export type ReposState = {
   currentBranch: any;
   commits: any[];
   tree: any;
+  requesting: boolean;
 };
 
 const initialState: ReposState = {
@@ -26,6 +27,7 @@ const initialState: ReposState = {
   currentBranch: null,
   commits: [],
   tree: null,
+  requesting: true,
 };
 
 const reposSlice = createSlice({
@@ -60,10 +62,14 @@ const reposSlice = createSlice({
     setCurrentBranch: (state: ReposState, action: ActionWithPayload<any>) => {
       state.currentBranch = action.payload;
     },
+    setRequestingRepos: (state: ReposState, action: ActionWithPayload<boolean>) => {
+      state.requesting = action.payload!;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchRepositoriesAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository[]>) => {
       state.list = action.payload!;
+      state.requesting = false;
     });
     builder.addCase(fetchRepositoryAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository>) => {
       state.active = action.payload!;
@@ -74,6 +80,6 @@ const reposSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, setProvider } = reposSlice.actions;
+export const { setSearchQuery, setProvider, setRequestingRepos } = reposSlice.actions;
 
 export default reposSlice.reducer;

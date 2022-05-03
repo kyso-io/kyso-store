@@ -32,6 +32,7 @@ export type ReportsState = {
   searchQuery: string | null;
   selectedTags: string[];
   tree: any;
+  requesting: boolean;
 };
 
 const initialState: ReportsState = {
@@ -48,6 +49,7 @@ const initialState: ReportsState = {
   searchQuery: null,
   selectedTags: [],
   tree: null,
+  requesting: false,
 };
 
 const reportsSlice = createSlice({
@@ -91,6 +93,9 @@ const reportsSlice = createSlice({
     },
     setCurrentBranch: (state: ReportsState, action: ActionWithPayload<any>) => {
       state.currentBranch = action.payload;
+    },
+    setRequestingReports: (state: ReportsState, action: ActionWithPayload<boolean>) => {
+      state.requesting = action.payload!;
     },
   },
   extraReducers: builder => {
@@ -173,7 +178,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setReports, setCurrentBranch, setSelectedTags } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports } = reportsSlice.actions;
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
@@ -190,10 +195,10 @@ export const selectActiveReports = (state: RootState) => {
   } else {
     return reports.filter((report: ReportDTO) => {
       return state.reports.selectedTags.some((tag: any) => {
-        if(report && report.tags && tag) {
-          return report.tags.includes(tag)
+        if (report && report.tags && tag) {
+          return report.tags.includes(tag);
         } else {
-          return []
+          return [];
         }
       });
     });

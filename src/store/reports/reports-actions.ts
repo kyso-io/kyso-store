@@ -11,6 +11,7 @@ import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
+import { setRequestingReports } from './reports-slice';
 
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
@@ -47,6 +48,7 @@ export const fetchReportsAction = createAsyncThunk(
   'reports/fetchReports',
   async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<ReportDTO[]> => {
     try {
+      await dispatch(setRequestingReports(true));
       // console.log('fetchReportsAction invoked');
       const { auth } = getState() as RootState;
 
@@ -66,6 +68,7 @@ export const fetchReportsAction = createAsyncThunk(
         // console.log(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
+      await dispatch(setRequestingReports(false));
       if (axiosResponse?.data.data) {
         // console.log(`fetchReportsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
         return axiosResponse.data.data;
@@ -80,6 +83,7 @@ export const fetchReportsAction = createAsyncThunk(
       } else {
         dispatch(setError(e.toString()));
       }
+      await dispatch(setRequestingReports(false));
       return [];
     }
   }
@@ -306,30 +310,27 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
   }
 });
 
-export const fetchFileContentAction = createAsyncThunk(
-  'reports/fetchFileContent',
-  async (fileId: string, { getState, dispatch }): Promise<Buffer | null> => {
-    try {
-      const { auth } = getState() as RootState;
-      const url = `${getAPIBaseURL()}/reports/file/${fileId}`;
-      const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data) {
-        return axiosResponse.data;
-      } else {
-        return null;
-      }
-    } catch (e: any) {
-      if (axios.isAxiosError(e)) {
-        dispatch(setError(e.response?.data.message));
-      } else {
-        dispatch(setError(e.toString()));
-      }
+export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent', async (fileId: string, { getState, dispatch }): Promise<Buffer | null> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${getAPIBaseURL()}/reports/file/${fileId}`;
+    const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data) {
+      return axiosResponse.data;
+    } else {
       return null;
     }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
   }
-);
+});
 
 export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPinReport', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
   try {
@@ -584,117 +585,109 @@ export const updateMainFileReportAction = createAsyncThunk(
 export const importGithubRepositoryAction = createAsyncThunk(
   'reports/importGithubRepository',
   async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-    // try {
-    // console.log(`importGithubRepositoryAction invoked`);
-    const { auth } = getState() as RootState;
-    let url = `${getAPIBaseURL()}/reports/github/${args.repositoryName}`;
-    if (args?.branch) {
-      url = `${url}?branch=${args.branch}`;
-    }
-    // console.log(`importGithubRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-      url,
-      {},
-      {
-        headers: buildAuthHeaders(auth),
+    try {
+      const { auth } = getState() as RootState;
+      let url = `${getAPIBaseURL()}/reports/github/${args.repositoryName}`;
+      if (args?.branch) {
+        url = `${url}?branch=${args.branch}`;
       }
-    );
-    if (axiosResponse?.data?.relations) {
-      // console.log(`importGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`importGithubRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`importGithubRepositoryAction: Response didn't have data, returning null`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return null;
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
-    // } catch (e: any) {
-    //   console.log(`importGithubRepositoryAction: Error processing action: ${e.toString()}`);
-    //   dispatch(setError(e.toString()));
-    //   return null;
-    // }
   }
 );
 
 export const importBitbucketRepositoryAction = createAsyncThunk(
   'reports/importBitbucketRepository',
   async (args: { repositoryName: string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-    // try {
-    // console.log(`importBitbucketRepositoryAction invoked`);
-    const { auth } = getState() as RootState;
-    let url = `${getAPIBaseURL()}/reports/bitbucket?name=${args.repositoryName}`;
-    if (args?.branch) {
-      url += `&branch=${args.branch}`;
-    }
-    // console.log(`importBitbucketRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-      url,
-      {},
-      {
-        headers: buildAuthHeaders(auth),
+    try {
+      const { auth } = getState() as RootState;
+      let url = `${getAPIBaseURL()}/reports/bitbucket?name=${args.repositoryName}`;
+      if (args?.branch) {
+        url += `&branch=${args.branch}`;
       }
-    );
-    if (axiosResponse?.data?.relations) {
-      // console.log(`importBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`importBitbucketRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`importBitbucketRepositoryAction: Response didn't have data, returning null`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return null;
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
-    // } catch (e: any) {
-    //   // console.log(e);
-    //   // console.log(`importBitbucketRepositoryAction: Error processing action: ${e.toString()}`);
-    //   dispatch(setError(e.toString()));
-    //   return null;
-    // }
   }
 );
 
 export const importGitlabRepositoryAction = createAsyncThunk(
   'reports/importGitlabRepository',
   async (args: { repositoryName: number | string; branch: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
-    // try {
-    // console.log(`importGitlabRepositoryAction invoked`);
-    const { auth } = getState() as RootState;
-    let url = `${getAPIBaseURL()}/reports/gitlab?id=${args.repositoryName}`;
-    if (args?.branch) {
-      url = `${url}&branch=${args.branch}`;
-    }
-    // console.log(`importGitlabRepositoryAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
-      url,
-      {},
-      {
-        headers: buildAuthHeaders(auth),
+    try {
+      const { auth } = getState() as RootState;
+      let url = `${getAPIBaseURL()}/reports/gitlab?id=${args.repositoryName}`;
+      if (args?.branch) {
+        url = `${url}&branch=${args.branch}`;
       }
-    );
-    if (axiosResponse?.data?.relations) {
-      // console.log(`importGitlabRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`importGitlabRepositoryAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
-    } else {
-      // console.log(`importGitlabRepositoryAction: Response didn't have data, returning null`);
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(
+        url,
+        {},
+        {
+          headers: buildAuthHeaders(auth),
+        }
+      );
+      if (axiosResponse?.data?.relations) {
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return null;
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return null;
     }
-    // } catch (e: any) {
-    //   // console.log(e);
-    //   // console.log(`importGitlabRepositoryAction: Error processing action: ${e.toString()}`);
-    //   dispatch(setError(e.toString()));
-    //   return null;
-    // }
   }
 );
 
-export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string, version?: number }, { getState, dispatch }): Promise<Buffer | null> => {
+export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string; version?: number }, { getState, dispatch }): Promise<Buffer | null> => {
   try {
     // console.log(`pullReportAction invoked`);
     const { auth } = getState() as RootState;

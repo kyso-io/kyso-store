@@ -4,11 +4,13 @@ import axios, { AxiosResponse } from 'axios';
 import { fetchRelationsAction, RootState, setError } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
+import { setRequestingRepos } from './repos-slice';
 
 export const fetchRepositoriesAction = createAsyncThunk(
   'repos/fetchRepositories',
   async (args: { provider: RepositoryProvider; page: number; per_page: number; query?: string }, { getState, dispatch }): Promise<any[]> => {
     try {
+      await dispatch(setRequestingRepos(true));
       // console.log('fetchRepositoriesAction invoked');
       const { auth } = getState() as RootState;
       let url = `${getAPIBaseURL()}/repos/${args.provider}?page=${args.page}&per_page=${args.per_page}`;
@@ -37,6 +39,7 @@ export const fetchRepositoriesAction = createAsyncThunk(
       } else {
         dispatch(setError(e.toString()));
       }
+      await dispatch(setRequestingRepos(false));
       return [];
     }
   }
