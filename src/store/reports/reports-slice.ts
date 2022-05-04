@@ -33,6 +33,7 @@ export type ReportsState = {
   selectedTags: string[];
   tree: any;
   requesting: boolean;
+  deletedReport: boolean;
 };
 
 const initialState: ReportsState = {
@@ -50,6 +51,7 @@ const initialState: ReportsState = {
   selectedTags: [],
   tree: null,
   requesting: false,
+  deletedReport: false,
 };
 
 const reportsSlice = createSlice({
@@ -97,6 +99,9 @@ const reportsSlice = createSlice({
     setRequestingReports: (state: ReportsState, action: ActionWithPayload<boolean>) => {
       state.requesting = action.payload!;
     },
+    setDeleteReport: (state: ReportsState, action: ActionWithPayload<boolean>) => {
+      state.deletedReport = action.payload!;
+    }
   },
   extraReducers: builder => {
     builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
@@ -139,6 +144,7 @@ const reportsSlice = createSlice({
     });
     builder.addCase(deleteReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO | null>) => {
       if (action?.payload) {
+        state.deletedReport = true;
         const entities = { ...state.entities };
         // eslint-disable-next-line no-prototype-builtins
         if (entities.hasOwnProperty(action.payload.id!)) {
@@ -178,7 +184,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports, setDeleteReport } = reportsSlice.actions;
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;
