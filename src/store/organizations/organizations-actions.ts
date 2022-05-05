@@ -15,6 +15,40 @@ import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
+export const fetchOrganizationsAction = createAsyncThunk(
+  'teams/fetchOrganizations',
+  async (payload: { filter?: object; sort?: string; page?: number; per_page?: number }, { getState, dispatch }): Promise<Organization[]> => {
+    try {
+      const { auth } = getState() as RootState;
+      const qs = new URLSearchParams({
+        page: (payload?.page || 1).toString(),
+        per_page: (payload?.per_page || 20).toString(),
+        sort: payload?.sort && payload.sort.length > 0 ? payload.sort : '-created_at',
+        ...payload?.filter,
+      });
+      const url = `${getAPIBaseURL()}/organizations?${qs.toString()}`;
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization[]>> = await httpClient.get(url, {
+        headers: buildAuthHeaders(auth),
+      });
+      if (axiosResponse?.data?.relations) {
+        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      }
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return [];
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return [];
+    }
+  }
+);
+
 export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrganization', async (organizationId: string, { getState, dispatch }): Promise<Organization | null> => {
   try {
     // console.log('fetchOrganizationAction invoked');
