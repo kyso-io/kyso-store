@@ -312,11 +312,11 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
   }
 });
 
-export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameIsUnique', async (teamName: string, { getState, dispatch }): Promise<boolean> => {
+export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameIsUnique', async (args: { teamName: string, organizationId: string }, { getState, dispatch }): Promise<boolean> => {
   try {
     // console.log(`checkTeamNameIsUniqueAction invoked`);
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/teams/check-name/${teamName}`;
+    const url = `${getAPIBaseURL()}/teams/check-name/${args.organizationId}/${args.teamName}`;
     // console.log(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
       headers: buildAuthHeaders(auth),
