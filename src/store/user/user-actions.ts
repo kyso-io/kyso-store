@@ -260,28 +260,22 @@ export const addUserAccountAction = createAsyncThunk('user/addUserAccount', asyn
 
 export const removeAccountFromUser = createAsyncThunk(
   'user/removeAccountFromUser',
-  async (payload: { userId: string; provider: LoginProviderEnum; accountId: string }, { dispatch, getState }): Promise<boolean> => {
+  async (payload: { provider: LoginProviderEnum; accountId: string }, { dispatch, getState }): Promise<boolean> => {
     try {
-      // console.log('removeAccountFromUser invoked');
       const { auth } = getState() as RootState;
-      const url = `${getAPIBaseURL()}/users/${payload.userId}/accounts/${payload.provider}/${payload.accountId}`;
-      // console.log(`removeAccountFromUser: ${printAuthenticated(auth)} - DELETE ${url}`);
+      const url = `${getAPIBaseURL()}/users/accounts/${payload.provider}/${payload.accountId}`;
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.delete(url, {
         headers: buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
-        // console.log(`removeAccountFromUser: relations ${JSON.stringify(axiosResponse.data.relations)}`);
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
-      if (axiosResponse?.data?.data) {
-        // console.log(`removeAccountFromUser: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
+      if (axiosResponse?.data.data) {
         return axiosResponse.data.data;
       } else {
-        // console.log(`removeAccountFromUser: Response didn't have data, returning false`);
         return false;
       }
     } catch (e: any) {
-      // console.log(`removeAccountFromUser: Error processing action: ${e.toString()}`);
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
