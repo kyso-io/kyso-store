@@ -62,6 +62,8 @@ const discussionsSlice = createSlice({
     });
 
     builder.addCase(fetchDiscussionById.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion>) => {
+      if (!action.payload || !action.payload.id) return;
+      
       state.activeId = action.payload!.id;
       state.entities = {
         ...state.entities,
@@ -70,6 +72,8 @@ const discussionsSlice = createSlice({
     });
 
     builder.addCase(updateDiscussion.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion>) => {
+      if (!action.payload || !action.payload.id) return;
+
       state.activeId = action.payload!.id;
       state.entities = {
         ...state.entities,
