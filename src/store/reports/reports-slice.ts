@@ -131,6 +131,8 @@ const reportsSlice = createSlice({
       };
     });
     builder.addCase(updateReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
+      if (!action.payload || !action.payload.id) return;
+
       state.activeId = action.payload!.id;
     });
     builder.addCase(fetchBranchesAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
