@@ -1,7 +1,7 @@
 import { CreateInlineCommentDto, InlineCommentDto, NormalizedResponseDTO, UpdateInlineCommentDto } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios, { AxiosResponse } from 'axios';
-import { RootState, setError } from '..';
+import { AxiosResponse } from 'axios';
+import { RootState } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -22,11 +22,6 @@ export const getInlineCommentsAction = createAsyncThunk('inline-comments/getInli
       return [];
     }
   } catch (e: any) {
-    if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
     return [];
   }
 });
@@ -49,11 +44,6 @@ export const createInlineCommentAction = createAsyncThunk(
         return null;
       }
     } catch (e: any) {
-      if (axios.isAxiosError(e)) {
-        dispatch(setError(e.response?.data.message));
-      } else {
-        dispatch(setError(e.toString()));
-      }
       return null;
     }
   }
@@ -77,17 +67,12 @@ export const updateInlineCommentAction = createAsyncThunk(
         return null;
       }
     } catch (e: any) {
-      if (axios.isAxiosError(e)) {
-        dispatch(setError(e.response?.data.message));
-      } else {
-        dispatch(setError(e.toString()));
-      }
       return null;
     }
   }
 );
 
-export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState, dispatch }): Promise<boolean> => {
+export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/inline-comments/${inlineCommentId}`;
@@ -96,11 +81,6 @@ export const deleteInlineCommentAction = createAsyncThunk('inline-comment/delete
     });
     return axiosResponse.data;
   } catch (e: any) {
-    if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
     return false;
   }
 });
