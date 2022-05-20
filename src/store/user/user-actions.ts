@@ -545,44 +545,49 @@ export const changePasswordAction = createAsyncThunk('user/changePassword', asyn
   }
 });
 
-export const fetchUserProfileActionByUserId = createAsyncThunk('user/fetchUserProfileByUserId', async (userId: string, { dispatch, getState }): Promise<UserDTO | null> => {
-  try {
-    const url = `${getAPIBaseURL()}/users/${userId}/public-data`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url);
-    
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
-    } else {
-      return null;
-    }
-  } catch (e: any) {
-    if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
-    return null;
-  }
-});
-
-export const fetchUserPortraitUrl = createAsyncThunk('user/fetchUserPortraitUrl', async (userId: string, { dispatch, getState }): Promise<string> => {
-  try {
-    const url = `${getAPIBaseURL()}/users/${userId}/portrait`;
-    const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
-    
-    if (axiosResponse?.data) {
-      return axiosResponse.data;
-    } else {
+export const fetchUserPortraitUrl = createAsyncThunk(
+  'user/fetchUserPortraitUrl',
+  async (args: { userId: string }, { getState, dispatch }): Promise<string | null> => {
+    try {
+      const url = `${getAPIBaseURL()}/users/${args.userId}/portrait`;
+      const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
+      
+      if (axiosResponse?.data) {
+        return axiosResponse.data;
+      } else {
+        return "";
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
       return "";
     }
-  } catch (e: any) {
-    if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
-    return "";
   }
-});
+);
 
+export const fetchUserProfileActionByUserId = createAsyncThunk(
+  'user/fetchUserProfileByUserId',
+  async (args: { userId: string }, { getState, dispatch }): Promise<UserDTO | null> => {
+    try {
+      const url = `${getAPIBaseURL()}/users/${args.userId}/public-data`;
+      const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url);
+      
+      if (axiosResponse?.data?.data) {
+        return axiosResponse.data.data;
+      } else {
+        return null;
+      }
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        dispatch(setError(e.response?.data.message));
+      } else {
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
 
