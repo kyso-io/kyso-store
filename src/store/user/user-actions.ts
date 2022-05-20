@@ -570,7 +570,7 @@ export const fetchUserPortraitUrl = createAsyncThunk('user/fetchUserPortraitUrl'
     const url = `${getAPIBaseURL()}/users/${userId}/portrait`;
     const axiosResponse: AxiosResponse<string> = await httpClient.get(url);
     
-    if (axiosResponse?.data?) {
+    if (axiosResponse?.data) {
       return axiosResponse.data;
     } else {
       return "";
