@@ -29,14 +29,19 @@ const teamsSlice = createSlice({
       };
       state.activeId = action.payload!.id;
     },
+    resetTeamsSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
-      state.entities = {
-        ...state.entities,
-        [action.payload!.id as string]: action.payload,
-      };
-      state.activeId = action.payload!.id;
+      if (action.payload?.id) {
+        state.entities = {
+          ...state.entities,
+          [action.payload!.id as string]: action.payload,
+        };
+        state.activeId = action.payload!.id;
+      }
     });
     builder.addCase(updateTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
       state.entities = {
@@ -54,7 +59,7 @@ const teamsSlice = createSlice({
   },
 });
 
-export const { setTeam } = teamsSlice.actions;
+export const { setTeam, resetTeamsSlice } = teamsSlice.actions;
 
 export const selectActiveTeam = (state: RootState) => {
   if (!state.teams.activeId) return null;

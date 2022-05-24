@@ -41,6 +41,9 @@ const discussionsSlice = createSlice({
     setSearchDiscussion: (state: DiscussionsState, action: ActionWithPayload<string>) => {
       state.searchDiscussion = action.payload!;
     },
+    resetDiscussionsSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchDiscussionsAction.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion[]>) => {
@@ -63,7 +66,7 @@ const discussionsSlice = createSlice({
 
     builder.addCase(fetchDiscussionById.fulfilled, (state: DiscussionsState, action: ActionWithPayload<Discussion>) => {
       if (!action.payload || !action.payload.id) return;
-      
+
       state.activeId = action.payload!.id;
       state.entities = {
         ...state.entities,
@@ -111,6 +114,6 @@ export const getActiveDiscussions = (state: RootState, args?: { sortBy: string; 
   return discussions;
 };
 
-export const { setSearchDiscussion } = discussionsSlice.actions;
+export const { setSearchDiscussion, resetDiscussionsSlice } = discussionsSlice.actions;
 
 export default discussionsSlice.reducer;

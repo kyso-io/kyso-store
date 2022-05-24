@@ -21,7 +21,11 @@ const initialState: CommentsState = {
 const commentSlice = createSlice({
   name: 'comment',
   initialState,
-  reducers: {},
+  reducers: {
+    resetCommentsSlice: () => {
+      return initialState;
+    },
+  },
   extraReducers: builder => {
     builder.addCase(fetchReportCommentsAction.fulfilled, (state: CommentsState, action: ActionWithPayload<Comment[]>) => {
       if (!action.payload) return;
@@ -83,5 +87,7 @@ export const selectCommentsById = (state: RootState, id: string) => {
   if (id in state.comments.entities!) return state.comments.entities![id];
   return null;
 };
+
+export const { resetCommentsSlice } = commentSlice.actions;
 
 export default commentSlice.reducer;

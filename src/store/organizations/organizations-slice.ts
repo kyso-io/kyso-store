@@ -28,10 +28,19 @@ const organizationsSlice = createSlice({
       };
       state.activeId = action.payload!.id;
     },
+    resetOrganizationsSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
-      state.activeId = action.payload!.id;
+      if (action.payload?.id) {
+        state.entities = {
+          ...state.entities,
+          [action.payload!.id as string]: action.payload,
+        };
+        state.activeId = action.payload!.id;
+      }
     });
     builder.addCase(updateOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
       state.activeId = action.payload!.id;
@@ -45,7 +54,7 @@ const organizationsSlice = createSlice({
   },
 });
 
-export const { setOrganization } = organizationsSlice.actions;
+export const { setOrganization, resetOrganizationsSlice } = organizationsSlice.actions;
 
 export const selectActiveOrganization = (state: RootState) => {
   if (!state.organizations.activeId) return null;
