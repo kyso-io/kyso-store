@@ -16,8 +16,12 @@ const tagsSlice = createSlice({
     setTags: (state, action: ActionWithPayload<Tag[]>) => {
       state.tags = action.payload!;
     },
+    resetTagsSlice: () => {
+      return initialState;
+    },
   },
 });
 
+export const { resetTagsSlice } = tagsSlice.actions;
 
 export default tagsSlice.reducer;

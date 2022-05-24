@@ -22,6 +22,9 @@ const userSlice = createSlice({
     setUser: (state, action: ActionWithPayload<UserDTO | null>) => {
       state.user = action.payload;
     },
+    resetUserSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(refreshUserAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO>) => {
@@ -37,10 +40,8 @@ const userSlice = createSlice({
         ...action.payload?.user,
       };
     });
-
     builder.addCase(fetchUsersAction.fulfilled, (state: UserState, action: ActionWithPayload<UserDTO[]>) => {
       if (!action.payload) return;
-
       state.entities = {
         ...state.entities,
         ...listToKeyVal(action.payload),
@@ -53,6 +54,6 @@ export const selectUser = (state: RootState) => {
   return state.user.user
 };
 
-export const { setUser } = userSlice.actions;
+export const { setUser, resetUserSlice } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -65,6 +65,9 @@ const reposSlice = createSlice({
     setRequestingRepos: (state: ReposState, action: ActionWithPayload<boolean>) => {
       state.requesting = action.payload!;
     },
+    resetReposSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchRepositoriesAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository[]>) => {
@@ -80,6 +83,6 @@ const reposSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, setProvider, setRequestingRepos } = reposSlice.actions;
+export const { setSearchQuery, setProvider, setRequestingRepos, resetReposSlice } = reposSlice.actions;
 
 export default reposSlice.reducer;

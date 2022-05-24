@@ -16,27 +16,24 @@ const kysoSettingsSlice = createSlice({
   initialState,
   reducers: {
     setPublicSettings: (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
-      if(action && action.payload) {
-        state.publicSettings = [
-          ...action.payload,
-        ];
+      if (action && action.payload) {
+        state.publicSettings = [...action.payload];
       }
+    },
+    resetSettingsSlice: () => {
+      return initialState;
     },
   },
   extraReducers: builder => {
     builder.addCase(fetchPublicKysoSettings.fulfilled, (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
-      if(action && action.payload) {
-        state.publicSettings = [
-          ...action.payload,
-        ];
+      if (action && action.payload) {
+        state.publicSettings = [...action.payload];
       }
-
     });
-    
   },
 });
 
 
-export const { setPublicSettings } = kysoSettingsSlice.actions;
+export const { setPublicSettings, resetSettingsSlice } = kysoSettingsSlice.actions;
 
 export default kysoSettingsSlice.reducer;

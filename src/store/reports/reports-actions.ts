@@ -3,9 +3,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios, { AxiosResponse } from 'axios';
 import FormData from 'form-data';
-import { createReadStream, readFileSync, statSync } from 'fs';
+import { createReadStream, lstatSync, readFileSync, statSync } from 'fs';
 import JSZip from 'jszip';
-import { v4 as uuidv4 } from 'uuid';
 import { RootState } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
@@ -444,12 +443,14 @@ export const createKysoReportAction = createAsyncThunk(
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/reports/kyso`;
       const formData: FormData = new FormData();
-      const zipFileName = `${uuidv4()}.zip`;
+      const zipFileName = `report.zip`;
       const outputFilePath = `/tmp/${zipFileName}`;
       const zip = new AdmZip();
       for (const file of payload.filePaths) {
         const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
-        zip.addFile(filename, readFileSync(file));
+        if (!lstatSync(file).isDirectory()) {
+          zip.addFile(filename, readFileSync(file));
+        }
       }
       zip.writeZip(outputFilePath);
       formData.append('file', createReadStream(outputFilePath), {

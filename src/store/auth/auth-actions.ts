@@ -1,10 +1,28 @@
 import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
-import { refreshUserAction, RootState, setOrganizationAuthOptionsAction, setTokenAuthAction, setUserPermissionsAction } from '..';
+import {
+  refreshUserAction,
+  resetAuthSlice,
+  resetBitbucketRepositoriesSlice,
+  resetCommentsSlice,
+  resetDiscussionsSlice,
+  resetGithubRepositoriesSlice,
+  resetInvitationsSlice,
+  resetOrganizationsSlice,
+  resetReportsSlice,
+  resetSettingsSlice,
+  resetTeamsSlice,
+  RootState,
+  setOrganizationAuthOptionsAction,
+  setTokenAuthAction,
+  setUserPermissionsAction,
+} from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
+import { resetTagsSlice } from '../tags/tags-slice';
+import { resetUserSlice } from '../user/user-slice';
 
 export const loginAction = createAsyncThunk('auth/login', async (login: Login, { dispatch }): Promise<string | null> => {
   try {
@@ -43,7 +61,18 @@ export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch
         headers: buildAuthHeaders(auth),
       }
     );
-    dispatch(setTokenAuthAction(null));
+    await dispatch(resetAuthSlice());
+    await dispatch(resetBitbucketRepositoriesSlice());
+    await dispatch(resetCommentsSlice());
+    await dispatch(resetDiscussionsSlice());
+    await dispatch(resetGithubRepositoriesSlice());
+    await dispatch(resetInvitationsSlice());
+    await dispatch(resetOrganizationsSlice());
+    await dispatch(resetReportsSlice());
+    await dispatch(resetSettingsSlice());
+    await dispatch(resetTagsSlice());
+    await dispatch(resetTeamsSlice());
+    await dispatch(resetUserSlice());
   } catch (e: any) {
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));

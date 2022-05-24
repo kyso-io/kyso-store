@@ -16,7 +16,11 @@ const invitationsSlice = createSlice({
     setInvitations: (state, action: ActionWithPayload<Invitation[]>) => {
       state.invitations = action.payload!;
     },
+    resetInvitationsSlice: () => {
+      return initialState;
+    },
   },
 });
+export const { resetInvitationsSlice } = invitationsSlice.actions;
 
 export default invitationsSlice.reducer;

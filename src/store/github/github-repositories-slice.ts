@@ -16,7 +16,12 @@ const githubRepositoriesSlice = createSlice({
     setRepositories: (state: GithubRepositories, action: ActionWithPayload<GithubRepository[]>) => {
       state.repositories = action.payload!;
     },
+    resetGithubRepositoriesSlice: () => {
+      return initialState;
+    },
   },
 });
+
+export const { resetGithubRepositoriesSlice } = githubRepositoriesSlice.actions;
 
 export default githubRepositoriesSlice.reducer;

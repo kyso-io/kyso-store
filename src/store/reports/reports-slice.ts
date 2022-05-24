@@ -81,8 +81,8 @@ const reportsSlice = createSlice({
     setSelectedTags: (state: ReportsState, action: ActionWithPayload<string[]>) => {
       state.selectedTags = action.payload!;
     },
-    setReport: (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
-      state.activeId = action.payload!.id;
+    setActiveId: (state: ReportsState, action: ActionWithPayload<string>) => {
+      state.activeId = action.payload;
     },
     setBranches: (state: ReportsState, action: ActionWithPayload<any[]>) => {
       state.branches = action.payload!;
@@ -101,7 +101,10 @@ const reportsSlice = createSlice({
     },
     setDeleteReport: (state: ReportsState, action: ActionWithPayload<boolean>) => {
       state.deletedReport = action.payload!;
-    }
+    },
+    resetReportsSlice: () => {
+      return initialState;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
@@ -186,7 +189,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports, setDeleteReport } = reportsSlice.actions;
+export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports, setDeleteReport, setActiveId, resetReportsSlice } = reportsSlice.actions;
 
 export const selectActiveReport = (state: RootState) => {
   if (!state.reports.activeId) return null;

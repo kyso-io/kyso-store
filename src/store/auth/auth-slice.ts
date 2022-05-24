@@ -1,4 +1,4 @@
-import { ActionWithPayload } from '@kyso-io/kyso-model';
+import { ActionWithPayload, TokenPermissions } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 
@@ -7,7 +7,7 @@ export type AuthState = {
   team: string | null;
   organization: string | null;
   organizationAuthOptions: any | null;
-  currentUserPermissions: any | null;
+  currentUserPermissions: TokenPermissions | null;
 };
 
 const initialState: AuthState = {
@@ -15,17 +15,17 @@ const initialState: AuthState = {
   team: null,
   organization: null,
   organizationAuthOptions: null,
-  currentUserPermissions: null
+  currentUserPermissions: null,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthAction: (state: AuthState, action: ActionWithPayload<{ jwt: string, teamName: string, organizationName: string }>) => {
+    setAuthAction: (state: AuthState, action: ActionWithPayload<{ jwt: string; teamName: string; organizationName: string }>) => {
       state.token = action.payload!.jwt;
-      state.team = action.payload!.teamName
-      state.organization = action.payload!.organizationName
+      state.team = action.payload!.teamName;
+      state.organization = action.payload!.organizationName;
     },
     setTokenAuthAction: (state: AuthState, action: ActionWithPayload<string>) => {
       state.token = action.payload;
@@ -43,13 +43,16 @@ const authSlice = createSlice({
       // console.log(action.payload)
       state.currentUserPermissions = action.payload;
     },
+    resetAuthSlice: () => {
+      return initialState;
+    },
   },
 });
 
-export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction } = authSlice.actions;
+export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction, resetAuthSlice } = authSlice.actions;
 
 export const selectCurrentUserPermissions = (state: RootState) => {
-  return state.auth.currentUserPermissions
+  return state.auth.currentUserPermissions;
 };
 
 export default authSlice.reducer;
