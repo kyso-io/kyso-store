@@ -3,8 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios, { AxiosResponse } from 'axios';
 import FormData from 'form-data';
-import { createReadStream, lstatSync, readFileSync, statSync } from 'fs';
+import { createReadStream, lstatSync, readFileSync, statSync, rmSync } from 'fs';
 import JSZip from 'jszip';
+import { join } from 'path';
 import { RootState } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import { verbose } from '../../helpers/logger-helper';
@@ -447,8 +448,8 @@ export const createKysoReportAction = createAsyncThunk(
       verbose(`Url ${url}`)
       const formData: FormData = new FormData();
       const zipFileName = `report.zip`;
-      const outputFilePath = `/tmp/${zipFileName}`;
-      verbose(`outputFilePath ${zipFileName}`)
+      const outputFilePath = join(".", `${zipFileName}`);
+      verbose(`outputFilePath ${outputFilePath}`)
       const zip = new AdmZip();
 
       verbose(`Adding files to zip`)
@@ -473,6 +474,14 @@ export const createKysoReportAction = createAsyncThunk(
         },
       });
 
+      try {
+        verbose(`Deleting temporary file at ${zipFileName}`)
+        await rmSync(outputFilePath, { force: true })
+      } catch(ex) {
+        console.log("Temporary file can't be deleted")
+        console.log(ex)
+      }
+      
       verbose(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`)
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -481,7 +490,6 @@ export const createKysoReportAction = createAsyncThunk(
         verbose(`createKysoReportAction finished successfully`)
         return axiosResponse.data.data;
       } else {
-
         return null;
       }
     } catch (e: any) {
