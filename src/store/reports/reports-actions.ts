@@ -440,12 +440,17 @@ export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
     try {
+      console.log("Starting createKysoReportAction")
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/reports/kyso`;
+      console.log(`Url ${url}`)
       const formData: FormData = new FormData();
       const zipFileName = `report.zip`;
       const outputFilePath = `/tmp/${zipFileName}`;
+      console.log(`outputFilePath ${zipFileName}`)
       const zip = new AdmZip();
+
+      console.log(`Adding files to zip`)
       for (const file of payload.filePaths) {
         const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
         if (!lstatSync(file).isDirectory()) {
@@ -457,6 +462,8 @@ export const createKysoReportAction = createAsyncThunk(
         filename: zipFileName,
         knownLength: statSync(outputFilePath).size,
       });
+
+      console.log(`Calling ${url} with formData length ${formData.getLengthSync()}`)
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -464,6 +471,8 @@ export const createKysoReportAction = createAsyncThunk(
           'content-length': formData.getLengthSync(),
         },
       });
+
+      console.log(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`)
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
@@ -473,6 +482,8 @@ export const createKysoReportAction = createAsyncThunk(
         return null;
       }
     } catch (e: any) {
+      console.log(e)
+      
       if (axios.isAxiosError(e)) {
         dispatch(setError(e.response?.data.message));
       } else {
