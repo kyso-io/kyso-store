@@ -1,4 +1,4 @@
-import { CreateUserRequestDTO, Login, NormalizedResponseDTO, User } from '@kyso-io/kyso-model';
+import { Login, NormalizedResponseDTO, SignUpDto, User } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -82,7 +82,7 @@ export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch
   }
 });
 
-export const signUpAction = createAsyncThunk('auth/signup', async (payload: CreateUserRequestDTO, { dispatch }): Promise<User | null> => {
+export const signUpAction = createAsyncThunk('auth/signup', async (payload: SignUpDto, { dispatch }): Promise<User | null> => {
   try {
     // console.log('signUpAction invoked');
     const url = `${getAPIBaseURL()}/auth/sign-up`;
@@ -291,6 +291,25 @@ export const sendVerificationEmailAction = createAsyncThunk('auth/sendVerificati
   } catch (e: any) {
     if (axios.isAxiosError(e)) {
       console.log(e.response?.data);
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return false;
+  }
+});
+
+export const checkUsernameAvailabilityAction = createAsyncThunk('auth/checkUsernameAvailability', async (username: string, { dispatch }): Promise<boolean> => {
+  try {
+    const url = `${getAPIBaseURL()}/auth/username-available/${username}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url);
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return false;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
       dispatch(setError(e.toString()));
