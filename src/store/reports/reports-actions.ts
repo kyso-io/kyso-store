@@ -7,6 +7,7 @@ import { createReadStream, lstatSync, readFileSync, statSync } from 'fs';
 import JSZip from 'jszip';
 import { RootState } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
+import { verbose } from '../../helpers/logger-helper';
 import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
@@ -440,17 +441,17 @@ export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
     try {
-      console.log("Starting createKysoReportAction")
+      verbose("Starting createKysoReportAction")
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/reports/kyso`;
-      console.log(`Url ${url}`)
+      verbose(`Url ${url}`)
       const formData: FormData = new FormData();
       const zipFileName = `report.zip`;
       const outputFilePath = `/tmp/${zipFileName}`;
-      console.log(`outputFilePath ${zipFileName}`)
+      verbose(`outputFilePath ${zipFileName}`)
       const zip = new AdmZip();
 
-      console.log(`Adding files to zip`)
+      verbose(`Adding files to zip`)
       for (const file of payload.filePaths) {
         const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
         if (!lstatSync(file).isDirectory()) {
@@ -463,7 +464,7 @@ export const createKysoReportAction = createAsyncThunk(
         knownLength: statSync(outputFilePath).size,
       });
 
-      console.log(`Calling ${url} with formData length ${formData.getLengthSync()}`)
+      verbose(`Calling ${url} with formData length ${formData.getLengthSync()}`)
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -472,24 +473,26 @@ export const createKysoReportAction = createAsyncThunk(
         },
       });
 
-      console.log(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`)
+      verbose(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`)
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
+        verbose(`createKysoReportAction finished successfully`)
         return axiosResponse.data.data;
       } else {
+
         return null;
       }
     } catch (e: any) {
-      console.log(e)
-      
       if (axios.isAxiosError(e)) {
+        console.log(e.response?.data.message)
         dispatch(setError(e.response?.data.message));
       } else {
+        console.log(e)
         dispatch(setError(e.toString()));
       }
-      return e;
+      return null;
     }
   }
 );
