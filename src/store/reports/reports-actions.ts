@@ -13,6 +13,7 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { setRequestingReports } from './reports-slice';
+import slash from 'slash';
 
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
@@ -454,9 +455,14 @@ export const createKysoReportAction = createAsyncThunk(
 
       verbose(`Adding files to zip`)
       for (const file of payload.filePaths) {
-        const filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
+        let filename;
+        if (process.platform === 'win32') {
+          filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '\\', '') : file;
+        } else {
+          filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
+        }
         if (!lstatSync(file).isDirectory()) {
-          zip.addFile(filename, readFileSync(file));
+          zip.addFile(slash(filename), readFileSync(file));
         }
       }
       zip.writeZip(outputFilePath);
