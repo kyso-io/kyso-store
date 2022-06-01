@@ -162,6 +162,31 @@ export const fetchUserProfileAction = createAsyncThunk('user/fetchUserProfile', 
   }
 });
 
+export const fetchUserProfileActionByUserIdAction = createAsyncThunk('user/fetchUserProfileActionByUserId', async (args: { userId: string }, { dispatch, getState }): Promise<UserDTO | null> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${getAPIBaseURL()}/users/${args.userId}/public-data`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return null;
+  }
+});
+
 export const updateUserAction = createAsyncThunk(
   'user/updateUser',
   async (payload: { userId: string; updateUserRequestDto: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
