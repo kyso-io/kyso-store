@@ -465,7 +465,7 @@ export const createKysoReportAction = createAsyncThunk(
         knownLength: statSync(outputFilePath).size,
       });
 
-      verbose(`Calling ${url} with formData length ${formData.getLengthSync()}`)
+      verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`)
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -495,6 +495,7 @@ export const createKysoReportAction = createAsyncThunk(
     } catch (e: any) {
       if (axios.isAxiosError(e)) {
         console.log(e.response?.data.message)
+        verbose(e.response?.data)
         dispatch(setError(e.response?.data.message));
       } else {
         console.log(e)
