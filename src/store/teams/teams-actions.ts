@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO, Report, Team, TeamMember, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, Report, Team, TeamInfoDto, TeamMember, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState, setError } from '..';
@@ -312,7 +312,7 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
   }
 });
 
-export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameIsUnique', async (args: { teamName: string, organizationId: string }, { getState, dispatch }): Promise<boolean> => {
+export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameIsUnique', async (args: { teamName: string; organizationId: string }, { getState, dispatch }): Promise<boolean> => {
   try {
     // console.log(`checkTeamNameIsUniqueAction invoked`);
     const { auth } = getState() as RootState;
@@ -523,5 +523,30 @@ export const uploadMarkdownImageAction = createAsyncThunk('team/uploadMarkdownIm
       dispatch(setError(e.toString()));
     }
     return null;
+  }
+});
+
+export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (teamId: string, { getState, dispatch }): Promise<TeamInfoDto[]> => {
+  try {
+    const { auth } = getState() as RootState;
+    let url = `${getAPIBaseURL()}/teams/info`;
+    if (teamId && teamId.length > 0) {
+      url += `?teamId=${teamId}`;
+    }
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamInfoDto[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return [];
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
   }
 });
