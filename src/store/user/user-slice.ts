@@ -1,4 +1,4 @@
-import { ActionWithPayload, Relations, UserDTO } from '@kyso-io/kyso-model';
+import { ActionWithPayload, Relations, User, UserDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
@@ -51,7 +51,13 @@ const userSlice = createSlice({
 });
 
 export const selectUser = (state: RootState) => {
-  return state.user.user
+  return state.user.user;
+};
+
+export const selectUserGivenId = (state: RootState, userId: string): User | null => {
+  if (!state.user.entities) return null;
+  // eslint-disable-next-line no-prototype-builtins
+  return state.user.entities.hasOwnProperty(userId) ? state.user.entities[userId] : null;
 };
 
 export const { setUser, resetUserSlice } = userSlice.actions;

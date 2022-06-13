@@ -3,9 +3,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios, { AxiosResponse } from 'axios';
 import FormData from 'form-data';
-import { createReadStream, lstatSync, readFileSync, statSync, rmSync } from 'fs';
+import { createReadStream, lstatSync, readFileSync, rmSync, statSync } from 'fs';
 import JSZip from 'jszip';
 import { join } from 'path';
+import slash from 'slash';
 import { RootState } from '..';
 import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
 import { verbose } from '../../helpers/logger-helper';
@@ -13,7 +14,6 @@ import httpClient from '../../services/http-client';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { setRequestingReports } from './reports-slice';
-import slash from 'slash';
 
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
@@ -443,17 +443,17 @@ export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
     try {
-      verbose("Starting createKysoReportAction")
+      verbose('Starting createKysoReportAction');
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/reports/kyso`;
-      verbose(`Url ${url}`)
+      verbose(`Url ${url}`);
       const formData: FormData = new FormData();
       const zipFileName = `report.zip`;
-      const outputFilePath = join(".", `${zipFileName}`);
-      verbose(`outputFilePath ${outputFilePath}`)
+      const outputFilePath = join('.', `${zipFileName}`);
+      verbose(`outputFilePath ${outputFilePath}`);
       const zip = new AdmZip();
 
-      verbose(`Adding files to zip`)
+      verbose(`Adding files to zip`);
       for (const file of payload.filePaths) {
         let filename;
         if (process.platform === 'win32') {
@@ -471,7 +471,7 @@ export const createKysoReportAction = createAsyncThunk(
         knownLength: statSync(outputFilePath).size,
       });
 
-      verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`)
+      verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
           ...buildAuthHeaders(auth),
@@ -481,30 +481,30 @@ export const createKysoReportAction = createAsyncThunk(
       });
 
       try {
-        verbose(`Deleting temporary file at ${zipFileName}`)
-        await rmSync(outputFilePath, { force: true })
-      } catch(ex) {
-        console.log("Temporary file can't be deleted")
-        console.log(ex)
+        verbose(`Deleting temporary file at ${zipFileName}`);
+        await rmSync(outputFilePath, { force: true });
+      } catch (ex) {
+        console.log("Temporary file can't be deleted");
+        console.log(ex);
       }
-      
-      verbose(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`)
+
+      verbose(`Response received ${axiosResponse.status} - ${axiosResponse.statusText}`);
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
       if (axiosResponse?.data?.data) {
-        verbose(`createKysoReportAction finished successfully`)
+        verbose(`createKysoReportAction finished successfully`);
         return axiosResponse.data.data;
       } else {
         return null;
       }
     } catch (e: any) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response?.data.message)
-        verbose(e.response?.data)
+        console.log(e.response?.data.message);
+        verbose(e.response?.data);
         dispatch(setError(e.response?.data.message));
       } else {
-        console.log(e)
+        console.log(e);
         dispatch(setError(e.toString()));
       }
       return null;
@@ -515,7 +515,7 @@ export const createKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null },
+    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null; authors: string[] },
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
@@ -531,6 +531,7 @@ export const createKysoReportUIAction = createAsyncThunk(
         team: args.team,
         tags: args.tags,
         type: args.reportType,
+        authors: args.authors,
       };
       if (args.mainContent && args.mainContent.length > 0) {
         const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });

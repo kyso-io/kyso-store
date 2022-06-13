@@ -169,6 +169,31 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
   }
 });
 
+export const fetchAuthorsAction = createAsyncThunk('team/fetchAuthors', async (teamId: string, { getState, dispatch }): Promise<TeamMember[]> => {
+  try {
+    const { auth } = getState() as RootState;
+    const url = `${getAPIBaseURL()}/teams/${teamId}/authors`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
+      headers: buildAuthHeaders(auth),
+    });
+    if (axiosResponse?.data?.relations) {
+      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    }
+    if (axiosResponse?.data?.data) {
+      return axiosResponse.data.data;
+    } else {
+      return [];
+    }
+  } catch (e: any) {
+    if (axios.isAxiosError(e)) {
+      dispatch(setError(e.response?.data.message));
+    } else {
+      dispatch(setError(e.toString()));
+    }
+    return [];
+  }
+});
+
 export const fetchTeamAssigneesAction = createAsyncThunk('team/fetchTeamAssignees', async (teamId: string, { getState, dispatch }): Promise<TeamMember[]> => {
   try {
     // console.log(`fetchTeamAssignees invoked`);
