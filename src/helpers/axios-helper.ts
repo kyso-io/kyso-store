@@ -12,13 +12,14 @@ export const buildAuthHeaders = async (auth: AuthState, organizationId?: string,
   let organizationData: Organization | undefined = undefined;
   let teamData: Team | undefined = undefined;
   
-  if(teamId) {
+  if(organizationId) {
+    console.log(`Retrieving ad-hoc specific data from organization ${organizationId}`);
     organizationData = await store.dispatch(fetchOrganizationAction(organizationId as string));
   }
 
   if(teamId) {
+    console.log(`Retrieving ad-hoc specific data from team ${teamId}`);
     teamData = await store.dispatch(fetchTeamAction(teamId as string));
-    console.log(JSON.stringify(teamData));
   }
 
   const team: string | null = teamData ? teamData.sluglified_name : auth.team;
