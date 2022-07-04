@@ -18,7 +18,7 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
     }
     // console.log(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchReportCommentsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -55,7 +55,7 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
     // console.log(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
 
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
 
     if (axiosResponse?.data?.relations) {
@@ -88,7 +88,7 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
     const url = `${getAPIBaseURL()}/comments/${commentId}`;
     // console.log(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -118,7 +118,7 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/comments`;
     // console.log(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: buildAuthHeaders(auth) });
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: await buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
       // console.log(`createCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -148,7 +148,7 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
     const url = `${getAPIBaseURL()}/comments/${payload.commentId}`;
     // console.log(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.patch(url, payload.comment, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -178,7 +178,7 @@ export const deleteCommentAction = createAsyncThunk('comments/deleteComment', as
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/comments/${commentId}`;
     // console.log(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: buildAuthHeaders(auth) });
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: await buildAuthHeaders(auth) });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
       dispatch(fetchRelationsAction(axiosResponse.data.relations));

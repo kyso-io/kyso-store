@@ -22,7 +22,7 @@ export const fetchBitbucketRepositoriesAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/repos/bitbucket?${qs.toString()}`;
       // console.log(`fetchBitbucketRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchBitbucketRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -54,7 +54,7 @@ export const fetchBitbucketUserAction = createAsyncThunk('bitbucket/fetchBitbuck
     const url = `${getAPIBaseURL()}/repos/bitbucket/user`;
     // console.log(`fetchBitbucketUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchBitbucketUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -85,7 +85,7 @@ export const fetchBitbucketRepositoryAction = createAsyncThunk('bitbucket/fetchB
     const url = `${getAPIBaseURL()}/repos/bitbucket/repository?name=${repositoryName}`;
     // console.log(`fetchBitbucketRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchBitbucketRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -118,7 +118,7 @@ export const fetchBitbucketRepositoryTreeAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/repos/bitbucket/${payload.branch}/tree?name=${payload.repositoryName}`;
       // console.log(`fetchBitbucketRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchBitbucketRepositoryTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);

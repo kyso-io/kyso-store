@@ -58,7 +58,7 @@ export const logoutAction = createAsyncThunk('auth/logout', async (_, { dispatch
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     await dispatch(resetAuthSlice());
@@ -113,7 +113,7 @@ export const refreshTokenAction = createAsyncThunk('auth/refreshToken', async (_
     const url = `${getAPIBaseURL()}/auth/refresh-token`;
     // console.log(`refreshTokenAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, undefined, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`refreshTokenAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -167,7 +167,7 @@ export const fetchUserPermissions = createAsyncThunk('auth/fetchUserPermissions'
     const url = `${getAPIBaseURL()}/auth/user/${username}/permissions`;
     // console.log(`loginAction - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`fetchUserPermissions: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -278,7 +278,7 @@ export const sendVerificationEmailAction = createAsyncThunk('auth/sendVerificati
       {},
       {
         headers: {
-          ...buildAuthHeaders(auth),
+          ...await buildAuthHeaders(auth),
           headers: { 'content-type': 'multipart/form-data' },
         },
       }

@@ -23,7 +23,7 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/repos/github?${qs.toString()}`;
       // console.log(`fetchGithubRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchGithubRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -55,7 +55,7 @@ export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', 
     const url = `${getAPIBaseURL()}/repos/github/user`;
     // console.log(`fetchGithubUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchGithubUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -86,7 +86,7 @@ export const fetchGithubRepositoryAction = createAsyncThunk('github/fetchGithubR
     const url = `${getAPIBaseURL()}/repos/github/${repositoryName}`;
     // console.log(`fetchGithubRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubRepository>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchGithubRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -119,7 +119,7 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/repos/github/${payload.repositoryName}/${payload.branch}/tree`;
       // console.log(`fetchGithubRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchGithubRepositoryTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -151,7 +151,7 @@ export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetch
     const url = `${getAPIBaseURL()}/repos/github/user/access-token/${accessToken}`;
     // console.log(`fetchGithubUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubAccount>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchGithubUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -182,7 +182,7 @@ export const fetchGithubUserEmailsByAccessTokenAction = createAsyncThunk('github
     const url = `${getAPIBaseURL()}/repos/github/user/emails/access-token/${accessToken}`;
     // console.log(`fetchGithubUserEmailsByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubEmail[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchGithubUserEmailsByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);

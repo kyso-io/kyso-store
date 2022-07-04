@@ -9,7 +9,7 @@ export const newFeedbackAction = createAsyncThunk('reports/newFeedback', async (
   const { auth } = getState() as RootState;
   const url = `${getAPIBaseURL()}/feedback`;
   const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, feedbackDto, {
-    headers: buildAuthHeaders(auth),
+    headers: await buildAuthHeaders(auth),
   });
   if (axiosResponse?.data?.data) {
     return axiosResponse.data.data;

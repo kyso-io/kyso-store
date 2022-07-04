@@ -18,7 +18,7 @@ export const fetchTagsAction = createAsyncThunk('tags/fetchTags', async (payload
     });
     const url = `${getAPIBaseURL()}/tags?${qs.toString()}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -45,7 +45,7 @@ export const createTagAction = createAsyncThunk('tags/createTag', async (tag: Ta
     const url = `${getAPIBaseURL()}/tags`;
     // console.log(`createTagAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.post(url, tag, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`createTagAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -76,7 +76,7 @@ export const fetchTagAction = createAsyncThunk('tags/fetchTags', async (tagId: s
     const url = `${getAPIBaseURL()}/tags/${tagId}`;
     // console.log(`fetchTagsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTagsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -107,7 +107,7 @@ export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (t
     const url = `${getAPIBaseURL()}/tags/check/${tagName}`;
     // console.log(`checkTagNameAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`checkTagNameAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -134,7 +134,7 @@ export const updateTagActions = createAsyncThunk('tags/updateTag', async (payloa
     const url = `${getAPIBaseURL()}/tags/${payload.tagId}`;
     // console.log(`updateTagActions: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.patch(url, payload.tag, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateTagActions: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -165,7 +165,7 @@ export const deleteTagAction = createAsyncThunk('tags/deleteTag', async (tagId: 
     const url = `${getAPIBaseURL()}/tags/${tagId}`;
     // console.log(`deleteTagAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Tag>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteTagAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -198,7 +198,7 @@ export const assignTagToEntityAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/tags/${payload.tagId}/assign/${payload.entityId}/${payload.entityEnum}`;
       // console.log(`assignTagToEntityAction: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.post(url, null, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`assignTagToEntityAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -232,7 +232,7 @@ export const unassignTagFromEntityAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/tags/${payload.tagId}/unassign/${payload.entityId}`;
       // console.log(`unassignTagFromEntityAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TagAssign>> = await httpClient.delete(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`unassignTagFromEntityAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);

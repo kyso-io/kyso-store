@@ -28,12 +28,8 @@ export const fetchOrganizationsAction = createAsyncThunk(
       });
       const url = `${getAPIBaseURL()}/organizations?${qs.toString()}`;
 
-      console.log(auth)
+      const headers = await buildAuthHeaders(auth);
 
-      const headers = buildAuthHeaders(auth);
-
-      console.log('HEADERS')
-      console.log(headers)
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization[]>> = await httpClient.get(url, {
         headers: headers,
@@ -66,7 +62,7 @@ export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrga
     const url = `${getAPIBaseURL()}/organizations/${organizationId}`;
     // console.log(`fetchOrganizationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -97,7 +93,7 @@ export const deleteOrganizationAction = createAsyncThunk('organizations/deleteOr
     const url = `${getAPIBaseURL()}/organizations/${organizationId}`;
     // console.log(`deleteOrganizationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`deleteOrganizationAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -126,7 +122,7 @@ export const updateOrganizationAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}`;
       // console.log(`updateOrganizationAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, payload.updateOrganizationDto, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateOrganizationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -160,7 +156,7 @@ export const updateOrganizationOptionsAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/organizations/${args.organizationId}/options`;
       // console.log(`updateOrganizationOptionsAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.patch(url, args.options, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateOrganizationOptionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -192,7 +188,7 @@ export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetc
     const url = `${getAPIBaseURL()}/organizations/${organizationId}/members`;
     // console.log(`fetchOrganizationMembers: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchOrganizationMembers: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -223,7 +219,7 @@ export const createOrganizationAction = createAsyncThunk('organizations/createOr
     const url = `${getAPIBaseURL()}/organizations`;
     // console.log(`createOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, organization, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`createOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -254,7 +250,7 @@ export const addUserToOrganizationAction = createAsyncThunk('organizations/addUs
     const url = `${getAPIBaseURL()}/organizations/members`;
     // console.log(`addUserToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, data, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`addUserToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -294,7 +290,7 @@ export const joinUserToOrganizationAction = createAsyncThunk(
         url,
         {},
         {
-          headers: buildAuthHeaders(auth),
+          headers: await buildAuthHeaders(auth),
         }
       );
       return axiosResponse?.data?.data;
@@ -319,7 +315,7 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members/${payload.userId}`;
       // console.log(`removeUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`removeUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -353,7 +349,7 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members-roles`;
       // console.log(`updateMembersRolesToOrganization: ${printAuthenticated(auth)} - POST ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.post(url, payload.data, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateMembersRolesToOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -387,7 +383,7 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/organizations/${payload.organizationId}/members/${payload.userId}/${payload.role}`;
       // console.log(`deleteRoleToUserFromOrganization: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await httpClient.delete(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`deleteRoleToUserFromOrganization: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -423,7 +419,7 @@ export const updateOrganizationPictureAction = createAsyncThunk(
       const formData = new FormData();
       formData.append('file', args.file);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await httpClient.post(url, formData, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateOrganizationPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -456,7 +452,7 @@ export const getOrganizationInfoAction = createAsyncThunk('organization/getOrgan
       url += `?organizationId=${organizationId}`;
     }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationInfoDto[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;

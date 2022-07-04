@@ -22,7 +22,7 @@ export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (
     const url = `${getAPIBaseURL()}/reports/${reportId}`;
     // console.log(`fetchReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -64,7 +64,7 @@ export const fetchReportsAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/reports?${qs.toString()}`;
       // console.log(`fetchReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -100,7 +100,7 @@ export const fetchReportByReportNameAndTeamName = createAsyncThunk(
       const url = `${getAPIBaseURL()}/reports/${args.reportName}/${args.teamName}`;
       // console.log(`fetchReportByReportNameAndTeamNameAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchReportByReportNameAndTeamNameAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -132,7 +132,7 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
     const url = `${getAPIBaseURL()}/reports/${payload.reportId}`;
     // console.log(`updateReportAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.patch(url, payload.data, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -163,7 +163,7 @@ export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', asy
     const url = `${getAPIBaseURL()}/reports/${reportId}/branches`;
     // console.log(`fetchBranchesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchBranchesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -194,7 +194,7 @@ export const fetchCommitsAction = createAsyncThunk('reports/fetchCommits', async
     const url = `${getAPIBaseURL()}/reports/${payload.reportId}/${payload.branch}/commits`;
     // console.log(`fetchCommitsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchCommitsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -230,7 +230,7 @@ export const fetchReportsTreeAction = createAsyncThunk(
       }
       // console.log(`fetchReportsTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubFileHash[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchReportsTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -257,7 +257,7 @@ export const deleteReportAction = createAsyncThunk('reports/deleteReport', async
     const url = `${getAPIBaseURL()}/reports/${reportId}`;
     // console.log(`deleteReportAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -288,7 +288,7 @@ export const fetchUserPinnedReportsAction = createAsyncThunk('reports/fetchUserP
     const url = `${getAPIBaseURL()}/pinned`;
     // console.log(`fetchUserPinnedReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchUserPinnedReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -317,7 +317,7 @@ export const fetchFileContentAction = createAsyncThunk('reports/fetchFileContent
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/reports/file/${fileId}`;
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data) {
       return axiosResponse.data;
@@ -344,7 +344,7 @@ export const toggleUserPinReportAction = createAsyncThunk('reports/toggleUserPin
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     if (axiosResponse?.data?.relations) {
@@ -379,7 +379,7 @@ export const toggleGlobalPinReportAction = createAsyncThunk('reports/toggleGloba
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     if (axiosResponse?.data?.relations) {
@@ -414,7 +414,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     if (axiosResponse?.data?.relations) {
@@ -474,7 +474,7 @@ export const createKysoReportAction = createAsyncThunk(
       verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
-          ...buildAuthHeaders(auth),
+          ...await buildAuthHeaders(auth),
           ...formData.getHeaders(),
           'content-length': formData.getLengthSync(),
         },
@@ -548,7 +548,7 @@ export const createKysoReportUIAction = createAsyncThunk(
       formData.append('file', blobZip);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
-          ...buildAuthHeaders(auth),
+          ...await buildAuthHeaders(auth),
           headers: { 'content-type': 'multipart/form-data' },
         },
       });
@@ -585,7 +585,7 @@ export const updateMainFileReportAction = createAsyncThunk(
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
         headers: {
-          ...buildAuthHeaders(auth),
+          ...await buildAuthHeaders(auth),
           headers: { 'content-type': 'multipart/form-data' },
         },
       });
@@ -626,7 +626,7 @@ export const importGithubRepositoryAction = createAsyncThunk(
         url,
         {},
         {
-          headers: buildAuthHeaders(auth),
+          headers: await buildAuthHeaders(auth),
         }
       );
       if (axiosResponse?.data?.relations) {
@@ -661,7 +661,7 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
         url,
         {},
         {
-          headers: buildAuthHeaders(auth),
+          headers: await buildAuthHeaders(auth),
         }
       );
       if (axiosResponse?.data?.relations) {
@@ -696,7 +696,7 @@ export const importGitlabRepositoryAction = createAsyncThunk(
         url,
         {},
         {
-          headers: buildAuthHeaders(auth),
+          headers: await buildAuthHeaders(auth),
         }
       );
       if (axiosResponse?.data?.relations) {
@@ -728,7 +728,7 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     }
     // console.log(`pullReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
       responseType: 'arraybuffer',
     });
     return axiosResponse.data;
@@ -750,7 +750,7 @@ export const downloadReportAction = createAsyncThunk('reports/downloadReport', a
     const url = `${getAPIBaseURL()}/reports/${reportId}/download`;
     // console.log(`downloadReportAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<Buffer> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
       responseType: 'arraybuffer',
     });
     return axiosResponse.data;
@@ -776,7 +776,7 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
       const formData = new FormData();
       formData.append('file', args.file);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.post(url, formData, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -808,7 +808,7 @@ export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteRep
     const url = `${getAPIBaseURL()}/reports/${reportId}/preview-picture`;
     // console.log(`deleteReportPreviewPictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteReportPreviewPictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -842,7 +842,7 @@ export const fetchReportFilesAction = createAsyncThunk('reports/fetchReportFiles
     }
     // console.log(`fetchReportFilesAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<File[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchReportFilesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -878,7 +878,7 @@ export const fetchReportVersionsAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/reports/${args.reportId}/versions?${qs.toString()}`;
       // console.log(`fetchReportVersionsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchReportVersionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -912,7 +912,7 @@ export const fetchEmbeddedReportAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/reports/embedded/${args.organizationName}/${args.teamName}/${args.reportName}`;
       // console.log(`fetchEmbeddedReportAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchEmbeddedReportAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -944,7 +944,7 @@ export const checkReportExistsAction = createAsyncThunk('reports/checkReportExis
     const url = `${getAPIBaseURL()}/reports/${args.reportName}/${args.teamId}/exists`;
     // console.log(`checkReportExistsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<boolean> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     return axiosResponse.data;
   } catch (e: any) {

@@ -1,19 +1,33 @@
+import { Organization, Team } from '@kyso-io/kyso-model';
+import { fetchOrganizationAction, fetchTeamAction, store } from '../store';
 import { AuthState } from '../store/auth/auth-slice';
 
-export const buildAuthHeaders = (auth: AuthState, organizationId?: string, teamId?: string) => {
+export const buildAuthHeaders = async (auth: AuthState, organizationId?: string, teamId?: string) => {
   const headers: any = {};
 
   if (auth.token) {
     headers['Authorization'] = `Bearer ${auth.token}`;
   }
 
-  const team: string | null = teamId ? teamId : auth.team;
+  let organizationData: Organization | undefined = undefined;
+  let teamData: Team | undefined = undefined;
+  
+  if(teamId) {
+    organizationData = await store.dispatch(fetchOrganizationAction(organizationId as string));
+  }
+
+  if(teamId) {
+    teamData = await store.dispatch(fetchTeamAction(teamId as string));
+    console.log(JSON.stringify(teamData));
+  }
+
+  const team: string | null = teamData ? teamData.sluglified_name : auth.team;
 
   if (team) {
     headers['x-kyso-team'] = team;
   }
 
-  const organization: string | null = organizationId ? organizationId : auth.organization;
+  const organization: string | null = organizationData ? organizationData.sluglified_name : auth.organization;
 
   if (organization) {
     headers['x-kyso-organization'] = organization;

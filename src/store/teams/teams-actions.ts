@@ -21,7 +21,7 @@ export const fetchTeamsAction = createAsyncThunk('teams/fetchTeams', async (payl
     const url = `${getAPIBaseURL()}/teams?${qs.toString()}`;
     // console.log(`fetchTeamsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTeamsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -52,7 +52,7 @@ export const fetchTeamAction = createAsyncThunk('team/fetchTeam', async (teamId:
     const url = `${getAPIBaseURL()}/teams/${teamId}`;
     // console.log(`fetchTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -83,7 +83,7 @@ export const createTeamAction = createAsyncThunk('team/createTeam', async (team:
     const url = `${getAPIBaseURL()}/teams`;
     // console.log(`createTeamAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, team, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`createTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -114,7 +114,7 @@ export const deleteTeamAction = createAsyncThunk('team/deleteTeam', async (teamI
     const url = `${getAPIBaseURL()}/teams/${teamId}`;
     // console.log(`deleteTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -145,7 +145,7 @@ export const fetchTeamMembersAction = createAsyncThunk('team/fetchTeamMembers', 
     const url = `${getAPIBaseURL()}/teams/${teamId}/members`;
     // console.log(`fetchTeamMembersAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTeamMembersAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -174,7 +174,7 @@ export const fetchAuthorsAction = createAsyncThunk('team/fetchAuthors', async (t
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/teams/${teamId}/authors`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -201,7 +201,7 @@ export const fetchTeamAssigneesAction = createAsyncThunk('team/fetchTeamAssignee
     const url = `${getAPIBaseURL()}/teams/${teamId}/assignees`;
     // console.log(`fetchTeamAssignees: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTeamAssignees: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -232,7 +232,7 @@ export const checkMemberBelongsToTheTeamAction = createAsyncThunk('team/checkMem
     const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`checkMemberBelongsToTheTeamAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`checkMemberBelongsToTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -259,7 +259,7 @@ export const addMemberToTheTeamAction = createAsyncThunk('team/addMemberToTheTea
     const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`addMemberToTheTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`addMemberToTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -286,7 +286,7 @@ export const deleteMemberFromTheTeamAction = createAsyncThunk('team/deleteMember
     const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members/${payload.userId}`;
     // console.log(`deleteMemberFromTheTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`deleteMemberFromTheTeamAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -313,7 +313,7 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
     const url = `${getAPIBaseURL()}/teams/${payload.teamId}`;
     // console.log(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.patch(url, payload.data, {
-      headers: buildAuthHeaders(auth, undefined, payload.teamId),
+      headers: await buildAuthHeaders(auth, undefined, payload.teamId),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -344,7 +344,7 @@ export const checkTeamNameIsUniqueAction = createAsyncThunk('team/checkTeamNameI
     const url = `${getAPIBaseURL()}/teams/check-name/${args.organizationId}/${args.teamName}`;
     // console.log(`checkTeamNameIsUniqueAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       // console.log(`checkTeamNameIsUniqueAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
@@ -371,7 +371,7 @@ export const fetchTeamReportsAction = createAsyncThunk('team/fetchTeamReports', 
     const url = `${getAPIBaseURL()}/teams/${teamId}/reports`;
     // console.log(`fetchTeamReportsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Report[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchTeamReportsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -404,7 +404,7 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members-roles`;
       // console.log(`updateRoleToMembersOfTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.patch(url, payload.data, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateRoleToMembersOfTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -438,7 +438,7 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/teams/${payload.teamId}/members-roles/${payload.userId}/${payload.role}`;
       // console.log(`deleteRoleOfMembersOfTeamAction: ${printAuthenticated(auth)} - DELETE ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await httpClient.delete(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`deleteRoleOfMembersOfTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -472,7 +472,7 @@ export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamP
     const formData = new FormData();
     formData.append('file', payload.file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.post(url, formData, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateTeamProfilePictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -503,7 +503,7 @@ export const deleteTeamProfilePictureAction = createAsyncThunk('team/deleteTeamP
     const url = `${getAPIBaseURL()}/teams/${teamId}/profile-picture`;
     // console.log(`deleteTeamProfilePictureAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteTeamProfilePictureAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -534,7 +534,7 @@ export const uploadMarkdownImageAction = createAsyncThunk('team/uploadMarkdownIm
     const formData = new FormData();
     formData.append('file', payload.file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.post(url, formData, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;
@@ -559,7 +559,7 @@ export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (t
       url += `?teamId=${teamId}`;
     }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamInfoDto[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.data) {
       return axiosResponse.data.data;

@@ -11,7 +11,7 @@ export const getInlineCommentsAction = createAsyncThunk('inline-comments/getInli
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/inline-comments/${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -33,7 +33,7 @@ export const createInlineCommentAction = createAsyncThunk(
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/inline-comments`;
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await httpClient.post(url, createInlineCommentDto, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -56,7 +56,7 @@ export const updateInlineCommentAction = createAsyncThunk(
       const { auth } = getState() as RootState;
       const url = `${getAPIBaseURL()}/inline-comments/${payload.inlineCommentId}`;
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await httpClient.patch(url, payload.updateInlineCommentDto, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
@@ -77,7 +77,7 @@ export const deleteInlineCommentAction = createAsyncThunk('inline-comment/delete
     const { auth } = getState() as RootState;
     const url = `${getAPIBaseURL()}/inline-comments/${inlineCommentId}`;
     const axiosResponse: AxiosResponse<boolean> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     return axiosResponse.data;
   } catch (e: any) {

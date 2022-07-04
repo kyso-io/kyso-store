@@ -39,7 +39,7 @@ export const fullTextSearchAction = createAsyncThunk(
         url += `&filter.people=${args.filterPeople.join(',')}`;
       }
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<FullTextSearchDTO>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));

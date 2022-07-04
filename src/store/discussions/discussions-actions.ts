@@ -24,7 +24,7 @@ export const fetchDiscussionsAction = createAsyncThunk('discussions/fetchDiscuss
     const url = `${getAPIBaseURL()}/discussions?${team ? `team_id=${team.id}` : `user_id=${user.user!.id}`}&page=${payload.page}&per_page=${payload.per_page}&sort=${payload.sort}`;
     // console.log(`fetchDiscussionsAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchDiscussionsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -72,7 +72,7 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
       // console.log(`fetchTeamDiscussions: ${printAuthenticated(auth)} - GET ${url}`);
 
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
 
       if (axiosResponse?.data?.relations) {
@@ -108,7 +108,7 @@ export const fetchDiscussionById = createAsyncThunk('discussions/fetchDiscussion
     const { auth } = getState() as RootState;
     // console.log(`fetchDiscussionById: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
 
     if (axiosResponse?.data?.relations) {
@@ -140,7 +140,7 @@ export const createDiscussion = createAsyncThunk('discussions/createDiscussion',
     const { auth } = getState() as RootState;
     // console.log(`createDiscussion: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.post(url, payload, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`createDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -173,7 +173,7 @@ export const updateDiscussion = createAsyncThunk(
       const { auth } = getState() as RootState;
       // console.log(`updateDiscussion: ${printAuthenticated(auth)} - PUT ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.patch(url, payload.data, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`updateDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -200,7 +200,7 @@ export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion',
     const { auth } = getState() as RootState;
     // console.log(`deleteDiscussion: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Discussion>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteDiscussion: relations ${JSON.stringify(axiosResponse.data.relations)}`);

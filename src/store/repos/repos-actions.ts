@@ -19,7 +19,7 @@ export const fetchRepositoriesAction = createAsyncThunk(
       }
       // console.log(`fetchRepositoriesAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<any[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchRepositoriesAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -52,7 +52,7 @@ export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepository
     const url = `${getAPIBaseURL()}/repos/${repos.provider}/user`;
     // console.log(`fetchRepositoryUserAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchRepositoryUserAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -83,7 +83,7 @@ export const fetchRepositoryAction = createAsyncThunk('repos/fetchRepository', a
     const url = `${getAPIBaseURL()}/repos/${repos.provider}/${repoName}`;
     // console.log(`fetchRepositoryAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchRepositoryAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -114,7 +114,7 @@ export const fetchRepositoryTreeAction = createAsyncThunk('repos/fetchRepository
     const url = `${getAPIBaseURL()}/repos/${repos.provider}/${payload.repoName}/${payload.branch}/tree`;
     // console.log(`fetchRepositoryTreeAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchRepositoryTreeAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -145,7 +145,7 @@ export const fetchUserByAccessTokenAction = createAsyncThunk('repos/fetchUserByA
     const url = `${getAPIBaseURL()}/repos/${repos.provider}/user/${accessToken}`;
     // console.log(`fetchUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -176,7 +176,7 @@ export const fetchUserEmailsByAccessToken = createAsyncThunk('repos/fetchUserEma
     const url = `${getAPIBaseURL()}/repos/${repos.provider}/user/emails/${accessToken}`;
     // console.log(`fetchUserEmailsByAccessToken: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchUserEmailsByAccessToken: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -207,7 +207,7 @@ export const fetchUserUserByAccessTokenAction = createAsyncThunk('repos/fetchUse
     const url = `${getAPIBaseURL()}/repos/${args.provider}/user/access-token/${args.accessToken}`;
     // console.log(`fetchUserUserByAccessTokenAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<any>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchUserUserByAccessTokenAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);

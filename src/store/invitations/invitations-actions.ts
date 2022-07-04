@@ -21,7 +21,7 @@ export const fetchInvitationsAction = createAsyncThunk(
       const url = `${getAPIBaseURL()}/invitations?${qs.toString()}`;
       // console.log(`fetchInvitationsAction: ${printAuthenticated(auth)} - GET ${url}`);
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       });
       if (axiosResponse?.data?.relations) {
         // console.log(`fetchInvitationsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -53,7 +53,7 @@ export const fetchInvitationAction = createAsyncThunk('tags/fetchInvitation', as
     const url = `${getAPIBaseURL()}/invitations/${invitationId}`;
     // console.log(`fetchInvitationAction: ${printAuthenticated(auth)} - GET ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.get(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`fetchInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -84,7 +84,7 @@ export const createInvitationAction = createAsyncThunk('tags/createInvitation', 
     const url = `${getAPIBaseURL()}/invitations`;
     // console.log(`createInvitationAction: ${printAuthenticated(auth)} - POST ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.post(url, createInvitationDto, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`createInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
@@ -118,7 +118,7 @@ export const acceptInvitationAction = createAsyncThunk('tags/acceptInvitation', 
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     if (axiosResponse?.data?.relations) {
@@ -153,7 +153,7 @@ export const rejectInvitationAction = createAsyncThunk('tags/rejectInvitation', 
       url,
       {},
       {
-        headers: buildAuthHeaders(auth),
+        headers: await buildAuthHeaders(auth),
       }
     );
     if (axiosResponse?.data?.relations) {
@@ -185,7 +185,7 @@ export const deleteInvitationAction = createAsyncThunk('tags/deleteInvitation', 
     const url = `${getAPIBaseURL()}/invitations/${invitationId}`;
     // console.log(`deleteInvitationAction: ${printAuthenticated(auth)} - DELETE ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Invitation>> = await httpClient.delete(url, {
-      headers: buildAuthHeaders(auth),
+      headers: await buildAuthHeaders(auth),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`deleteInvitationAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
