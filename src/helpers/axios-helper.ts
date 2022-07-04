@@ -15,11 +15,13 @@ export const buildAuthHeaders = async (auth: AuthState, organizationId?: string,
   if(organizationId) {
     console.log(`Retrieving ad-hoc specific data from organization ${organizationId}`);
     organizationData = (await store.dispatch(fetchOrganizationAction(organizationId as string))).payload;
+    console.log(organizationData);
   }
 
   if(teamId) {
     console.log(`Retrieving ad-hoc specific data from team ${teamId}`);
     teamData = (await store.dispatch(fetchTeamAction(teamId as string))).payload;
+    console.log(teamData);
   }
 
   const team: string | null = teamData ? teamData.sluglified_name : auth.team;
