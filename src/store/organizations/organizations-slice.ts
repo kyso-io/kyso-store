@@ -8,7 +8,7 @@ import { fetchOrganizationAction, updateOrganizationAction } from './organizatio
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
   activeIds: object | null; // list of ids for showing lists of organizations
-  entities: { [key: string]: any | null | undefined }; // all the organizations by id
+  entities: { [key: string]: Organization | null | undefined }; // all the organizations by id
 };
 
 const initialState: OrganizationsState = {

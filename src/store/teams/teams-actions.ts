@@ -313,7 +313,7 @@ export const updateTeamAction = createAsyncThunk('team/updateTeamAction', async 
     const url = `${getAPIBaseURL()}/teams/${payload.teamId}`;
     // console.log(`updateTeamAction: ${printAuthenticated(auth)} - PATCH ${url}`);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await httpClient.patch(url, payload.data, {
-      headers: buildAuthHeaders(auth),
+      headers: buildAuthHeaders(auth, undefined, payload.teamId),
     });
     if (axiosResponse?.data?.relations) {
       // console.log(`updateTeamAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);

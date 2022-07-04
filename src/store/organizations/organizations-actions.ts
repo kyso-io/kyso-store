@@ -27,9 +27,19 @@ export const fetchOrganizationsAction = createAsyncThunk(
         ...payload?.filter,
       });
       const url = `${getAPIBaseURL()}/organizations?${qs.toString()}`;
+
+      console.log(auth)
+
+      const headers = buildAuthHeaders(auth);
+
+      console.log('HEADERS')
+      console.log(headers)
+
       const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization[]>> = await httpClient.get(url, {
-        headers: buildAuthHeaders(auth),
+        headers: headers,
       });
+
+      
       if (axiosResponse?.data?.relations) {
         dispatch(fetchRelationsAction(axiosResponse.data.relations));
       }
