@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
 import { fetchRelationsAction } from '../relations/relations-actions';
-import { fetchOrganizationAction, updateOrganizationAction } from './organizations-actions';
+import { fetchOrganizationAction, updateOrganizationAction, updateOrganizationOptionsAction } from './organizations-actions';
 
 export type OrganizationsState = {
   activeId: string | null | undefined; // single id of active organization
@@ -44,6 +44,21 @@ const organizationsSlice = createSlice({
     });
     builder.addCase(updateOrganizationAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
       state.activeId = action.payload!.id;
+      if (action.payload?.id) {
+        state.entities = {
+          ...state.entities,
+          [action.payload!.id as string]: action.payload,
+        };
+      }
+    });
+    builder.addCase(updateOrganizationOptionsAction.fulfilled, (state: OrganizationsState, action: ActionWithPayload<Organization>) => {
+      state.activeId = action.payload!.id;
+      if (action.payload?.id) {
+        state.entities = {
+          ...state.entities,
+          [action.payload!.id as string]: action.payload,
+        };
+      }
     });
     builder.addCase(fetchRelationsAction, (state: OrganizationsState, action: ActionWithPayload<Relations>) => {
       state.entities = {
