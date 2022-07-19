@@ -1,17 +1,16 @@
 import { KysoSetting, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { setError } from '..';
-import { getAPIBaseURL } from '../../helpers/axios-helper';
-import httpClient from '../../services/http-client';
+import { Api } from '../../api';
 import { setPublicSettings } from './settings-slice';
 
 export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoConfigValues', async (key: string, { dispatch }): Promise<string | null> => {
   try {
-    const url = `${getAPIBaseURL()}/kyso-settings/${key}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
+    const api: Api = new Api();
+    const response: NormalizedResponseDTO<string> = await api.getSettingValue(key);
+    if (response?.data) {
+      return response.data;
     } else {
       return null;
     }
@@ -27,11 +26,11 @@ export const fetchKysoConfigValuesAction = createAsyncThunk('settings/fetchKysoC
 
 export const fetchPublicKysoSettings = createAsyncThunk('settings/fetchPublicKysoSettings', async (_, { dispatch }): Promise<KysoSetting[] | null> => {
   try {
-    const url = `${getAPIBaseURL()}/kyso-settings/public`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await httpClient.get(url);
-    if (axiosResponse?.data?.data) {
-      await dispatch(setPublicSettings(axiosResponse.data.data as any));
-      return axiosResponse.data.data as any
+    const api: Api = new Api();
+    const response: NormalizedResponseDTO<KysoSetting[]> = await api.getPublicSettings();
+    if (response?.data) {
+      await dispatch(setPublicSettings(response.data as any));
+      return response.data as any;
     } else {
       return [];
     }
@@ -44,4 +43,3 @@ export const fetchPublicKysoSettings = createAsyncThunk('settings/fetchPublicKys
     return [];
   }
 });
-

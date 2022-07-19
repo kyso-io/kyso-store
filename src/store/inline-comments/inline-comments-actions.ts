@@ -1,23 +1,19 @@
 import { CreateInlineCommentDto, InlineCommentDto, NormalizedResponseDTO, UpdateInlineCommentDto } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
 import { RootState } from '..';
-import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
-import httpClient from '../../services/http-client';
+import { Api } from '../../api';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
 export const getInlineCommentsAction = createAsyncThunk('inline-comments/getInlineComments', async (reportId: string, { getState, dispatch }): Promise<InlineCommentDto[]> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/inline-comments/${reportId}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto[]>> = await httpClient.get(url, {
-      headers: await buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<InlineCommentDto[]> = await api.getInlineComments(reportId);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    if (axiosResponse?.data?.data) {
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
       return [];
     }
@@ -31,15 +27,13 @@ export const createInlineCommentAction = createAsyncThunk(
   async (createInlineCommentDto: CreateInlineCommentDto, { getState, dispatch }): Promise<InlineCommentDto | null> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${getAPIBaseURL()}/inline-comments`;
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await httpClient.post(url, createInlineCommentDto, {
-        headers: await buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data?.relations) {
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      const api: Api = new Api(auth.token, auth.organization, auth.team);
+      const response: NormalizedResponseDTO<InlineCommentDto> = await api.createInlineComment(createInlineCommentDto);
+      if (response?.relations) {
+        dispatch(fetchRelationsAction(response.relations));
       }
-      if (axiosResponse?.data?.data) {
-        return axiosResponse.data.data;
+      if (response?.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -54,15 +48,13 @@ export const updateInlineCommentAction = createAsyncThunk(
   async (payload: { inlineCommentId: string; updateInlineCommentDto: UpdateInlineCommentDto }, { getState, dispatch }): Promise<InlineCommentDto | null> => {
     try {
       const { auth } = getState() as RootState;
-      const url = `${getAPIBaseURL()}/inline-comments/${payload.inlineCommentId}`;
-      const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await httpClient.patch(url, payload.updateInlineCommentDto, {
-        headers: await buildAuthHeaders(auth),
-      });
-      if (axiosResponse?.data?.relations) {
-        dispatch(fetchRelationsAction(axiosResponse.data.relations));
+      const api: Api = new Api(auth.token, auth.organization, auth.team);
+      const response: NormalizedResponseDTO<InlineCommentDto> = await api.updateInlineComment(payload.inlineCommentId, payload.updateInlineCommentDto);
+      if (response?.relations) {
+        dispatch(fetchRelationsAction(response.relations));
       }
-      if (axiosResponse?.data?.data) {
-        return axiosResponse.data.data;
+      if (response?.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -72,15 +64,17 @@ export const updateInlineCommentAction = createAsyncThunk(
   }
 );
 
-export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<boolean> => {
+export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<InlineCommentDto | null> => {
   try {
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/inline-comments/${inlineCommentId}`;
-    const axiosResponse: AxiosResponse<boolean> = await httpClient.delete(url, {
-      headers: await buildAuthHeaders(auth),
-    });
-    return axiosResponse.data;
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<InlineCommentDto> = await api.deleteInlineComment(inlineCommentId);
+    if (response?.data) {
+      return response.data;
+    } else {
+      return null;
+    }
   } catch (e: any) {
-    return false;
+    return null;
   }
 });
