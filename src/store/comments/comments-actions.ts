@@ -1,38 +1,25 @@
 import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { RootState } from '..';
-import { buildAuthHeaders, getAPIBaseURL } from '../../helpers/axios-helper';
-import httpClient from '../../services/http-client';
+import { Api } from '../../api';
 import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportComments', async (args: { reportId: string; sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
-    // console.log('fetchReportCommentsAction invoked');
     const { auth } = getState() as RootState;
-    let url = `${getAPIBaseURL()}/reports/${args.reportId}/comments`;
-    if (args.sort) {
-      url += `?sort=${args.sort}`;
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment[]> = await api.getReportComments(args.reportId, args.sort);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    // console.log(`fetchReportCommentsAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: await buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchReportCommentsAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
-    }
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchReportCommentsAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`fetchReportCommentsAction: Response didn't have data, returning an empty array []`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`fetchReportCommentsAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -44,34 +31,18 @@ export const fetchReportCommentsAction = createAsyncThunk('comments/fetchReportC
 
 export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscussionComments', async (args: { discussionId: string; sort?: string }, { getState, dispatch }): Promise<Comment[]> => {
   try {
-    // console.log('fetchDiscussionComments invoked');
-
-    let url = `${getAPIBaseURL()}/discussions/${args.discussionId}/comments`;
-    if (args.sort) {
-      url += `?sort=${args.sort}`;
-    }
     const { auth } = getState() as RootState;
-
-    // console.log(`fetchDiscussionComments: ${printAuthenticated(auth)} - GET ${url}`);
-
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment[]>> = await httpClient.get(url, {
-      headers: await buildAuthHeaders(auth),
-    });
-
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchDiscussionComments: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse?.data?.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment[]> = await api.getDiscussionComments(args.discussionId, args.sort);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response?.relations));
     }
-
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchDiscussionComments: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`fetchDiscussionComments: Response didn't have data, returning null`);
       return [];
     }
   } catch (e: any) {
-    // console.log(`fetchDiscussionComments: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -83,26 +54,18 @@ export const fetchDiscussionComments = createAsyncThunk('discussions/fetchDiscus
 
 export const fetchCommentAction = createAsyncThunk('comments/fetchComment', async (commentId: string, { getState, dispatch }): Promise<Comment | null> => {
   try {
-    // console.log('fetchCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/comments/${commentId}`;
-    // console.log(`fetchCommentAction: ${printAuthenticated(auth)} - GET ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.get(url, {
-      headers: await buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`fetchCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment> = await api.getComment(commentId);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    if (axiosResponse?.data?.data) {
-      // console.log(`fetchCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`fetchCommentAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -114,24 +77,18 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
 
 export const createCommentAction = createAsyncThunk('comments/createComment', async (payload: Comment, { getState, dispatch }): Promise<Comment | null> => {
   try {
-    // console.log('createCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/comments`;
-    // console.log(`createCommentAction: ${printAuthenticated(auth)} - POST ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.post(url, payload, { headers: await buildAuthHeaders(auth) });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`createCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment> = await api.createComment(payload);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    if (axiosResponse?.data?.data) {
-      // console.log(`createCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`createCommentAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`createCommentAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -143,26 +100,18 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
 
 export const updateCommentAction = createAsyncThunk('comments/updateComment', async (payload: { commentId: string; comment: Comment }, { getState, dispatch }): Promise<Comment | null> => {
   try {
-    // console.log('updateCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/comments/${payload.commentId}`;
-    // console.log(`updateCommentAction: ${printAuthenticated(auth)} - PUT ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.patch(url, payload.comment, {
-      headers: await buildAuthHeaders(auth),
-    });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`updateCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment> = await api.updateComment(payload.commentId, payload.comment);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    if (axiosResponse?.data?.data) {
-      // console.log(`updateCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`updateCommentAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`updateCommentAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
@@ -174,24 +123,18 @@ export const updateCommentAction = createAsyncThunk('comments/updateComment', as
 
 export const deleteCommentAction = createAsyncThunk('comments/deleteComment', async (commentId: string, { getState, dispatch }): Promise<Comment | null> => {
   try {
-    // console.log('deleteCommentAction invoked');
     const { auth } = getState() as RootState;
-    const url = `${getAPIBaseURL()}/comments/${commentId}`;
-    // console.log(`deleteCommentAction: ${printAuthenticated(auth)} - DELETE ${url}`);
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await httpClient.delete(url, { headers: await buildAuthHeaders(auth) });
-    if (axiosResponse?.data?.relations) {
-      // console.log(`deleteCommentAction: relations ${JSON.stringify(axiosResponse.data.relations)}`);
-      dispatch(fetchRelationsAction(axiosResponse.data.relations));
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
+    const response: NormalizedResponseDTO<Comment> = await api.deleteComment(commentId);
+    if (response?.relations) {
+      dispatch(fetchRelationsAction(response.relations));
     }
-    if (axiosResponse?.data?.data) {
-      // console.log(`deleteCommentAction: axiosResponse ${JSON.stringify(axiosResponse.data.data)}`);
-      return axiosResponse.data.data;
+    if (response?.data) {
+      return response.data;
     } else {
-      // console.log(`deleteCommentAction: Response didn't have data, returning null`);
       return null;
     }
   } catch (e: any) {
-    // console.log(`deleteCommentAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {

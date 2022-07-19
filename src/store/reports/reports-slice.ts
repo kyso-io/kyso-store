@@ -1,4 +1,4 @@
-import { ActionWithPayload, Relations, ReportDTO } from '@kyso-io/kyso-model';
+import { ActionWithPayload, Relations, Report, ReportDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
@@ -6,7 +6,6 @@ import { fetchRelationsAction } from '../relations/relations-actions';
 import {
   deleteReportAction,
   fetchBranchesAction,
-  fetchCommitsAction,
   fetchFileContentAction,
   fetchReportAction,
   fetchReportsAction,
@@ -141,13 +140,10 @@ const reportsSlice = createSlice({
     builder.addCase(fetchBranchesAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
       state.branches = action.payload!;
     });
-    builder.addCase(fetchCommitsAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
-      state.commits = action.payload!;
-    });
     builder.addCase(fetchReportsTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;
     });
-    builder.addCase(deleteReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO | null>) => {
+    builder.addCase(deleteReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<Report | null>) => {
       if (action?.payload) {
         state.deletedReport = true;
         const entities = { ...state.entities };
