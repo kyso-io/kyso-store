@@ -51,7 +51,7 @@ const authSlice = createSlice({
 
 export const { setAuthAction, setTokenAuthAction, setTeamAuthAction, setOrganizationAuthAction, setOrganizationAuthOptionsAction, setUserPermissionsAction, resetAuthSlice } = authSlice.actions;
 
-export const selectCurrentUserPermissions = (state: RootState) => {
+export const selectCurrentUserPermissions = (state: RootState): TokenPermissions | null => {
   return state.auth.currentUserPermissions;
 };
 

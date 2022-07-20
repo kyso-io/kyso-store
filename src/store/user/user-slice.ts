@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { ActionWithPayload, Relations, User, UserDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
@@ -55,8 +56,9 @@ export const selectUser = (state: RootState) => {
 };
 
 export const selectUserGivenId = (state: RootState, userId: string): User | null => {
-  if (!state.user.entities) return null;
-  // eslint-disable-next-line no-prototype-builtins
+  if (!state.user.entities) {
+    return null;
+  }
   return state.user.entities.hasOwnProperty(userId) ? state.user.entities[userId] : null;
 };
 

@@ -71,24 +71,31 @@ const organizationsSlice = createSlice({
 
 export const { setOrganization, resetOrganizationsSlice } = organizationsSlice.actions;
 
-export const selectActiveOrganization = (state: RootState) => {
-  if (!state.organizations.activeId) return null;
-  if (state.organizations.entities!.length === 0) return null;
+export const selectActiveOrganization = (state: RootState): Organization | null => {
+  if (!state.organizations.activeId) {
+    return null;
+  }
+  if (state.organizations.entities!.length === 0) {
+    return null;
+  }
   return state.organizations.entities![state.organizations.activeId];
 };
 
-export const selectOrganizationById = (state: RootState, id: string) => {
-  if (state.organizations.entities!.length === 0) return null;
+export const selectOrganizationById = (state: RootState, id: string): Organization | null => {
+  if (state.organizations.entities!.length === 0) {
+    return null;
+  }
   return state.organizations.entities![id];
 };
 
-export const selectOrganizationBySlugifiedName = (state: RootState, name: string) => {
+export const selectOrganizationBySlugifiedName = (state: RootState, name: string): Organization | null => {
   if (!name) {
     return null;
   }
-  return Object.values(state.organizations.entities).find((org: any /*{ name: string; sluglified_name: string }*/) => {
+  const organization: Organization | undefined = (Object.values(state.organizations.entities) as Organization[]).find((org: any) => {
     return (org?.name && org.name !== '' && slugify(org.name) === name) || org?.sluglified_name === name;
   });
+  return organization || null;
 };
 
 export default organizationsSlice.reducer;

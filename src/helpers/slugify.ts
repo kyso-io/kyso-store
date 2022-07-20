@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 
-export default function slug(url: string) {
+export default function slug(url: string): string {
   if (!url) {
     return '';
   }

@@ -68,7 +68,7 @@ const commentSlice = createSlice({
   },
 });
 
-export const selectCommentsByParent = (state: RootState, parentId: string | null = null) => {
+export const selectCommentsByParent = (state: RootState, parentId: string | null = null): Comment[] => {
   const values: Comment[] = Object.values(state.comments.entities!);
   if (values.length === 0) {
     return [];
@@ -83,8 +83,10 @@ export const selectCommentsByParent = (state: RootState, parentId: string | null
   return filtered;
 };
 
-export const selectCommentsById = (state: RootState, id: string) => {
-  if (id in state.comments.entities!) return state.comments.entities![id];
+export const selectCommentsById = (state: RootState, id: string): Comment | null => {
+  if (id in state.comments.entities!) {
+    return state.comments.entities![id];
+  }
   return null;
 };
 

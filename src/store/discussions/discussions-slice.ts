@@ -86,8 +86,11 @@ const discussionsSlice = createSlice({
   },
 });
 
-export const selectDiscussionById = (state: RootState, id: string) => {
-  return state.discussions.entities![id];
+export const selectDiscussionById = (state: RootState, id: string): Discussion | null => {
+  if (state.discussions.entities.hasOwnProperty(id)) {
+    return state.discussions.entities![id];
+  }
+  return null;
 };
 
 export const getActiveDiscussions = (state: RootState, args?: { sortBy: string; mode: 'asc' | 'desc' }): Discussion[] => {
