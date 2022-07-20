@@ -392,25 +392,25 @@ export class Api {
   // INLINE COMMENTS
 
   public async getInlineComments(reportId: string): Promise<NormalizedResponseDTO<InlineCommentDto[]>> {
-    const url = `/reports/inline-comments/${reportId}`;
+    const url = `/inline-comments/${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
   public async createInlineComment(createInlineCommentDto: CreateInlineCommentDto): Promise<NormalizedResponseDTO<InlineCommentDto>> {
-    const url = '/reports/inline-comments';
+    const url = '/inline-comments';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await this.httpClient.post(url, createInlineCommentDto);
     return axiosResponse.data;
   }
 
   public async updateInlineComment(inlineCommentId: string, updateInlineCommentDto: UpdateInlineCommentDto): Promise<NormalizedResponseDTO<InlineCommentDto>> {
-    const url = `/reports/inline-comments/${inlineCommentId}`;
+    const url = `/inline-comments/${inlineCommentId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await this.httpClient.patch(url, updateInlineCommentDto);
     return axiosResponse.data;
   }
 
   public async deleteInlineComment(inlineCommentId: string): Promise<NormalizedResponseDTO<InlineCommentDto>> {
-    const url = `/reports/inline-comments/${inlineCommentId}`;
+    const url = `/inline-comments/${inlineCommentId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
