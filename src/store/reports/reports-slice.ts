@@ -1,4 +1,4 @@
-import { ActionWithPayload, Relations, Report, ReportDTO } from '@kyso-io/kyso-model';
+import { ActionWithPayload, GithubFileHash, Relations, Report, ReportDTO } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
@@ -187,15 +187,23 @@ const reportsSlice = createSlice({
 
 export const { setReports, setCurrentBranch, setSelectedTags, setRequestingReports, setDeleteReport, setActiveId, resetReportsSlice } = reportsSlice.actions;
 
-export const selectActiveReport = (state: RootState) => {
-  if (!state.reports.activeId) return null;
-  if (Object.keys(state.reports.entities!).length === 0) return null;
+export const selectActiveReport = (state: RootState): Report | null => {
+  if (!state.reports.activeId) {
+    return null;
+  }
+  if (Object.keys(state.reports.entities!).length === 0) {
+    return null;
+  }
   return state.reports.entities![state.reports.activeId];
 };
 
-export const selectActiveReports = (state: RootState) => {
-  if (state.reports.activeIds.length === 0) return null;
-  if (Object.keys(state.reports.entities!).length === 0) return null;
+export const selectActiveReports = (state: RootState): ReportDTO[] => {
+  if (state.reports.activeIds.length === 0) {
+    return [];
+  }
+  if (Object.keys(state.reports.entities!).length === 0) {
+    return [];
+  }
   const reports: ReportDTO[] = state.reports.activeIds.map((id: any) => state.reports.entities![id] as ReportDTO);
   if (state.reports.selectedTags.length === 0) {
     return reports;
@@ -212,37 +220,44 @@ export const selectActiveReports = (state: RootState) => {
   }
 };
 
-export const selectFirstSearchResult = (state: RootState) => {
-  if (state.reports.activeIds.length === 0) return null;
-  if (Object.keys(state.reports.entities!).length === 0) return null;
+export const selectFirstSearchResult = (state: RootState): ReportDTO | null => {
+  if (state.reports.activeIds.length === 0) {
+    return null;
+  }
+  if (Object.keys(state.reports.entities!).length === 0) {
+    return null;
+  }
   return state.reports.entities![state.reports.activeIds[0]];
 };
 
-export const selectFileContent = (state: RootState) => {
-  if (state.reports.content) return Buffer.from(state.reports.content).toString('utf-8');
+export const selectFileContent = (state: RootState): string | null => {
+  if (!state.reports.content) {
+    return null;
+  }
+  return Buffer.from(state.reports.content).toString('utf-8');
 };
 
-export const selectFileToRender = (state: RootState, routerPath: string) => {
-  if (!state.reports.tree) return;
-  const files = state.reports.tree.filter((item: any) => item.type === 'file');
-  const fileToRender = files.find((item: any) => {
-    if (routerPath) return item.path === routerPath;
-    // return item.path.endsWith('.ipynb') || item.path.endsWith('.md')
-  });
-
-  return fileToRender;
-};
-
-export const selectFileToRenderGivenList = (state: RootState, list: string[]) => {
+export const selectFileToRender = (state: RootState, routerPath: string): GithubFileHash | null => {
   if (!state.reports.tree) {
     return null;
   }
-  const validFiles = state.reports.tree.filter((item: any) => item.type === 'file');
+  const files: GithubFileHash[] = state.reports.tree.filter((item: any) => item.type === 'file');
+  const fileToRender: GithubFileHash | undefined = files.find((item: any) => {
+    if (routerPath) return item.path === routerPath;
+  });
+  return fileToRender || null;
+};
+
+export const selectFileToRenderGivenList = (state: RootState, list: string[]): GithubFileHash | null => {
+  if (!state.reports.tree) {
+    return null;
+  }
+  const validFiles: GithubFileHash[] = state.reports.tree.filter((item: any) => item.type === 'file');
   for (const element of list) {
     if (!element) {
       continue;
     }
-    const fileToRender = validFiles.find((item: any) => {
+    const fileToRender: GithubFileHash | undefined = validFiles.find((item: any) => {
       return item.path === element;
     });
     if (fileToRender) {

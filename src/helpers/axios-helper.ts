@@ -2,7 +2,7 @@ import { Organization, Team } from '@kyso-io/kyso-model';
 import { fetchOrganizationAction, fetchTeamAction, store } from '../store';
 import { AuthState } from '../store/auth/auth-slice';
 
-export const buildAuthHeaders = async (auth: AuthState, organizationId?: string, teamId?: string) => {
+export const buildAuthHeaders = async (auth: AuthState, organizationId?: string, teamId?: string): Promise<{ [key: string]: string }> => {
   const headers: any = {};
 
   if (auth.token) {
@@ -11,14 +11,14 @@ export const buildAuthHeaders = async (auth: AuthState, organizationId?: string,
 
   let organizationData: Organization | undefined = undefined;
   let teamData: Team | undefined = undefined;
-  
-  if(organizationId) {
+
+  if (organizationId) {
     console.log(`Retrieving ad-hoc specific data from organization ${organizationId}`);
     organizationData = (await store.dispatch(fetchOrganizationAction(organizationId as string))).payload;
     console.log(organizationData);
   }
 
-  if(teamId) {
+  if (teamId) {
     console.log(`Retrieving ad-hoc specific data from team ${teamId}`);
     teamData = (await store.dispatch(fetchTeamAction(teamId as string))).payload;
     console.log(teamData);
@@ -39,7 +39,7 @@ export const buildAuthHeaders = async (auth: AuthState, organizationId?: string,
   return headers;
 };
 
-export const getAPIBaseURL = () => {
+export const getAPIBaseURL = (): string => {
   if (process.env.KYSO_API) {
     return process.env.KYSO_API;
   }

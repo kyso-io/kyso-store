@@ -61,27 +61,35 @@ const teamsSlice = createSlice({
 
 export const { setTeam, resetTeamsSlice } = teamsSlice.actions;
 
-export const selectActiveTeam = (state: RootState) => {
-  if (!state.teams.activeId) return null;
-  if (state.teams.entities!.length === 0) return null;
+export const selectActiveTeam = (state: RootState): Team | null => {
+  if (!state.teams.activeId) {
+    return null;
+  }
+  if (state.teams.entities!.length === 0) {
+    return null;
+  }
   return state.teams.entities![state.teams.activeId];
 };
 
-export const selectTeamByFilter = (state: RootState, filter: { key: string; value: string }) => {
-  if (state.teams.entities!.length === 0) return null;
-  return Object.values(state.teams.entities!).find((team: any) => team[filter.key] === filter.value);
+export const selectTeamByFilter = (state: RootState, filter: { key: string; value: string }): Team | null => {
+  if (state.teams.entities!.length === 0) {
+    return null;
+  }
+  const team: Team | undefined = (Object.values(state.teams.entities!) as Team[]).find((team: any) => team[filter.key] === filter.value);
+  return team || null;
 };
 
-export const selectTeamBySlugifiedName = (state: RootState, name: string) => {
+export const selectTeamBySlugifiedName = (state: RootState, name: string): Team | null => {
   if (!name) {
     return null;
   }
-  return Object.values(state.teams.entities!).find((team: any /*{ name: string; sluglified_name: string }*/) => {
+  const team: Team | undefined = (Object.values(state.teams.entities!) as Team[]).find((team: any) => {
     return (team?.name && team.name !== '' && slugify(team.name) === name) || team?.sluglified_name === name;
   });
+  return team || null;
 };
 
-export const getOrgAndTeamGivenSluglifiedOrgAndTeam = (state: RootState, orgSlug: string, teamSlug: string) => {
+export const getOrgAndTeamGivenSluglifiedOrgAndTeam = (state: RootState, orgSlug: string, teamSlug: string): { organization: Organization | null; team: Team | null } => {
   let organization: Organization | null = null;
   let team: Team | null = null;
   if (!orgSlug || orgSlug.length === 0 || !teamSlug || teamSlug.length === 0) {
