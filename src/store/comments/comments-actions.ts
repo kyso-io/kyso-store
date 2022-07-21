@@ -1,4 +1,4 @@
-import { Comment, NormalizedResponseDTO } from '@kyso-io/kyso-model';
+import { Comment, NormalizedResponseDTO, CommentDto } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '..';
@@ -75,7 +75,7 @@ export const fetchCommentAction = createAsyncThunk('comments/fetchComment', asyn
   }
 });
 
-export const createCommentAction = createAsyncThunk('comments/createComment', async (payload: Comment, { getState, dispatch }): Promise<Comment | null> => {
+export const createCommentAction = createAsyncThunk('comments/createComment', async (payload: CommentDto, { getState, dispatch }): Promise<Comment | null> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
@@ -98,7 +98,7 @@ export const createCommentAction = createAsyncThunk('comments/createComment', as
   }
 });
 
-export const updateCommentAction = createAsyncThunk('comments/updateComment', async (payload: { commentId: string; comment: Comment }, { getState, dispatch }): Promise<Comment | null> => {
+export const updateCommentAction = createAsyncThunk('comments/updateComment', async (payload: { commentId: string; comment: CommentDto }, { getState, dispatch }): Promise<Comment | null> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
