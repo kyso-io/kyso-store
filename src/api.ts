@@ -3,7 +3,6 @@ import {
   ActivityFeed,
   AddUserOrganizationDto,
   Comment,
-  CommentDto,
   CreateDiscussionRequestDTO,
   CreateInlineCommentDto,
   CreateInvitationDto,
@@ -283,13 +282,13 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async createComment(comment: CommentDto): Promise<NormalizedResponseDTO<Comment>> {
+  public async createComment(comment: Comment): Promise<NormalizedResponseDTO<Comment>> {
     const url = '/comments';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await this.httpClient.post(url, comment);
     return axiosResponse.data;
   }
 
-  public async updateComment(commentId: string, comment: CommentDto): Promise<NormalizedResponseDTO<Comment>> {
+  public async updateComment(commentId: string, comment: Comment): Promise<NormalizedResponseDTO<Comment>> {
     const url = `/comments/${commentId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Comment>> = await this.httpClient.patch(url, comment);
     return axiosResponse.data;
