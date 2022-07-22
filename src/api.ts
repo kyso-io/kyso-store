@@ -630,7 +630,7 @@ export class Api {
   }
 
   public async toggleGlobalPinReport(reportId: string): Promise<NormalizedResponseDTO<ReportDTO>> {
-    const url = `/reports/${reportId}/global-pin`;
+    const url = `/reports/${reportId}/pin`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.patch(url);
     return axiosResponse.data;
   }
