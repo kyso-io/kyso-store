@@ -57,6 +57,7 @@ import {
 } from '@kyso-io/kyso-model';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import FormData from 'form-data';
+import moment from 'moment';
 
 export class Api {
   private httpClient: AxiosInstance;
@@ -91,6 +92,8 @@ export class Api {
   // ACTIVITY FEED
 
   public async getUserActivityFeed(args: {
+    start_datetime?: Date;
+    end_datetime?: Date;
     user_id?: string;
     organization?: string;
     team?: string;
@@ -98,8 +101,14 @@ export class Api {
     entityId?: string;
     action?: ActionEnum;
     sort?: string;
-  }): Promise<ActivityFeed[]> {
+  }): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = '/activity-feed?';
+    if (args.start_datetime) {
+      url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
+    }
+    if (args.end_datetime) {
+      url += `&created_at<${moment(args.end_datetime).add(1, 'days').format('YYYY-MM-DD')}`;
+    }
     if (args.user_id) {
       url += `&user_id=${args.user_id}`;
     }
@@ -121,13 +130,15 @@ export class Api {
     if (args.sort) {
       url += `&sort=${args.sort}`;
     }
-    const axiosResponse: AxiosResponse<ActivityFeed[]> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ActivityFeed[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
   public async getOrganizationActivityFeed(
     organizationSlug: string,
     args: {
+      start_datetime?: Date;
+      end_datetime?: Date;
       user_id?: string;
       team?: string;
       entity?: EntityEnum;
@@ -135,8 +146,14 @@ export class Api {
       action?: ActionEnum;
       sort?: string;
     }
-  ): Promise<ActivityFeed[]> {
+  ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/${organizationSlug}?`;
+    if (args.start_datetime) {
+      url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
+    }
+    if (args.end_datetime) {
+      url += `&created_at<${moment(args.end_datetime).add(1, 'days').toDate()}`;
+    }
     if (args.user_id) {
       url += `&user_id=${args.user_id}`;
     }
@@ -155,7 +172,7 @@ export class Api {
     if (args.sort) {
       url += `&sort=${args.sort}`;
     }
-    const axiosResponse: AxiosResponse<ActivityFeed[]> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ActivityFeed[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
@@ -163,14 +180,22 @@ export class Api {
     organizationSlug: string,
     teamSlug: string,
     args: {
+      start_datetime?: Date;
+      end_datetime?: Date;
       user_id?: string;
       entity?: EntityEnum;
       entityId?: string;
       action?: ActionEnum;
       sort?: string;
     }
-  ): Promise<ActivityFeed[]> {
+  ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/${organizationSlug}/team/${teamSlug}?`;
+    if (args.start_datetime) {
+      url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
+    }
+    if (args.end_datetime) {
+      url += `&created_at<${moment(args.end_datetime).add(1, 'days').format('YYYY-MM-DD')}`;
+    }
     if (args.user_id) {
       url += `&user_id=${args.user_id}`;
     }
@@ -186,7 +211,7 @@ export class Api {
     if (args.sort) {
       url += `&sort=${args.sort}`;
     }
-    const axiosResponse: AxiosResponse<ActivityFeed[]> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ActivityFeed[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
