@@ -147,7 +147,7 @@ export class Api {
       sort?: string;
     }
   ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
-    let url = `/activity-feed/${organizationSlug}?`;
+    let url = `/activity-feed/organization/${organizationSlug}?`;
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
@@ -189,7 +189,7 @@ export class Api {
       sort?: string;
     }
   ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
-    let url = `/activity-feed/${organizationSlug}/team/${teamSlug}?`;
+    let url = `/activity-feed/organization/${organizationSlug}/team/${teamSlug}?`;
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
