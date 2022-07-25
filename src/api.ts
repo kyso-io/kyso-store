@@ -58,6 +58,7 @@ import {
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import moment from 'moment';
+import { verbose } from './helpers/logger-helper';
 
 export class Api {
   private httpClient: AxiosInstance;
@@ -668,9 +669,11 @@ export class Api {
 
   public async createKysoReport(formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
     const url = `/reports/kyso`;
+    verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`);
+
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        ...formData.getHeaders(),
+        //...formData.getHeaders(),
         'content-length': formData.getLengthSync().toString(),
       },
     });
@@ -681,8 +684,8 @@ export class Api {
     const url = `/reports/ui`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        ...formData.getHeaders(),
-        'content-length': formData.getLengthSync().toString(),
+        // ...formData.getHeaders(),
+        'content-type': 'multipart/form-data'
       },
     });
     return axiosResponse.data;
@@ -692,8 +695,8 @@ export class Api {
     const url = `/reports/ui/main-file${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
-        ...formData.getHeaders(),
-        'content-length': formData.getLengthSync().toString(),
+        //...formData.getHeaders(),
+        'content-type': 'multipart/form-data'
       },
     });
     return axiosResponse.data;
@@ -747,8 +750,8 @@ export class Api {
     formData.append('file', file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        ...formData.getHeaders(),
-        'content-length': formData.getLengthSync().toString(),
+        //...formData.getHeaders(),
+        'content-type': 'multipart/form-data'
       },
     });
     return axiosResponse.data;

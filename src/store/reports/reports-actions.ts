@@ -339,6 +339,7 @@ export const createKysoReportUIAction = createAsyncThunk(
     { getState, dispatch }
   ): Promise<ReportDTO | null> => {
     try {
+      debugger;
       const { auth } = getState() as RootState;
       const api: Api = new Api(auth.token, auth.organization, auth.team);
       const zip = new JSZip();
