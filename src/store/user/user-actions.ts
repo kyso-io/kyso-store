@@ -18,7 +18,7 @@ import { fetchRelationsAction } from '../relations/relations-actions';
 export const fetchUsersAction = createAsyncThunk('user/fetchUsers', async (args: { userIds: string[]; page: number; per_page: number; sort: string }, { dispatch, getState }): Promise<UserDTO[]> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<UserDTO[]> = await api.getUsers(args);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -110,7 +110,7 @@ export const fetchUserProfileActionByUserIdAction = createAsyncThunk('user/fetch
 export const updateUserAction = createAsyncThunk('user/updateUser', async (args: { userId: string; updateUserRequestDto: UpdateUserRequestDTO }, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<UserDTO> = await api.updateUser(args.userId, args.updateUserRequestDto);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -133,7 +133,7 @@ export const updateUserAction = createAsyncThunk('user/updateUser', async (args:
 export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userId: string, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<boolean> = await api.deleteUser(userId);
     if (response?.data) {
       return response.data;
@@ -153,7 +153,7 @@ export const deleteUserAction = createAsyncThunk('user/deleteUser', async (userI
 export const addUserAccountAction = createAsyncThunk('user/addUserAccount', async (userAccount: UserAccount, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<boolean> = await api.addUserAccount(userAccount);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -176,7 +176,7 @@ export const addUserAccountAction = createAsyncThunk('user/addUserAccount', asyn
 export const removeAccountFromUser = createAsyncThunk('user/removeAccountFromUser', async (args: { provider: LoginProviderEnum; accountId: string }, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<boolean> = await api.removeUserAccount(args.provider, args.accountId);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -199,7 +199,7 @@ export const removeAccountFromUser = createAsyncThunk('user/removeAccountFromUse
 export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (file: File, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<UserDTO> = await api.updateUserProfileImage(file);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -222,7 +222,7 @@ export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserP
 export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { getState, dispatch }): Promise<UserDTO | null> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<UserDTO> = await api.getUserFromToken();
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -245,7 +245,7 @@ export const refreshUserAction = createAsyncThunk('user/refresh', async (_, { ge
 export const getAccessTokensAction = createAsyncThunk('user/getAccessTokens', async (_, { getState, dispatch }): Promise<KysoUserAccessToken[]> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<KysoUserAccessToken[]> = await api.getAccessTokens();
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -268,7 +268,7 @@ export const getAccessTokensAction = createAsyncThunk('user/getAccessTokens', as
 export const createAccessTokenAction = createAsyncThunk('user/createAccessToken', async (args: CreateKysoAccessTokenDto, { dispatch, getState }): Promise<KysoUserAccessToken | null> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<KysoUserAccessToken> = await api.createAccessToken(args);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -291,7 +291,7 @@ export const createAccessTokenAction = createAsyncThunk('user/createAccessToken'
 export const revokeAllAccessTokenAction = createAsyncThunk('user/revokeAllAccessToken', async (_, { dispatch, getState }): Promise<KysoUserAccessToken[]> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<KysoUserAccessToken[]> = await api.revokeAllAccessTokens();
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -314,7 +314,7 @@ export const revokeAllAccessTokenAction = createAsyncThunk('user/revokeAllAccess
 export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken', async (tokenId: string, { dispatch, getState }): Promise<KysoUserAccessToken | null> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<KysoUserAccessToken> = await api.deleteAccessToken(tokenId);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
@@ -337,7 +337,7 @@ export const deleteAccessTokenAction = createAsyncThunk('user/deleteAccessToken'
 export const verifyCaptchaAction = createAsyncThunk('user/verifyCaptcha', async (token: string, { dispatch, getState }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token);
+    const api: Api = new Api(auth.token, auth.organization, auth.team);
     const response: NormalizedResponseDTO<boolean> = await api.verifyCaptcha(token);
     if (response?.data) {
       return response.data;
