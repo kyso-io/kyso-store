@@ -152,7 +152,7 @@ export class Api {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
     if (args.end_datetime) {
-      url += `&created_at<${moment(args.end_datetime).add(1, 'days').toDate()}`;
+      url += `&created_at<${moment(args.end_datetime).add(1, 'days').format('YYYY-MM-DD')}`;
     }
     if (args.user_id) {
       url += `&user_id=${args.user_id}`;
