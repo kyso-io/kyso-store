@@ -58,10 +58,19 @@ import {
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import moment from 'moment';
+import { AuthState } from '.';
 import { verbose } from './helpers/logger-helper';
 
 export class Api {
   private httpClient: AxiosInstance;
+
+  public static fromAuthState(authState: AuthState): Api {
+    return new Api(
+      authState.token, 
+      authState.organization ? authState.organization : undefined, 
+      authState.team ? authState.team : undefined
+    );
+  }
 
   constructor(token?: string | null, organizationSlug?: string, teamSlug?: string) {
     let baseURL: string;
