@@ -684,7 +684,6 @@ export class Api {
       headers: {
         ...formData.getHeaders(),
         'content-length': formData.getLengthSync().toString(),
-        'content-type': 'multipart/form-data'
       },
     });
     return axiosResponse.data;
