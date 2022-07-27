@@ -682,8 +682,9 @@ export class Api {
 
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        //...formData.getHeaders(),
+        ...formData.getHeaders(),
         'content-length': formData.getLengthSync().toString(),
+        'content-type': 'multipart/form-data'
       },
     });
     return axiosResponse.data;
