@@ -13,10 +13,14 @@ e2e_test:
   before_script:
     - !reference [.npm-config, before_script]
   services:
-    - docker:dind
+    - name: mongo:latest
+      alias: mongo-test
+      variables:
+        MONGO_INITDB_ROOT_USERNAME: kadmin
+        MONGO_INITDB_ROOT_PASSWORD: ksecret
+    - name: registry.kyso.io/kyso-io/kyso-api/develop:latest
+      alias: kyso-api-test
+  
   script:
-    - apk add --no-cache docker-compose
-    - docker-compose up -d -f ./test/docker-compose.yml
     - npm install
     - npm run test
-    
