@@ -516,6 +516,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getOrganizationBySlug(organizationSlug: string): Promise<NormalizedResponseDTO<Organization>> {
+    const url = `/organizations/slug/${organizationSlug}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async deleteOrganization(organizationId: string): Promise<NormalizedResponseDTO<Organization>> {
     const url = `/organizations/${organizationId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.delete(url);
