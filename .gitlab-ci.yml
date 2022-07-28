@@ -13,7 +13,7 @@ e2e_test:
     - node -v
     - npm -v
     - ls
-    - docker-compose up -f ./test/docker-compose.yml &
-    - sleep 120
+    - docker-compose up -f ./test/docker-compose.yml --force-recreate &
+    - npm install
     - npm run test
     
