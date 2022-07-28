@@ -12,6 +12,8 @@ e2e_test:
     - apk add --no-cache docker-compose
     - node -v
     - npm -v
-    - docker-compose up&
-    - sleep 60
+    - ls
+    - docker-compose up -f ./test/docker-compose.yml &
+    - sleep 120
+    - npm run test
     
