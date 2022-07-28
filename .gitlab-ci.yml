@@ -16,7 +16,6 @@ e2e_test:
     - docker:dind
   script:
     - apk add --update python py-pip python-dev && pip install docker-compose
-    - docker version
     - docker-compose version
     - cd test 
     - docker-compose build
