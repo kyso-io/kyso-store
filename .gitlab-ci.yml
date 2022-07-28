@@ -6,14 +6,13 @@ include:
 e2e_test:
   stage: test
   image: registry.kyso.io/docker/node-builder:16.15.1-alpine3.16
+  before_script:
+    - !reference [.npm-config, before_script]
   services:
     - docker:dind
   script:
     - apk add --no-cache docker-compose
-    - node -v
-    - npm -v
-    - ls
-    - docker-compose up -f ./test/docker-compose.yml &
-    - sleep 120
+    - docker-compose up -d -f ./test/docker-compose.yml
+    - npm install
     - npm run test
     
