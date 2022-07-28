@@ -8,8 +8,13 @@ e2e_test:
   image: docker/compose:latest
   services:
     - docker:dind
+  before_script:
+    - apt-get update -y
   script:
-    - docker-compose up&
+    - curl -sL https://deb.nodesource.com/setup_16.x | bash
+    - apt-get install nodejs -yq
     - node -v
+    - npm -v
+    - docker-compose up&
     - sleep 60
     
