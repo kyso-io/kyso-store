@@ -12,7 +12,7 @@ e2e_test:
     - docker:dind
   script:
     - apk add --no-cache docker-compose
-    - docker-compose up -f ./test/docker-compose.yml --force-recreate &
+    - docker-compose up -d -f ./test/docker-compose.yml
     - npm install
     - npm run test
     
