@@ -91,13 +91,13 @@ export class Api {
     });
     this.httpClient.interceptors.request.use((config: any) => {
       if (this.token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${this.token}`;
       }
       if (this.organizationSlug) {
-        config.headers['x-kyso-organization'] = organizationSlug;
+        config.headers['x-kyso-organization'] = this.organizationSlug;
       }
       if (this.teamSlug) {
-        config.headers['x-kyso-team'] = teamSlug;
+        config.headers['x-kyso-team'] = this.teamSlug;
       }
       return config;
     });
