@@ -63,16 +63,15 @@ import { verbose } from './helpers/logger-helper';
 
 export class Api {
   private httpClient: AxiosInstance;
+  private token: string | null | undefined;
+  private organizationSlug: string | null | undefined;
+  private teamSlug: string | null | undefined;
 
   public static fromAuthState(authState: AuthState): Api {
-    return new Api(
-      authState.token, 
-      authState.organization ? authState.organization : undefined, 
-      authState.team ? authState.team : undefined
-    );
+    return new Api(authState.token, authState.organization ? authState.organization : null, authState.team ? authState.team : null);
   }
 
-  constructor(token?: string | null, organizationSlug?: string, teamSlug?: string) {
+  constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     let baseURL: string;
     if (process.env.KYSO_API) {
       baseURL = process.env.KYSO_API;
@@ -81,22 +80,39 @@ export class Api {
     } else {
       baseURL = '/api/v1';
     }
-    const headers: any = {
-      'Content-Type': 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    if (organizationSlug) {
-      headers['x-kyso-organization'] = organizationSlug;
-    }
-    if (teamSlug) {
-      headers['x-kyso-team'] = teamSlug;
-    }
+    this.token = token;
+    this.organizationSlug = organizationSlug;
+    this.teamSlug = teamSlug;
     this.httpClient = axios.create({
       baseURL,
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
+    this.httpClient.interceptors.request.use((config: any) => {
+      if (this.token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      if (this.organizationSlug) {
+        config.headers['x-kyso-organization'] = organizationSlug;
+      }
+      if (this.teamSlug) {
+        config.headers['x-kyso-team'] = teamSlug;
+      }
+      return config;
+    });
+  }
+
+  public setToken(token: string | null): void {
+    this.token = token;
+  }
+
+  public setOrganizationSlug(organizationSlug: string | null): void {
+    this.organizationSlug = organizationSlug;
+  }
+
+  public setTeamSlug(teamSlug: string | null): void {
+    this.teamSlug = teamSlug;
   }
 
   // ACTIVITY FEED
@@ -700,7 +716,7 @@ export class Api {
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
         // ...formData.getHeaders(),
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     });
     return axiosResponse.data;
@@ -711,7 +727,7 @@ export class Api {
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
         //...formData.getHeaders(),
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     });
     return axiosResponse.data;
@@ -766,7 +782,7 @@ export class Api {
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
         //...formData.getHeaders(),
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     });
     return axiosResponse.data;
