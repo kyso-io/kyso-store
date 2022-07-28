@@ -13,7 +13,6 @@ e2e_test:
   script:
     - apk add --no-cache docker-compose
     - cd test 
-    - docker-compose down
     - docker-compose build
     - docker-compose up -d
     - cd ..
