@@ -693,7 +693,6 @@ export class Api {
     const url = `/reports/ui`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        // ...formData.getHeaders(),
         'content-type': 'multipart/form-data'
       },
     });
@@ -704,7 +703,6 @@ export class Api {
     const url = `/reports/ui/main-file${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
-        //...formData.getHeaders(),
         'content-type': 'multipart/form-data'
       },
     });
