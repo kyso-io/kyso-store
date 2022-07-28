@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  kyso-mongo-test:
+    image: mongo:latest
+    restart: always
+    networks:
+      - kyso-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: kadmin
+      MONGO_INITDB_ROOT_PASSWORD: ksecret
+    ports:
+      - 27017:27017
+    
+  
+  kyso-api-test:
+    image: registry.kyso.io/kyso-io/kyso-api/develop:latest
+    restart: always
+    networks:
+      - kyso-network
+    ports:
+      - 4000:4000
+    links:
+      - kyso-mongo-test
+    depends_on:
+      - kyso-mongo-test
+    environment:
+      DOTENV_FILE: /secrets/kyso-api/env
+    volumes:
+      - "./.env:/secrets/kyso-api/env"
+
+networks:
+  kyso-network:

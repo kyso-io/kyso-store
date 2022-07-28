@@ -2,3 +2,14 @@ include:
   - project: 'common/gitlab-ci'
     ref: v0.4.15
     file: '/templates/npm-package.yml'
+
+e2e_test:
+  stage: test
+  image: docker/compose:latest
+  services:
+    - docker:dind
+  script:
+    - docker-compose up&
+    - node -v
+    - sleep 60
+    
