@@ -73,6 +73,7 @@ export class Api {
 
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     let baseURL: string;
+    
     if (process.env.KYSO_API) {
       baseURL = process.env.KYSO_API;
     } else if (process.env.NEXT_PUBLIC_API_URL) {
