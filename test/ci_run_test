@@ -7,6 +7,7 @@ set -e
 RELPATH_TO_WORKDIR=".."
 
 # Variables
+DOCKER_HOST="${1:-localhost}"
 MONGO_IMAGE="registry.kyso.io/docker/mongo:4.4.15"
 MONGO_NAME="mongo-test"
 KYSO_API_IMAGE="registry.kyso.io/kyso-io/kyso-api/develop:latest"
@@ -111,7 +112,7 @@ wait_for_container "$MONGO_NAME"
 
 echo "Waiting for mongo port"
 ret="0"
-wait_for_host_port localhost 27017 || ret=$?
+wait_for_host_port $DOCKER_HOST 27017 || ret=$?
 
 if [ "$ret" -ne "0" ]; then
   echo "Something went wrong, showing mongo logs"
@@ -136,7 +137,7 @@ wait_for_container "$KYSO_API_NAME"
 
 echo "Waiting for kyso-api port"
 ret="0"
-wait_for_host_port localhost 4000 || ret=$?
+wait_for_host_port $DOCKER_HOST 4000 || ret=$?
 
 if [ "$ret" -ne "0" ]; then
   echo "Something went wrong, showing kyso-api logs"
@@ -145,7 +146,7 @@ fi
 
 echo "Running tests"
 res=0
-KYSO_API="http://localhost:4000/api/v1" npm run test || res="$?"
+KYSO_API="http://$DOCKER_HOST:4000/api/v1" npm run test || res="$?"
 
 echo "Cleaning up"
 echo "Stopping container '$KYSO_API_NAME'"

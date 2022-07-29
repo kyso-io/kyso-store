@@ -22,4 +22,4 @@ e2e_test:
     - !reference [.docker-config, before_script]
     - !reference [.npm-config, before_script]
   script:
-    - sh test/ci_run_test
+    - sh test/ci_run_test docker
