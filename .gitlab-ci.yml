@@ -3,6 +3,10 @@ include:
     ref: v0.4.15
     file: '/templates/npm-package.yml'
 
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
 e2e_test:
   allow_failure: true
   stage: test
