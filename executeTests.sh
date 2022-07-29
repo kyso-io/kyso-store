@@ -30,3 +30,4 @@ echo "Cleaning up"
 echo "==========================================="
 docker rm mongo-test --force
 docker rm kyso-test-api --force
+docker rmi registry.kyso.io/kyso-io/kyso-api/develop:latest --force
