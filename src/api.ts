@@ -1060,7 +1060,7 @@ export class Api {
 
   // USERS
 
-  public async getUsers(args: { userIds: string[]; page: number; per_page: number; sort: string }): Promise<NormalizedResponseDTO<UserDTO[]>> {
+  public async getUsers(args: { userIds: string[]; page: number; per_page: number; sort: string, search?: string }): Promise<NormalizedResponseDTO<UserDTO[]>> {
     if (!args.page) {
       args.page = 1;
     }
@@ -1074,7 +1074,10 @@ export class Api {
     if (args.userIds) {
       userIdsQueryString = args.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
     }
-    const url = `/users?page=${args.page}&per_page=${args.per_page}&sort=${args.sort}${userIdsQueryString}`;
+    let url = `/users?page=${args.page}&per_page=${args.per_page}&sort=${args.sort}${userIdsQueryString}`;
+    if (args.search) {
+      url += `&search=${args.search}`;
+    }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
