@@ -1,7 +1,9 @@
 include:
   - project: 'common/gitlab-ci'
     ref: v0.4.21
-    file: '/templates/npm-package.yml'
+    file:
+    - '/include/docker-config.yml'
+    - '/templates/npm-package.yml'
 
 variables:
   DOCKER_HOST: tcp://docker:2375
