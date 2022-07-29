@@ -10,7 +10,7 @@ variables:
 e2e_test:
   allow_failure: true
   stage: test
-  image: registry.kyso.io/docker/node-builder:16.15.1-alpine3.16
+  image: http://registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
   before_script:
     - !reference [.npm-config, before_script]
   services:
