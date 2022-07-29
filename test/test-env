@@ -1,5 +1,5 @@
 # Mandatory. Database URI to connect to.
-DATABASE_URI=mongodb://kadmin:ksecret@0.0.0.0:27017/kyso?authSource=admin&retryWrites=true&w=majority
+DATABASE_URI=mongodb://kadmin:ksecret@mongo-test:27017/kyso?authSource=admin&retryWrites=true&w=majority
 # Optional, true if you want to populate with testing data, false if not
 POPULATE_TEST_DATA=true
 # Optional, default value is 4000
