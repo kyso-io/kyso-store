@@ -1,6 +1,6 @@
 include:
   - project: 'common/gitlab-ci'
-    ref: v0.4.15
+    ref: v0.4.21
     file: '/templates/npm-package.yml'
 
 variables:
@@ -12,8 +12,9 @@ e2e_test:
   stage: test
   image: registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
   before_script:
+    - !reference [.docker-config, before_script]
     - !reference [.npm-config, before_script]
   services:
     - docker:dind
   script:
-    - sh executeTests.sh
+    - sh test/ci_run_test
