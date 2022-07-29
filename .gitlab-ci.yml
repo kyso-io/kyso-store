@@ -18,9 +18,12 @@ e2e_test:
       variables:
         MONGO_INITDB_ROOT_USERNAME: kadmin
         MONGO_INITDB_ROOT_PASSWORD: ksecret
-    - name: registry.kyso.io/kyso-io/kyso-api/develop:latest
-      alias: kyso-api-test
   
   script:
+    - export STORE_ENV_PATH=$PWD/test/.env
+    - docker run -d -v $STORE_ENV_PATH:/secrets/kyso-api/env \
+      -p 4000:4000 -e DOTENV_FILE=/secrets/kyso-api/env --network=host \
+      registry.kyso.io/kyso-io/kyso-api/develop:latest
+    - sleep 60
     - npm install
     - npm run test
