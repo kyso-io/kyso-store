@@ -71,7 +71,21 @@ wait_for_container() {
     sleep "$seconds";
     loops="$((loops + 1))"
   done
-  return 1 
+  return 1
+}
+
+wait_for_host_port() {
+  host="$1"
+  port="$2"
+  seconds="1"
+  maxloops="30"
+  loops="0"
+  while [ "$loops" -lt "$maxloops" ]; do
+    if socat /dev/null "TCP:$host:$port" >/dev/null 2>&1; then return 0; fi
+    sleep "$seconds";
+    loops="$((loops + 1))"
+  done
+  return 1
 }
 
 # ----
@@ -91,13 +105,18 @@ docker run -d --rm --network=host \
   -e MONGO_INITDB_ROOT_USERNAME=kadmin \
   -e MONGO_INITDB_ROOT_PASSWORD=ksecret \
   --name "$MONGO_NAME" "$MONGO_IMAGE"
+
+echo "Waiting for running status"
 wait_for_container "$MONGO_NAME"
+
+echo "Waiting for mongo port"
+wait_for_host_port localhost 27017
 
 echo "Pulling latest version of the kyso-api container"
 docker pull "$KYSO_API_IMAGE"
 
 echo "Launching kyso-api container"
-docker run -d --rm --network=host \
+docker run -d --network=host \
   -v "$STORE_ENV_PATH:/secrets/kyso-api/env" \
   -e DOTENV_FILE=/secrets/kyso-api/env \
   --name "$KYSO_API_NAME" "$KYSO_API_IMAGE"
@@ -106,7 +125,17 @@ docker run -d --rm --network=host \
 npm install
 
 # Wait for the api container
+echo "Waiting for running status (api container)"
 wait_for_container "$KYSO_API_NAME"
+
+echo "Waiting for kyso-api port"
+ret="0"
+wait_for_host_port localhost 4000 || ret=$?
+
+if [ "$ret" -ne "0" ]; then
+  echo "Something went wrong, showing kyso-api logs"
+  docker logs "$KYSO_API_NAME"
+fi
 
 echo "Running tests"
 res=0
@@ -115,6 +144,8 @@ KYSO_API="http://localhost:4000/api/v1" npm run test || res="$?"
 echo "Cleaning up"
 echo "Stopping container '$KYSO_API_NAME'"
 docker stop "$KYSO_API_NAME"
+docker rm "$KYSO_API_NAME"
+
 echo "Stopping container '$MONGO_NAME'"
 docker stop "$MONGO_NAME"
 
