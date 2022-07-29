@@ -2,7 +2,7 @@ include:
   - project: 'common/gitlab-ci'
     ref: v0.4.21
     file:
-    - '/include/docker-config.yml'
+    - '/includes/docker-config.yml'
     - '/templates/npm-package.yml'
 
 variables:
