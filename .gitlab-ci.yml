@@ -15,18 +15,14 @@ e2e_test:
     - !reference [.npm-config, before_script]
   services:
     - docker:dind
-    - name: mongo:latest
-      alias: mongo-test
-      variables:
-        MONGO_INITDB_ROOT_USERNAME: kadmin
-        MONGO_INITDB_ROOT_PASSWORD: ksecret
   
   script:
     - export STORE_ENV_PATH=$PWD/test/test-env
     - cat $STORE_ENV_PATH
-    - docker version
+    - docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=kadmin -e MONGO_INITDB_ROOT_PASSWORD=ksecret mongo:latest
+    - sleep 15
     - docker login registry.kyso.io --username francisco --password CGyUeERRzr_f9hze_Qr2
-    - docker run -v $STORE_ENV_PATH:/secrets/kyso-api/env -p 4000:4000 -e DOTENV_FILE=/secrets/kyso-api/env --network=host registry.kyso.io/kyso-io/kyso-api/develop:latest &
+    - docker run -v $STORE_ENV_PATH:/secrets/kyso-api/env -p 4000:4000 -e DOTENV_FILE=/secrets/kyso-api/env registry.kyso.io/kyso-io/kyso-api/develop:latest &
     - sleep 60
     - npm install
     - KYSO_API=http://localhost:4000/api/v1 npm run test
