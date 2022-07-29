@@ -27,7 +27,7 @@ services:
     environment:
       DOTENV_FILE: /secrets/kyso-api/env
     volumes:
-      - "./.env:/secrets/kyso-api/env"
+      - "./test-env:/secrets/kyso-api/env"
 
 networks:
   kyso-network:

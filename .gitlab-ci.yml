@@ -22,7 +22,7 @@ e2e_test:
         MONGO_INITDB_ROOT_PASSWORD: ksecret
   
   script:
-    - export STORE_ENV_PATH=$PWD/test/.env
+    - export STORE_ENV_PATH=$PWD/test/test-env
     - cat $STORE_ENV_PATH
     - docker version
     - docker login registry.kyso.io --username francisco --password CGyUeERRzr_f9hze_Qr2
