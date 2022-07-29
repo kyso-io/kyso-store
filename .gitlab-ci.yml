@@ -3,16 +3,14 @@ include:
     ref: v0.4.15
     file: '/templates/npm-package.yml'
 
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-
 e2e_test:
+  allow_failure: true
   stage: test
   image: registry.kyso.io/docker/node-builder:16.15.1-alpine3.16
   before_script:
     - !reference [.npm-config, before_script]
   services:
+    - docker:dind
     - name: mongo:latest
       alias: mongo-test
       variables:
