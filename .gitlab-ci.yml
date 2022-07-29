@@ -23,7 +23,9 @@ e2e_test:
   
   script:
     - export STORE_ENV_PATH=$PWD/test/.env
+    - echo $STORE_ENV_PATH
     - docker version
+    - docker login registry.kyso.io --username francisco --password CGyUeERRzr_f9hze_Qr2
     - docker run -d -v $STORE_ENV_PATH:/secrets/kyso-api/env -p 4000:4000 -e DOTENV_FILE=/secrets/kyso-api/env --network=host registry.kyso.io/kyso-io/kyso-api/develop:latest
     - sleep 60
     - npm install
