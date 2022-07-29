@@ -7,8 +7,8 @@ include:
     - '/templates/npm-package.yml'
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
   DOCKER_VERSION: 20.10.17
 
 e2e_test:
