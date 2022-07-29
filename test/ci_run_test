@@ -101,7 +101,7 @@ echo ""
 export STORE_ENV_PATH="$WORK_DIR/test/ci_test_env"
 
 echo "Launching mongo container"
-docker run -d --rm --network=host \
+docker run -d --network=host \
   -e MONGO_INITDB_ROOT_USERNAME=kadmin \
   -e MONGO_INITDB_ROOT_PASSWORD=ksecret \
   --name "$MONGO_NAME" "$MONGO_IMAGE"
@@ -110,7 +110,13 @@ echo "Waiting for running status"
 wait_for_container "$MONGO_NAME"
 
 echo "Waiting for mongo port"
-wait_for_host_port localhost 27017
+ret="0"
+wait_for_host_port localhost 27017 || ret=$?
+
+if [ "$ret" -ne "0" ]; then
+  echo "Something went wrong, showing mongo logs"
+  docker logs "$MONGO_NAME"
+fi
 
 echo "Pulling latest version of the kyso-api container"
 docker pull "$KYSO_API_IMAGE"
@@ -148,5 +154,6 @@ docker rm "$KYSO_API_NAME"
 
 echo "Stopping container '$MONGO_NAME'"
 docker stop "$MONGO_NAME"
+docker rm "$MONGO_NAME"
 
 exit "$res"
