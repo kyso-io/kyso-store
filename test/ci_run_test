@@ -110,7 +110,7 @@ docker run -d --network=host \
 echo "Waiting for running status"
 wait_for_container "$MONGO_NAME"
 
-echo "Waiting for mongo port"
+echo "Waiting for mongo port: $DOCKER_HOST 27017"
 ret="0"
 wait_for_host_port $DOCKER_HOST 27017 || ret=$?
 
@@ -135,7 +135,7 @@ npm install
 echo "Waiting for running status (api container)"
 wait_for_container "$KYSO_API_NAME"
 
-echo "Waiting for kyso-api port"
+echo "Waiting for kyso-api port: $DOCKER_HOST 4000"
 ret="0"
 wait_for_host_port $DOCKER_HOST 4000 || ret=$?
 
@@ -149,12 +149,15 @@ res=0
 KYSO_API="http://$DOCKER_HOST:4000/api/v1" npm run test || res="$?"
 
 echo "Cleaning up"
+
 echo "Stopping container '$KYSO_API_NAME'"
 docker stop "$KYSO_API_NAME"
+echo "Removing container '$KYSO_API_NAME'"
 docker rm "$KYSO_API_NAME"
 
 echo "Stopping container '$MONGO_NAME'"
 docker stop "$MONGO_NAME"
+echo "Removing container '$MONGO_NAME'"
 docker rm "$MONGO_NAME"
 
 exit "$res"
