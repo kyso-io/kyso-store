@@ -19,6 +19,7 @@ e2e_test:
   
   script:
     - export STORE_ENV_PATH=$PWD/test/.env
+    - apk add --update docker openrc -y
     - docker version
     - docker run -d -v $STORE_ENV_PATH:/secrets/kyso-api/env \
       -p 4000:4000 -e DOTENV_FILE=/secrets/kyso-api/env --network=host \
