@@ -18,7 +18,7 @@ e2e_test:
   script:
     - export STORE_ENV_PATH=$PWD/test/test-env
     - cat $STORE_ENV_PATH
-    - docker create network ktest
+    - docker network create ktest
     - docker run -d -e MONGO_INITDB_ROOT_USERNAME=kadmin -e MONGO_INITDB_ROOT_PASSWORD=ksecret --network=ktest --name mongo-test mongo:latest
     - sleep 15
     - docker login registry.kyso.io --username francisco --password CGyUeERRzr_f9hze_Qr2
