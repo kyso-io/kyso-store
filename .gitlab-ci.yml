@@ -27,11 +27,3 @@ e2e_test:
     - !reference [.npm-config, before_script]
   script:
     - sh test/ci_run_test docker
-    - TITLE="Kyso Store Automatic Test Results "`date '+%F_%H:%M:%S'`
-    - echo "Creating report..."
-    - npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
-    - echo "Creating kyso.yaml file"
-    - sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
-    - cp template-kyso.yaml ./test-results/kyso.yaml
-    - echo "Uploading report to Kyso.io"
-    - npx kyso push --path ./test-results
