@@ -15,7 +15,7 @@ e2e_test:
   stage: test
   image: registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
   services:
-    - name: registry.kyso.io/docker/docker:${DOCKER_VERSION}-dind-original
+    - name: registry.kyso.io/docker/docker:${DOCKER_VERSION}-dind-notls
       alias: docker
   before_script:
     - !reference [.docker-config, before_script]
