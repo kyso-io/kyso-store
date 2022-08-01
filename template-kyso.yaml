@@ -1,5 +1,6 @@
 main: index.html
-title: "Kyso Store Automatic Test Results 2022-08-01 16:58:13"
+title: "#TITLE"
+description: "#DESCRIPTION"
 organization: kyso-internal
 team: test-reports
 type: website
