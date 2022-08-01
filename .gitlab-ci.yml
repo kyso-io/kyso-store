@@ -27,6 +27,6 @@ e2e_test:
     - !reference [.npm-config, before_script]
   script:
     - sh test/ci_run_test docker
-  only:
-    - master
-    - tags
+#  only:
+#    - master
+#    - tags
