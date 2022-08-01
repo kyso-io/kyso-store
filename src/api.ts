@@ -603,7 +603,7 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async updateOrganizationMemberRoles(organizationId: string, updateOrganizationMembersDTO: UpdateOrganizationMembersDTO[]): Promise<NormalizedResponseDTO<OrganizationMember[]>> {
+  public async updateOrganizationMemberRoles(organizationId: string, updateOrganizationMembersDTO: UpdateOrganizationMembersDTO): Promise<NormalizedResponseDTO<OrganizationMember[]>> {
     const url = `/organizations/${organizationId}/members-roles`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await this.httpClient.post(url, updateOrganizationMembersDTO);
     return axiosResponse.data;
@@ -1088,7 +1088,7 @@ export class Api {
       args.sort = 'created_at';
     }
     let userIdsQueryString = '';
-    if (args.userIds) {
+    if (args.userIds && args.userIds.length > 0) {
       userIdsQueryString = args.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
     }
     let url = `/users?page=${args.page}&per_page=${args.per_page}&sort=${args.sort}${userIdsQueryString}`;
