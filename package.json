@@ -16,7 +16,7 @@
     "dev": "tsc --watch",
     "start": "tsc",
     "test": "jest --coverage",
-    "test:verbose": "KYSO_CLI_VERBOSE=true KYSO_API=http://localhost:4000/api/v1 jest --coverage"
+    "test:verbose": "KYSO_CLI_VERBOSE=true jest --coverage"
   },
   "repository": {
     "type": "git",
