@@ -586,7 +586,7 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async updateOrganizationMemberRoles(organizationId: string, updateOrganizationMembersDTO: UpdateOrganizationMembersDTO[]): Promise<NormalizedResponseDTO<OrganizationMember[]>> {
+  public async updateOrganizationMemberRoles(organizationId: string, updateOrganizationMembersDTO: UpdateOrganizationMembersDTO): Promise<NormalizedResponseDTO<OrganizationMember[]>> {
     const url = `/organizations/${organizationId}/members-roles`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<OrganizationMember[]>> = await this.httpClient.post(url, updateOrganizationMembersDTO);
     return axiosResponse.data;
