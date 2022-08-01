@@ -1,33 +1,19 @@
-export STORE_ENV_PATH=$PWD/test/test-env
-echo "==========================================="
-echo "docker network create ktest"
-echo "==========================================="
-docker network create ktest
-echo "==========================================="
-echo "docker run -d -e MONGO_INITDB_ROOT_USERNAME=kadmin -e MONGO_INITDB_ROOT_PASSWORD=ksecret --network=ktest --name mongo-test mongo:latest"
-echo "==========================================="
-docker run -d -e MONGO_INITDB_ROOT_USERNAME=kadmin -e MONGO_INITDB_ROOT_PASSWORD=ksecret --network=ktest --name mongo-test mongo:latest
-sleep 15
-echo "==========================================="
-echo "docker login registry.kyso.io --username francisco --password ########"
-echo "==========================================="
-docker login registry.kyso.io --username francisco --password CGyUeERRzr_f9hze_Qr2
-echo "==========================================="
-echo "docker run -v $STORE_ENV_PATH:/secrets/kyso-api/env -p 4000:4000 --network=ktest -e DOTENV_FILE=/secrets/kyso-api/env --name kyso-test-api registry.kyso.io/kyso-io/kyso-api/develop:latest &"
-echo "==========================================="
-docker run -v $STORE_ENV_PATH:/secrets/kyso-api/env -p 4000:4000 --network=ktest -e DOTENV_FILE=/secrets/kyso-api/env --name kyso-test-api registry.kyso.io/kyso-io/kyso-api/develop:latest &
-sleep 60
-echo "==========================================="
-echo "npm install"
-echo "==========================================="
-npm install
-echo "==========================================="
-echo "KYSO_API=http://localhost:4000/api/v1 npm run test"
-echo "==========================================="
-KYSO_API=http://localhost:4000/api/v1 npm run test
-echo "==========================================="
-echo "Cleaning up"
-echo "==========================================="
-docker rm mongo-test --force
-docker rm kyso-test-api --force
-docker rmi registry.kyso.io/kyso-io/kyso-api/develop:latest --force
+if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+y} ]; then 
+  if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME+y} ]; then 
+    echo "Setted variables"
+    #cp -R coverage ./test-results
+    return
+    TITLE="Kyso Store Automatic Test Results "`date '+%F %H:%M:%S'`
+    echo "Creating report..."
+    npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
+    echo "Creating kyso.yaml file"
+    sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
+    cp template-kyso.yaml ./test-results/kyso.yaml
+    echo "Uploading report to Kyso.io"
+    npx kyso push --path ./test-results --inlineComments n
+  else 
+    echo "Variable ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME is not set"
+  fi
+else
+  echo "Variable ACCESS_TOKEN_AUTOMATIC_TESTING is not set"
+fi

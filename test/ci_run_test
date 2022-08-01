@@ -160,10 +160,10 @@ docker stop "$MONGO_NAME"
 echo "Removing container '$MONGO_NAME'"
 docker rm "$MONGO_NAME"
 
-if [ -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+x} ]; then 
-  if [ -z ${ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME+x} ]; then 
-    echo "Copying coverage report"
-    cp -R coverage ./test-results
+if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+y} ]; then 
+  if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME+y} ]; then 
+    #echo "Copying coverage report"
+    #cp -R coverage ./test-results
     TITLE="Kyso Store Automatic Test Results "`date '+%F %H:%M:%S'`
     echo "Creating report..."
     npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
@@ -172,7 +172,11 @@ if [ -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+x} ]; then
     cp template-kyso.yaml ./test-results/kyso.yaml
     echo "Uploading report to Kyso.io"
     npx kyso push --path ./test-results --inlineComments n
+  else 
+    echo "Variable ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME is not set"
   fi
+else
+  echo "Variable ACCESS_TOKEN_AUTOMATIC_TESTING is not set"
 fi
 
 exit "$res"

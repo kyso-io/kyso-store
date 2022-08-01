@@ -4,7 +4,8 @@ const currentDate = new Date();
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testTimeout: 70000,
+  testTimeout: 70000,  
+  coverageDirectory: "./test-results",
   reporters: [
     "default",
     ["jest-html-reporters" , {
