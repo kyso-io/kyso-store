@@ -1071,7 +1071,7 @@ export class Api {
       args.sort = 'created_at';
     }
     let userIdsQueryString = '';
-    if (args.userIds) {
+    if (args.userIds && args.userIds.length > 0) {
       userIdsQueryString = args.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
     }
     let url = `/users?page=${args.page}&per_page=${args.per_page}&sort=${args.sort}${userIdsQueryString}`;
