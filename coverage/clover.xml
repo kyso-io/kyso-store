@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1659354430844" clover="3.2.0">
-  <project timestamp="1659354430844" name="All files">
-    <metrics statements="542" coveredstatements="45" conditionals="207" coveredconditionals="3" methods="142" coveredmethods="10" elements="891" coveredelements="58" complexity="0" loc="542" ncloc="542" packages="3" files="3" classes="3"/>
+<coverage generated="1659357087150" clover="3.2.0">
+  <project timestamp="1659357087150" name="All files">
+    <metrics statements="542" coveredstatements="44" conditionals="209" coveredconditionals="2" methods="142" coveredmethods="10" elements="893" coveredelements="56" complexity="0" loc="542" ncloc="542" packages="3" files="3" classes="3"/>
     <package name="src">
-      <metrics statements="534" coveredstatements="38" conditionals="204" coveredconditionals="2" methods="140" coveredmethods="9"/>
+      <metrics statements="534" coveredstatements="38" conditionals="206" coveredconditionals="2" methods="140" coveredmethods="9"/>
       <file name="api.ts" path="/home/fjbarrena/Projects/kyso/libs/kyso-store/src/api.ts">
-        <metrics statements="534" coveredstatements="38" conditionals="204" coveredconditionals="2" methods="140" coveredmethods="9"/>
+        <metrics statements="534" coveredstatements="38" conditionals="206" coveredconditionals="2" methods="140" coveredmethods="9"/>
         <line num="58" count="2" type="stmt"/>
         <line num="59" count="2" type="stmt"/>
         <line num="60" count="2" type="stmt"/>
@@ -483,7 +483,7 @@
         <line num="1087" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="1088" count="0" type="stmt"/>
         <line num="1090" count="0" type="stmt"/>
-        <line num="1091" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="1091" count="0" type="cond" truecount="0" falsecount="3"/>
         <line num="1092" count="0" type="stmt"/>
         <line num="1094" count="0" type="stmt"/>
         <line num="1095" count="0" type="cond" truecount="0" falsecount="1"/>
@@ -543,14 +543,14 @@
       </file>
     </package>
     <package name="src.helpers">
-      <metrics statements="5" coveredstatements="4" conditionals="3" coveredconditionals="1" methods="2" coveredmethods="1"/>
+      <metrics statements="5" coveredstatements="3" conditionals="3" coveredconditionals="0" methods="2" coveredmethods="1"/>
       <file name="logger-helper.ts" path="/home/fjbarrena/Projects/kyso/libs/kyso-store/src/helpers/logger-helper.ts">
-        <metrics statements="5" coveredstatements="4" conditionals="3" coveredconditionals="1" methods="2" coveredmethods="1"/>
+        <metrics statements="5" coveredstatements="3" conditionals="3" coveredconditionals="0" methods="2" coveredmethods="1"/>
         <line num="3" count="2" type="stmt"/>
         <line num="4" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="7" count="2" type="stmt"/>
-        <line num="8" count="14" type="cond" truecount="1" falsecount="0"/>
-        <line num="9" count="14" type="stmt"/>
+        <line num="8" count="14" type="cond" truecount="0" falsecount="1"/>
+        <line num="9" count="0" type="stmt"/>
       </file>
     </package>
     <package name="test">

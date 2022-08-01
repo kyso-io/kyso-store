@@ -160,13 +160,19 @@ docker stop "$MONGO_NAME"
 echo "Removing container '$MONGO_NAME'"
 docker rm "$MONGO_NAME"
 
-TITLE="Kyso Store Automatic Test Results "`date '+%F_%H:%M:%S'`
-echo "Creating report..."
-npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
-echo "Creating kyso.yaml file"
-sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
-cp template-kyso.yaml ./test-results/kyso.yaml
-echo "Uploading report to Kyso.io"
-npx kyso push --path ./test-results --inlineComments n
+if [ -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+x} ]; then 
+  if [ -z ${ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME+x} ]; then 
+    echo "Copying coverage report"
+    cp -R coverage ./test-results
+    TITLE="Kyso Store Automatic Test Results "`date '+%F %H:%M:%S'`
+    echo "Creating report..."
+    npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
+    echo "Creating kyso.yaml file"
+    sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
+    cp template-kyso.yaml ./test-results/kyso.yaml
+    echo "Uploading report to Kyso.io"
+    npx kyso push --path ./test-results --inlineComments n
+  fi
+fi
 
 exit "$res"
