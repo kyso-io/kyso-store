@@ -174,6 +174,10 @@ if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+y} ]; then
       DESCRIPTION="Job triggered by unknown"
     fi
 
+    echo "Setting title: $TITLE"
+    echo "Setting description: $DESCRIPTION"
+    echo "Logging with: $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME"
+
     echo "Creating report..."
     npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
     echo "Creating kyso.yaml file"
