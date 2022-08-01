@@ -9,11 +9,8 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_VERSION: 20.10.17
-  
-
 
 e2e_test:
-  allow_failure: true
   stage: test
   image: registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
   rules:
