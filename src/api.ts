@@ -55,7 +55,7 @@ import {
   UserDTO,
   VerifyEmailRequestDTO,
 } from '@kyso-io/kyso-model';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import moment from 'moment';
 import { AuthState } from '.';
@@ -74,6 +74,8 @@ export class Api {
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     let baseURL: string;
     
+    this.httpClient = axios.create();
+
     if (process.env.KYSO_API) {
       baseURL = process.env.KYSO_API;
     } else if (process.env.NEXT_PUBLIC_API_URL) {
@@ -81,16 +83,26 @@ export class Api {
     } else {
       baseURL = '/api/v1';
     }
-    this.token = token;
-    this.organizationSlug = organizationSlug;
-    this.teamSlug = teamSlug;
+
+    this.configure(baseURL, token, organizationSlug, teamSlug);
+  }
+
+
+  public configure(baseURL: string, token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     this.httpClient = axios.create({
       baseURL,
       headers: {
         'Content-Type': 'application/json',
       },
     });
+
+    this.token = token;
+    this.organizationSlug = organizationSlug;
+    this.teamSlug = teamSlug;
+    
     this.httpClient.interceptors.request.use((config: any) => {
+      verbose(`Calling [${config.method}] ${config.baseURL}${config.url}`);
+
       if (this.token) {
         config.headers.Authorization = `Bearer ${this.token}`;
       }
@@ -114,6 +126,10 @@ export class Api {
 
   public setTeamSlug(teamSlug: string | null): void {
     this.teamSlug = teamSlug;
+  }
+
+  public setBaseUrl(baseUrl: string): void {
+    
   }
 
   // ACTIVITY FEED
@@ -675,9 +691,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getReportFileContent(fileId: string): Promise<Buffer> {
+  public async getReportFileContent(fileId: string, config?: AxiosRequestConfig): Promise<Buffer> {
     const url = `/reports/file/${fileId}`;
-    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, config);
     return axiosResponse.data;
   }
 

@@ -22,3 +22,6 @@ e2e_test:
     - !reference [.npm-config, before_script]
   script:
     - sh test/ci_run_test docker
+    - npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username francisco@kyso.io --token d8a80fb2-02c4-4548-b371-ad94c1307289
+    - echo "{"
+    - npx push --path ./test-results

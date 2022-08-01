@@ -3,6 +3,8 @@ dist
 .env
 .npmrc
 
+test-results
+test-results/*
 # Created by https://www.toptal.com/developers/gitignore/api/macos,linux,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,linux,windows
 
