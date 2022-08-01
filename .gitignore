@@ -3,6 +3,7 @@ dist
 .env
 .npmrc
 
+coverage
 test-results
 test-results/*
 # Created by https://www.toptal.com/developers/gitignore/api/macos,linux,windows
