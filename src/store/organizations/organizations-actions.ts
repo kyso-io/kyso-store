@@ -258,7 +258,7 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
 
 export const updateMembersRolesToOrganizationAction = createAsyncThunk(
   'organizations/updateMembersRolesToOrganization',
-  async (payload: { organizationId: string; data: UpdateOrganizationMembersDTO[] }, { getState, dispatch }): Promise<OrganizationMember[]> => {
+  async (payload: { organizationId: string; data: UpdateOrganizationMembersDTO }, { getState, dispatch }): Promise<OrganizationMember[]> => {
     try {
       const { auth } = getState() as RootState;
       const api: Api = new Api(auth.token, auth.organization, auth.team);
