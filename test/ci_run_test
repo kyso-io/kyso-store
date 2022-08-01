@@ -160,15 +160,15 @@ docker stop "$MONGO_NAME"
 echo "Removing container '$MONGO_NAME'"
 docker rm "$MONGO_NAME"
 
-if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING+y} ]; then 
-  if [ ! -z ${ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME+y} ]; then 
-    if [ ! -z ${CI_COMMIT_TAG+y} ]; then 
+if [ "$ACCESS_TOKEN_AUTOMATIC_TESTING" ]; then
+  if [ "$ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME" ]; then
+    if [ "$CI_COMMIT_TAG" ]; then
       TITLE="Kyso Store Automatic Test Results $CI_COMMIT_TAG"
     else 
       TITLE="Kyso Store Automatic Test Results "`date '+%F %H:%M:%S'`
     fi
 
-    if [ ! -z ${GITLAB_USER_EMAIL+y} ]; then 
+    if [ "$GITLAB_USER_EMAIL" ]; then
       DESCRIPTION="Job triggered by $GITLAB_USER_EMAIL"
     else 
       DESCRIPTION="Job triggered by unknown"
