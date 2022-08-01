@@ -167,6 +167,6 @@ echo "Creating kyso.yaml file"
 sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
 cp template-kyso.yaml ./test-results/kyso.yaml
 echo "Uploading report to Kyso.io"
-npx kyso push --path ./test-results
+npx kyso push --path ./test-results --inlineComments n
 
 exit "$res"
