@@ -101,6 +101,9 @@ echo ""
 
 export STORE_ENV_PATH="$WORK_DIR/test/ci_test_env"
 
+echo "Pulling latest version of the mongo container"
+docker pull --quiet "$MONGO_IMAGE"
+
 echo "Launching mongo container"
 docker run -d --network=host \
   -e MONGO_INITDB_ROOT_USERNAME=kadmin \
@@ -120,7 +123,7 @@ if [ "$ret" -ne "0" ]; then
 fi
 
 echo "Pulling latest version of the kyso-api container"
-docker pull "$KYSO_API_IMAGE"
+docker pull --quiet "$KYSO_API_IMAGE"
 
 echo "Launching kyso-api container"
 docker run -d --network=host \
