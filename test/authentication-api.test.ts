@@ -105,8 +105,9 @@ describe('Authentication test suite case', () => {
 
         it('should refresh an expired token with another valid token', async () => {
             const api: Api = new Api();
-            api.configure(TEST_BASE_URL + "/api/v1", TEST_AUTH_EXPIRED_TOKEN);
+            api.configure(process.env.KYSO_API as string + "/api/v1", TEST_AUTH_EXPIRED_TOKEN);
 
+            
             const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
 
             expect(refreshedToken.data).not.toBeNull();
@@ -115,7 +116,7 @@ describe('Authentication test suite case', () => {
 
         it('should not refresh a token not issued by us', async () => {
             const api: Api = new Api();
-            api.configure(TEST_BASE_URL + "/api/v1", TEST_AUTH_HACKED_TOKEN);
+            api.configure(process.env.KYSO_API as string, TEST_AUTH_HACKED_TOKEN);
 
             try {
                 const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();

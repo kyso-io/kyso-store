@@ -64,6 +64,7 @@ import { verbose } from './helpers/logger-helper';
 
 export class Api {
   private httpClient: AxiosInstance;
+  private baseURL: string;
   private token: string | null | undefined;
   private organizationSlug: string | null | undefined;
   private teamSlug: string | null | undefined;
@@ -73,24 +74,24 @@ export class Api {
   }
 
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
-    let baseURL: string;
-
     this.httpClient = axios.create();
 
     if (process.env.KYSO_API) {
-      baseURL = process.env.KYSO_API;
+      this.baseURL = process.env.KYSO_API;
     } else if (process.env.NEXT_PUBLIC_API_URL) {
-      baseURL = process.env.NEXT_PUBLIC_API_URL;
+      this.baseURL = process.env.NEXT_PUBLIC_API_URL;
     } else {
-      baseURL = '/api/v1';
+      this.baseURL = '/api/v1';
     }
 
-    this.configure(baseURL, token, organizationSlug, teamSlug);
+    this.configure(this.baseURL, token, organizationSlug, teamSlug);
   }
 
   public configure(baseURL: string, token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
+    this.baseURL = baseURL;
+
     this.httpClient = axios.create({
-      baseURL,
+      baseURL: this.baseURL,
       headers: {
         'Content-Type': 'application/json',
       },
