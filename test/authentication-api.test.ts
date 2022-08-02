@@ -1,7 +1,7 @@
 import { Login, LoginProviderEnum, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { Api } from '../src/api';
 import { verbose } from '../src/helpers/logger-helper';
-import { TEST_AUTH_EXPIRED_TOKEN, TEST_AUTH_HACKED_TOKEN, TEST_BASE_URL } from './test.constants';
+import { TEST_AUTH_EXPIRED_TOKEN, TEST_AUTH_HACKED_TOKEN } from './test.constants';
 
 describe('Authentication test suite case', () => {
     describe('Generic endpoints', () => {
