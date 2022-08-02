@@ -1,6 +1,6 @@
 include:
   - project: 'common/gitlab-ci'
-    ref: v0.4.22
+    ref: v0.4.23
     file:
     - '/includes/docker-config.yml'
     - '/templates/npm-package.yml'
