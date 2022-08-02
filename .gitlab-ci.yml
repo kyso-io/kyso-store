@@ -5,11 +5,6 @@ include:
     - '/includes/docker-config.yml'
     - '/templates/npm-package.yml'
 
-variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
-  DOCKER_VERSION: 20.10.17
-
 e2e_test:
   stage: test
   image: registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
@@ -19,6 +14,9 @@ e2e_test:
     - name: registry.kyso.io/docker/docker:${DOCKER_VERSION}-dind-original
       alias: docker
   variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_VERSION: 20.10.17
     ACCESS_TOKEN_AUTOMATIC_TESTING: $ACCESS_TOKEN_AUTOMATIC_TESTING
     ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME: $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME
   before_script:
