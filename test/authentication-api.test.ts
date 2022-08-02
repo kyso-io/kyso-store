@@ -102,15 +102,25 @@ describe('Authentication test suite case', () => {
             expect(refreshedToken.data).not.toEqual(result.data)
         })
 
-        it('should refresh an expired token with another valid token', async () => {
-            const api: Api = new Api();
-            api.configure(process.env.KYSO_API as string, TEST_AUTH_EXPIRED_TOKEN);
+        it('should not refresh a token which dont belongs to the requester user', async () => {
+            try {
+                const api: Api = new Api();
+                api.configure(process.env.KYSO_API as string, TEST_AUTH_EXPIRED_TOKEN);
 
-            
-            const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
+                
+                const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
 
-            expect(refreshedToken.data).not.toBeNull();
-            expect(refreshedToken.data).not.toBe(TEST_AUTH_EXPIRED_TOKEN)
+                // should not execute this line... this force it to fail
+                expect(refreshedToken).toBeGreaterThanOrEqual(4);
+            } catch(ex) {
+                let errorMessage = "Unexpected error. This will make the test fail";
+                
+                if (ex instanceof Error) {
+                    errorMessage = ex.message;
+                }
+
+                expect(errorMessage).toBe("Request failed with status code 403");
+            }
         })
 
         it('should not refresh a token not issued by us', async () => {
