@@ -1,6 +1,7 @@
 import { Login, LoginProviderEnum, NormalizedResponseDTO } from '@kyso-io/kyso-model';
 import { Api } from '../src/api';
-import { TEST_BASE_URL } from './test.constants';
+import { verbose } from '../src/helpers/logger-helper';
+import { TEST_AUTH_EXPIRED_TOKEN, TEST_AUTH_HACKED_TOKEN, TEST_BASE_URL } from './test.constants';
 
 describe('Authentication test suite case', () => {
     describe('Generic endpoints', () => {
@@ -78,7 +79,7 @@ describe('Authentication test suite case', () => {
             }    
         })
 
-        it('should refresh a token', async () => {
+        it('should refresh a valid token with another valid token', async () => {
             const api: Api = new Api();
 
             const loginData: Login = new Login(
@@ -92,6 +93,7 @@ describe('Authentication test suite case', () => {
             const result: NormalizedResponseDTO<string> = await api.login(loginData);
 
             expect(result.data).not.toBeNull()
+            console.log(result.data);
 
             const authenticatedApi: Api = new Api(result.data);
 
@@ -100,6 +102,37 @@ describe('Authentication test suite case', () => {
             expect(refreshedToken.data).not.toBeNull();
             expect(refreshedToken.data).not.toEqual(result.data)
         })
+
+        it('should refresh an expired token with another valid token', async () => {
+            const api: Api = new Api();
+            api.configure(TEST_BASE_URL + "/api/v1", TEST_AUTH_EXPIRED_TOKEN);
+
+            const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
+
+            expect(refreshedToken.data).not.toBeNull();
+            expect(refreshedToken.data).not.toBe(TEST_AUTH_EXPIRED_TOKEN)
+        })
+
+        it('should not refresh a token not issued by us', async () => {
+            const api: Api = new Api();
+            api.configure(TEST_BASE_URL + "/api/v1", TEST_AUTH_HACKED_TOKEN);
+
+            try {
+                const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
+
+                // should not execute this line... this force it to fail
+                expect(refreshedToken).toBeGreaterThanOrEqual(4);
+            } catch(ex) {
+                let errorMessage = "Unexpected error. This will make the test fail";
+                
+                if (ex instanceof Error) {
+                    errorMessage = ex.message;
+                }
+
+                expect(errorMessage).toBe("Request failed with status code 403");
+            }
+        })
+
 
         it('should identify an existing username', async () => {
             const api: Api = new Api();
