@@ -93,8 +93,7 @@ describe('Authentication test suite case', () => {
             const result: NormalizedResponseDTO<string> = await api.login(loginData);
 
             expect(result.data).not.toBeNull()
-            console.log(result.data);
-
+            
             const authenticatedApi: Api = new Api(result.data);
 
             const refreshedToken:  NormalizedResponseDTO<string> = await authenticatedApi.refreshToken();
@@ -105,7 +104,7 @@ describe('Authentication test suite case', () => {
 
         it('should refresh an expired token with another valid token', async () => {
             const api: Api = new Api();
-            api.configure(process.env.KYSO_API as string + "/api/v1", TEST_AUTH_EXPIRED_TOKEN);
+            api.configure(process.env.KYSO_API as string, TEST_AUTH_EXPIRED_TOKEN);
 
             
             const refreshedToken: NormalizedResponseDTO<string> = await api.refreshToken();
