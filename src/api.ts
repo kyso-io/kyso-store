@@ -20,6 +20,7 @@ import {
   GithubFileHash,
   InlineCommentDto,
   Invitation,
+  InviteUserDto,
   KysoSetting,
   KysoUserAccessToken,
   Login,
@@ -73,7 +74,7 @@ export class Api {
 
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     let baseURL: string;
-    
+
     this.httpClient = axios.create();
 
     if (process.env.KYSO_API) {
@@ -87,7 +88,6 @@ export class Api {
     this.configure(baseURL, token, organizationSlug, teamSlug);
   }
 
-
   public configure(baseURL: string, token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     this.httpClient = axios.create({
       baseURL,
@@ -99,7 +99,7 @@ export class Api {
     this.token = token;
     this.organizationSlug = organizationSlug;
     this.teamSlug = teamSlug;
-    
+
     this.httpClient.interceptors.request.use((config: any) => {
       verbose(`Calling [${config.method}] ${config.baseURL}${config.url}`);
 
@@ -128,9 +128,7 @@ export class Api {
     this.teamSlug = teamSlug;
   }
 
-  public setBaseUrl(baseUrl: string): void {
-    
-  }
+  public setBaseUrl(baseUrl: string): void {}
 
   // ACTIVITY FEED
 
@@ -579,6 +577,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async inviteNewUser(inviteUserDto: InviteUserDto): Promise<NormalizedResponseDTO<{ organizationMembers: OrganizationMember[]; teamMembers: TeamMember[] }>> {
+    const url = '/organizations/invitation';
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ organizationMembers: OrganizationMember[]; teamMembers: TeamMember[] }>> = await this.httpClient.post(url, inviteUserDto);
+    return axiosResponse.data;
+  }
+
   public async createOrganization(organization: Organization): Promise<NormalizedResponseDTO<Organization>> {
     const url = '/organizations';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, organization);
@@ -732,7 +736,7 @@ export class Api {
     const url = `/reports/ui`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     });
     return axiosResponse.data;
@@ -742,7 +746,7 @@ export class Api {
     const url = `/reports/ui/main-file${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     });
     return axiosResponse.data;
@@ -1077,7 +1081,7 @@ export class Api {
 
   // USERS
 
-  public async getUsers(args: { userIds: string[]; page: number; per_page: number; sort: string, search?: string }): Promise<NormalizedResponseDTO<UserDTO[]>> {
+  public async getUsers(args: { userIds: string[]; page: number; per_page: number; sort: string; search?: string }): Promise<NormalizedResponseDTO<UserDTO[]>> {
     if (!args.page) {
       args.page = 1;
     }
