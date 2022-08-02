@@ -50,7 +50,7 @@ describe('Authentication test suite case', () => {
                 LoginProviderEnum.KYSO,
                 "lo+rey@dev.kyso.io",
                 null, 
-                TEST_BASE_URL
+                process.env.KYSO_API as string
             );
 
             const result: NormalizedResponseDTO<string> = await api.login(loginData);
@@ -66,7 +66,7 @@ describe('Authentication test suite case', () => {
                 LoginProviderEnum.KYSO,
                 "lo+rey@dev.kyso.io2",
                 null, 
-                TEST_BASE_URL
+                process.env.KYSO_API as string
             );          
 
             try {
@@ -87,7 +87,7 @@ describe('Authentication test suite case', () => {
                 LoginProviderEnum.KYSO,
                 "lo+rey@dev.kyso.io",
                 null, 
-                TEST_BASE_URL
+                process.env.KYSO_API as string
             );
 
             const result: NormalizedResponseDTO<string> = await api.login(loginData);
@@ -161,7 +161,7 @@ describe('Authentication test suite case', () => {
                 LoginProviderEnum.KYSO_ACCESS_TOKEN,
                 "lo+rey@dev.kyso.io",
                 null, 
-                TEST_BASE_URL
+                process.env.KYSO_API as string
             );
 
             const result: NormalizedResponseDTO<string> = await api.login(loginData);
@@ -177,7 +177,7 @@ describe('Authentication test suite case', () => {
                 LoginProviderEnum.KYSO,
                 "lo+rey@dev.kyso.io2",
                 null, 
-                TEST_BASE_URL
+                process.env.KYSO_API as string
             );          
 
             try {
