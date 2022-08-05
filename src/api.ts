@@ -723,7 +723,11 @@ export class Api {
   public async createKysoReport(formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
     const url = `/reports/kyso`;
     verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`);
-
+    verbose(`FormData info`);
+    verbose(JSON.stringify(formData));
+    verbose(`FormData headers`);
+    verbose(JSON.stringify(formData.getHeaders()));
+    
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
         ...formData.getHeaders(),

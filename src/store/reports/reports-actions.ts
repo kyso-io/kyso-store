@@ -320,8 +320,12 @@ export const createKysoReportAction = createAsyncThunk(
       }
     } catch (e: any) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response?.data.message);
+        verbose("Exception");
+        verbose(e)
+        verbose("Exception. response");
+        verbose(e.response?.data.message);
         verbose(e.response?.data);
+        console.log(e)
         dispatch(setError(e.response?.data.message));
       } else {
         console.log(e);

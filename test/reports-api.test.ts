@@ -3,7 +3,7 @@ import { TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, TEST_REPORTS_PUBLIC_TEAM_FILE_ID 
 
 describe('Reports test suite case', () => {
     describe('Files', () => {
-        it('should download an existing file of a public report by unauthorized user without Axios Request Config', async () => {
+        it('createKysoReportAction with huge files', async () => {
             const api: Api = new Api();
             
             api.configure("https://kyso.io/api/v1");
