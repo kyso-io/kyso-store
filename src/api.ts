@@ -74,7 +74,10 @@ export class Api {
   }
 
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
-    this.httpClient = axios.create();
+    this.httpClient = axios.create({
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity
+    });
 
     if (process.env.KYSO_API) {
       this.baseURL = process.env.KYSO_API;
@@ -95,6 +98,8 @@ export class Api {
       headers: {
         'Content-Type': 'application/json',
       },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity
     });
 
     this.token = token;
@@ -727,7 +732,7 @@ export class Api {
     verbose(JSON.stringify(formData));
     verbose(`FormData headers`);
     verbose(JSON.stringify(formData.getHeaders()));
-    
+
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
       headers: {
         ...formData.getHeaders(),
