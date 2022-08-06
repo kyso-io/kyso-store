@@ -26,7 +26,7 @@
     "registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
   },
   "peerDependencies": {
-    "@kyso-io/kyso-model": "1.0.96"
+    "@kyso-io/kyso-model": "1.0.98"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.4.34",
