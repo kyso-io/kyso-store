@@ -642,7 +642,7 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getOrganizationReports(organizationSlug: string, page: number, limit: number, sort: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
+  public async getOrganizationReports(organizationSlug: string, page: number, limit?: number, sort?: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/organizations/${organizationSlug}/reports?page=${page}&limit=${limit}&sort=${sort}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
     return axiosResponse.data;
