@@ -76,7 +76,7 @@ export class Api {
   constructor(token?: string | null, organizationSlug?: string | null, teamSlug?: string | null) {
     this.httpClient = axios.create({
       maxBodyLength: Infinity,
-      maxContentLength: Infinity
+      maxContentLength: Infinity,
     });
 
     if (process.env.KYSO_API) {
@@ -99,7 +99,7 @@ export class Api {
         'Content-Type': 'application/json',
       },
       maxBodyLength: Infinity,
-      maxContentLength: Infinity
+      maxContentLength: Infinity,
     });
 
     this.token = token;
@@ -665,6 +665,12 @@ export class Api {
     });
     const url = `/reports?${qs.toString()}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO[]>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async getPaginatedReprots(query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
+    const url = `/reports/paginated?${query}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
