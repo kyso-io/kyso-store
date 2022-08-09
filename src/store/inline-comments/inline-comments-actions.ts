@@ -64,11 +64,11 @@ export const updateInlineCommentAction = createAsyncThunk(
   }
 );
 
-export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<InlineCommentDto | null> => {
+export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<boolean | null> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
-    const response: NormalizedResponseDTO<InlineCommentDto> = await api.deleteInlineComment(inlineCommentId);
+    const response: NormalizedResponseDTO<boolean> = await api.deleteInlineComment(inlineCommentId);
     if (response?.data) {
       return response.data;
     } else {
