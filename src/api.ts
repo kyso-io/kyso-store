@@ -668,7 +668,7 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getPaginatedReprots(query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
+  public async getPaginatedReports(query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/reports/paginated?${query}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
     return axiosResponse.data;
