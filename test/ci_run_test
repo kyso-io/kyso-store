@@ -188,7 +188,7 @@ if [ "$ACCESS_TOKEN_AUTOMATIC_TESTING" ]; then
     sed -i 's/#DESCRIPTION/'"$DESCRIPTION"'/g' template-kyso.yaml
     cp template-kyso.yaml ./test-results/kyso.yaml
     echo "Uploading report to Kyso.io"
-    npx kyso push --path ./test-results --inlineComments n
+    npx kyso push --path ./test-results
   else 
     echo "Variable ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME is not set"
   fi
