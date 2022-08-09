@@ -35,6 +35,8 @@ import {
   Report,
   ReportDTO,
   RepositoryProvider,
+  SearchUser,
+  SearchUserDto,
   SignUpDto,
   Tag,
   TagAssign,
@@ -1214,6 +1216,29 @@ export class Api {
   public async changePassword(userChangePasswordDto: UserChangePasswordDTO): Promise<NormalizedResponseDTO<boolean>> {
     const url = `/users/change-password`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, userChangePasswordDto);
+    return axiosResponse.data;
+  }
+
+  // SEARCH USER
+
+  public async getSearchUser(organizationId: string, teamId?: string): Promise<NormalizedResponseDTO<SearchUser>> {
+    let url = `/search-user?organization_id=${organizationId}`;
+    if (teamId) {
+      url += `&team_id=${teamId}`;
+    }
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<SearchUser>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async createSearchUser(searchUserDto: SearchUserDto): Promise<NormalizedResponseDTO<SearchUser>> {
+    const url = `/search-user`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<SearchUser>> = await this.httpClient.post(url, searchUserDto);
+    return axiosResponse.data;
+  }
+
+  public async deleteSearchUser(id: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/search-user/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 }
