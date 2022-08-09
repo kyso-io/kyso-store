@@ -1,10 +1,11 @@
-import { CreateInlineCommentDto, InlineCommentDto, Login, LoginProviderEnum, NormalizedResponseDTO, PaginatedResponseDto, ReportDTO } from '@kyso-io/kyso-model';
+import { CreateInlineCommentDto, InlineCommentDto, Login, LoginProviderEnum, NormalizedResponseDTO, PaginatedResponseDto, ReportDTO, UpdateInlineCommentDto } from '@kyso-io/kyso-model';
+import { randomUUID } from 'crypto';
 import { Api } from '../src/api';
 import { TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, TEST_REPORTS_PUBLIC_TEAM_FILE_ID } from './test.constants';
 
 describe('Inline comments test suite case', () => {
-    it('Should create a new inline comment', async () => {
-        try {
+    describe('Happy Paths', () => {
+        it('Should create a new inline comment', async () => {
             const api: Api = new Api();
 
             const loginData: Login = new Login(
@@ -54,14 +55,9 @@ describe('Inline comments test suite case', () => {
             expect(result.data.markedAsDeleted).toEqual(false);
             expect(result.data.edited).toEqual(false);
             expect(result.data.user_name).toEqual("Rey");
-        } catch(ex) {
-            console.log(ex);
-            expect(true).toBe(false);
-        }
-    })
+        })
 
-    it('Should retrieve inline comments', async () => {
-        try {
+        it('Should retrieve inline comments', async () => {
             // Create an inline comment
             const api: Api = new Api();
 
@@ -107,17 +103,112 @@ describe('Inline comments test suite case', () => {
             expect(recentlyCreatedInlineComment.text).toBe("this-comment-must-be-retrieved");
             expect(recentlyCreatedInlineComment.cell_id).toBe("12345678");
             expect(recentlyCreatedInlineComment.mentions).toBe([]);
-        } catch(ex) {
-            console.log(ex);
-            expect(true).toBe(false);
-        }
-    })
+        })
 
-    /*it('Should update an existing inline comment', async () => {
-        expect(false).toBe(true)
-    })
+        it('Should update an existing inline comment', async () => {
+            // Create an inline comment
+            const api: Api = new Api();
 
-    it('Should delete an existing inline comment', async () => {
-        expect(false).toBe(true)
-    })*/
+            const loginData: Login = new Login(
+                "n0tiene", 
+                LoginProviderEnum.KYSO,
+                "lo+rey@dev.kyso.io",
+                null, 
+                process.env.KYSO_API as string
+            );
+
+            const loginResult: NormalizedResponseDTO<string> = await api.login(loginData);
+            api.setToken(loginResult.data);
+            
+            const reportsOfLightside: NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>> 
+                = await api.getOrganizationReports('lightside', 1);
+
+            const report: ReportDTO = reportsOfLightside.data.results.filter(
+                (x: ReportDTO) => x.name === `rebel-scum-counterattack`)[0];
+
+            const randomText = "this-comment-must-be-edited-" + randomUUID();
+            const newInlineComment: CreateInlineCommentDto = new CreateInlineCommentDto();
+            newInlineComment.cell_id = "12345678";
+            newInlineComment.mentions = [];
+            newInlineComment.report_id = report.id!;    
+            newInlineComment.text = randomText;
+
+            api.setOrganizationSlug(report.organization_sluglified_name);
+            api.setTeamSlug(report.team_sluglified_name)
+            
+            await api.createInlineComment(newInlineComment);
+
+            const allInlineCommentsOfThisReport: NormalizedResponseDTO<InlineCommentDto[]> = await api.getInlineComments(report.id!);
+
+            const recentlyCreatedInlineComment: InlineCommentDto = allInlineCommentsOfThisReport.data.filter(
+                (x: InlineCommentDto) => x.text === randomText)[0];
+
+            // Update the recently created inline comment
+            const updateInlineCommentData: UpdateInlineCommentDto = new UpdateInlineCommentDto();
+            updateInlineCommentData.mentions = ["mention_to_rey", "mention_to_kylo"];
+            updateInlineCommentData.text = randomText + "-fran_was_here";
+
+            const updatedInlineComment: NormalizedResponseDTO<InlineCommentDto> = 
+                await api.updateInlineComment(recentlyCreatedInlineComment.id, updateInlineCommentData);
+            
+            expect(updatedInlineComment.data).not.toBeNull();
+            expect(updatedInlineComment.data).not.toBeUndefined();
+            expect(updatedInlineComment.data.text).toBe(randomText + "-fran_was_here");
+            expect(updatedInlineComment.data.mentions).toBe(["mention_to_rey", "mention_to_kylo"]);
+            expect(updatedInlineComment.data.edited).toBe(true);
+        })
+
+        it('Should delete an existing inline comment', async () => {
+            // Create an inline comment
+            const api: Api = new Api();
+
+            const loginData: Login = new Login(
+                "n0tiene", 
+                LoginProviderEnum.KYSO,
+                "lo+rey@dev.kyso.io",
+                null, 
+                process.env.KYSO_API as string
+            );
+
+            const loginResult: NormalizedResponseDTO<string> = await api.login(loginData);
+            api.setToken(loginResult.data);
+            
+            const reportsOfLightside: NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>> 
+                = await api.getOrganizationReports('lightside', 1);
+
+            const report: ReportDTO = reportsOfLightside.data.results.filter(
+                (x: ReportDTO) => x.name === `rebel-scum-counterattack`)[0];
+
+            const randomText = "this-comment-must-be-deleted-" + randomUUID();
+            const newInlineComment: CreateInlineCommentDto = new CreateInlineCommentDto();
+            newInlineComment.cell_id = "12345678";
+            newInlineComment.mentions = [];
+            newInlineComment.report_id = report.id!;    
+            newInlineComment.text = randomText;
+
+            api.setOrganizationSlug(report.organization_sluglified_name);
+            api.setTeamSlug(report.team_sluglified_name)
+            
+            await api.createInlineComment(newInlineComment);
+
+            let allInlineCommentsOfThisReport: NormalizedResponseDTO<InlineCommentDto[]> = await api.getInlineComments(report.id!);
+
+            const recentlyCreatedInlineComment: InlineCommentDto = allInlineCommentsOfThisReport.data.filter(
+                (x: InlineCommentDto) => x.text === randomText)[0];
+
+            // Delete the recently created inline comment
+            const deletedInlineComment: NormalizedResponseDTO<boolean> = await api.deleteInlineComment(recentlyCreatedInlineComment.id)
+            
+            expect(deletedInlineComment.data).not.toBeNull();
+            expect(deletedInlineComment.data).not.toBeUndefined();
+            expect(deletedInlineComment.data).toBe(true);
+
+            allInlineCommentsOfThisReport = await api.getInlineComments(report.id!);
+
+            const recentlyDeletedInlineComment: InlineCommentDto = allInlineCommentsOfThisReport.data.filter(
+                (x: InlineCommentDto) => x.text === randomText)[0];
+
+            expect(recentlyDeletedInlineComment).toBeUndefined();
+        })
+    })
 })

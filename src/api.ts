@@ -483,9 +483,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async deleteInlineComment(inlineCommentId: string): Promise<NormalizedResponseDTO<InlineCommentDto>> {
+  public async deleteInlineComment(inlineCommentId: string): Promise<NormalizedResponseDTO<boolean>> {
     const url = `/inline-comments/${inlineCommentId}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto>> = await this.httpClient.delete(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 
