@@ -56,7 +56,7 @@ import {
   UserAccount,
   UserChangePasswordDTO,
   UserDTO,
-  VerifyEmailRequestDTO
+  VerifyEmailRequestDTO,
 } from '@kyso-io/kyso-model';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
@@ -1233,6 +1233,12 @@ export class Api {
   public async createSearchUser(searchUserDto: SearchUserDto): Promise<NormalizedResponseDTO<SearchUser>> {
     const url = `/search-user`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<SearchUser>> = await this.httpClient.post(url, searchUserDto);
+    return axiosResponse.data;
+  }
+
+  public async deleteSearchUser(id: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/search-user/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 }
