@@ -136,7 +136,9 @@ export class Api {
     this.teamSlug = teamSlug;
   }
 
-  public setBaseUrl(baseUrl: string): void {}
+  public setBaseUrl(baseUrl: string): void {
+    this.baseURL = baseUrl;
+  }
 
   // ACTIVITY FEED
 
@@ -673,6 +675,12 @@ export class Api {
   public async getPaginatedReports(query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/reports/paginated?${query}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async getUserReports(userId: string, query: string): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/user/${userId}?${query}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
