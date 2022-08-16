@@ -153,7 +153,7 @@ export class Api {
     action?: ActionEnum;
     sort?: string;
   }): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
-    let url = '/activity-feed?';
+    let url = '/activity-feed/user?';
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
@@ -678,9 +678,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getUserReports(userId: string, query: string): Promise<NormalizedResponseDTO<ReportDTO>> {
+  public async getUserReports(userId: string, query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/reports/user/${userId}?${query}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
