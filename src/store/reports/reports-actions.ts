@@ -3,10 +3,12 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
 import FormData from 'form-data';
-import { createReadStream, lstatSync, readFileSync, rmSync, statSync } from 'fs';
+import { createReadStream, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, statSync } from 'fs';
 import JSZip from 'jszip';
+import { homedir } from 'os';
 import { join } from 'path';
 import slash from 'slash';
+import { v4 as uuidv4 } from 'uuid';
 import { RootState } from '..';
 import { Api } from '../../api';
 import { verbose } from '../../helpers/logger-helper';
@@ -274,13 +276,20 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
   async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
+    const zipFileName = `${uuidv4()}.zip`;
+    let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
+    // Check if folder exists, if not create it
+    if (!existsSync(outputFilePath)) {
+      mkdirSync(outputFilePath, {
+        recursive: true,
+      });
+    }
+    outputFilePath = join(outputFilePath, zipFileName);
     try {
       verbose('Starting createKysoReportAction');
       const { auth } = getState() as RootState;
       const api: Api = new Api(auth.token, auth.organization, auth.team);
       const formData: FormData = new FormData();
-      const zipFileName = `report.zip`;
-      const outputFilePath = join('.', `${zipFileName}`);
       verbose(`outputFilePath ${outputFilePath}`);
       const zip = new AdmZip();
       verbose(`Adding files to zip`);
@@ -319,12 +328,21 @@ export const createKysoReportAction = createAsyncThunk(
         return null;
       }
     } catch (e: any) {
+      if (existsSync(outputFilePath)) {
+        try {
+          verbose(`Deleting temporary file at ${zipFileName}`);
+          rmSync(outputFilePath);
+        } catch (ex) {
+          console.log("Temporary file can't be deleted");
+          console.log(ex);
+        }
+      }
       if (axios.isAxiosError(e)) {
-        verbose(e)
-        console.log(e.response?.data.message)
+        verbose(e);
+        console.log(e.response?.data.message);
         dispatch(setError(e.response?.data.message));
       } else {
-        verbose(e)
+        verbose(e);
         dispatch(setError(e.toString()));
       }
       return null;
