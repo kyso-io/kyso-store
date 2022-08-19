@@ -303,6 +303,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getPublicPermissions(): Promise<NormalizedResponseDTO<TokenPermissions>> {
+    const url = '/auth/public-permissions';
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async getApiVersion(): Promise<string> {
     const url = '/auth/version';
     const axiosResponse: AxiosResponse<string> = await this.httpClient.get(url);
