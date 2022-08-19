@@ -666,6 +666,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getReportByTeamIdAndSlug(teamId: string, reportSlug: string): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/${teamId}/${reportSlug}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async getReports(args: { filter?: object; sort?: string; page?: number; per_page?: number }): Promise<NormalizedResponseDTO<ReportDTO[]>> {
     const qs = new URLSearchParams({
       page: (args?.page || 1).toString(),
