@@ -142,7 +142,7 @@ export class Api {
 
   // ACTIVITY FEED
 
-  public async getUserActivityFeed(args: {
+  public async getUserActivityFeed(username: string, args: {
     start_datetime?: Date;
     end_datetime?: Date;
     user_id?: string;
@@ -153,7 +153,7 @@ export class Api {
     action?: ActionEnum;
     sort?: string;
   }): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
-    let url = '/activity-feed/user?';
+    let url = `/activity-feed/user/${username}?`;
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
