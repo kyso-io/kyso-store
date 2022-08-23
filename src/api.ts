@@ -142,17 +142,20 @@ export class Api {
 
   // ACTIVITY FEED
 
-  public async getUserActivityFeed(username: string, args: {
-    start_datetime?: Date;
-    end_datetime?: Date;
-    user_id?: string;
-    organization?: string;
-    team?: string;
-    entity?: EntityEnum;
-    entityId?: string;
-    action?: ActionEnum;
-    sort?: string;
-  }): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
+  public async getUserActivityFeed(
+    username: string,
+    args: {
+      start_datetime?: Date;
+      end_datetime?: Date;
+      user_id?: string;
+      organization?: string;
+      team?: string;
+      entity?: EntityEnum;
+      entityId?: string;
+      action?: ActionEnum;
+      sort?: string;
+    }
+  ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/user/${username}?`;
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
@@ -1008,6 +1011,12 @@ export class Api {
 
   public async getTeam(teamId: string): Promise<NormalizedResponseDTO<Team>> {
     const url = `/teams/${teamId}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async getTeamBySlug(organizationId: string, teamSlug: string): Promise<NormalizedResponseDTO<Team>> {
+    const url = `/teams/${organizationId}/${teamSlug}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
