@@ -1200,6 +1200,14 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async updateUserBackgroundImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
+    const url = `/users/background-image`;
+    const formData = new FormData();
+    formData.append('file', file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
+    return axiosResponse.data;
+  }
+
   public async getUserFromToken(): Promise<NormalizedResponseDTO<UserDTO>> {
     const url = `/user`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.get(url);
