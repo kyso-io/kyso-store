@@ -8,6 +8,7 @@ import {
   CreateInlineCommentDto,
   CreateInvitationDto,
   CreateKysoAccessTokenDto,
+  CreateOrganizationDto,
   Discussion,
   ElasticSearchIndex,
   EmailUserChangePasswordDTO,
@@ -602,9 +603,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async createOrganization(organization: Organization): Promise<NormalizedResponseDTO<Organization>> {
+  public async createOrganization(createOrganizationDto: CreateOrganizationDto): Promise<NormalizedResponseDTO<Organization>> {
     const url = '/organizations';
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, organization);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, createOrganizationDto);
     return axiosResponse.data;
   }
 
