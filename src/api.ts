@@ -9,6 +9,7 @@ import {
   CreateInvitationDto,
   CreateKysoAccessTokenDto,
   Discussion,
+  DraftReport,
   ElasticSearchIndex,
   EmailUserChangePasswordDTO,
   EntityEnum,
@@ -858,6 +859,19 @@ export class Api {
   public async reportExists(teamId: string, reportSlug: string): Promise<boolean> {
     const url = `/reports/${teamId}/${reportSlug}/exists`;
     const axiosResponse: AxiosResponse<boolean> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  // DRAFTS
+
+  public async createUiDraftReport(draft: DraftReport): Promise<NormalizedResponseDTO<DraftReport>> {
+    const url = `/reports/ui/draft`;
+    verbose(`Calling POST ${url} with...`);
+    verbose(draft);
+    
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<DraftReport>> = 
+      await this.httpClient.post(url, draft);
+      
     return axiosResponse.data;
   }
 

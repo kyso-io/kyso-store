@@ -517,7 +517,6 @@ export const pullReportAction = createAsyncThunk('reports/pullReport', async (pa
     const response: Buffer = await api.pullReport(payload.reportName, payload.teamName, payload.version);
     return response;
   } catch (e: any) {
-    console.log(`pullReportAction: Error processing action: ${e.toString()}`);
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
