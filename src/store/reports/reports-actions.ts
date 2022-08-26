@@ -16,6 +16,14 @@ import { setError } from '../error/error-slice';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { setRequestingReports } from './reports-slice';
 
+const parseFileSizeStr = (fileSizeStr: string): number => {
+  const units: string[] = ['b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
+  const size: number = parseFloat(fileSizeStr);
+  const unit: string = fileSizeStr.replace(/[^a-z]/gi, '').toLowerCase();
+  const power: number = units.indexOf(unit);
+  return Math.floor(size * Math.pow(1024, power));
+};
+
 export const fetchReportAction = createAsyncThunk('reports/fetchReport', async (reportId: string, { getState, dispatch }): Promise<ReportDTO | null> => {
   try {
     const { auth } = getState() as RootState;
@@ -275,7 +283,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (payload: { filePaths: string[]; basePath: string | null }, { getState, dispatch }): Promise<ReportDTO | null> => {
+  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
     // Check if folder exists, if not create it
@@ -305,9 +313,16 @@ export const createKysoReportAction = createAsyncThunk(
         }
       }
       zip.writeZip(outputFilePath);
+      const size: number = statSync(outputFilePath).size;
+      const maxFileSize: number = parseFileSizeStr(payload.maxFileSizeStr);
+      if (size > maxFileSize) {
+        verbose(`You exceeded the maximum upload size permitted (${payload.maxFileSizeStr})`);
+        dispatch(setError(`You exceeded the maximum upload size permitted (${payload.maxFileSizeStr})`));
+        return null;
+      }
       formData.append('file', createReadStream(outputFilePath), {
         filename: zipFileName,
-        knownLength: statSync(outputFilePath).size,
+        knownLength: size,
       });
       const response: NormalizedResponseDTO<ReportDTO> = await api.createKysoReport(formData);
       try {

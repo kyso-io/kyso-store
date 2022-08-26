@@ -8,6 +8,7 @@ import {
   CreateInlineCommentDto,
   CreateInvitationDto,
   CreateKysoAccessTokenDto,
+  CreateOrganizationDto,
   Discussion,
   DraftReport,
   ElasticSearchIndex,
@@ -137,22 +138,27 @@ export class Api {
     this.teamSlug = teamSlug;
   }
 
-  public setBaseUrl(baseUrl: string): void {}
+  public setBaseUrl(baseUrl: string): void {
+    this.baseURL = baseUrl;
+  }
 
   // ACTIVITY FEED
 
-  public async getUserActivityFeed(args: {
-    start_datetime?: Date;
-    end_datetime?: Date;
-    user_id?: string;
-    organization?: string;
-    team?: string;
-    entity?: EntityEnum;
-    entityId?: string;
-    action?: ActionEnum;
-    sort?: string;
-  }): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
-    let url = '/activity-feed?';
+  public async getUserActivityFeed(
+    username: string,
+    args: {
+      start_datetime?: Date;
+      end_datetime?: Date;
+      user_id?: string;
+      organization?: string;
+      team?: string;
+      entity?: EntityEnum;
+      entityId?: string;
+      action?: ActionEnum;
+      sort?: string;
+    }
+  ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
+    let url = `/activity-feed/user/${username}?`;
     if (args.start_datetime) {
       url += `&created_at>=${moment(args.start_datetime).format('YYYY-MM-DD')}`;
     }
@@ -298,6 +304,12 @@ export class Api {
 
   public async getUserPermissions(username: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
     const url = `/auth/user/${username}/permissions`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async getPublicPermissions(): Promise<NormalizedResponseDTO<TokenPermissions>> {
+    const url = '/auth/public-permissions';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
@@ -592,9 +604,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async createOrganization(organization: Organization): Promise<NormalizedResponseDTO<Organization>> {
+  public async createOrganization(createOrganizationDto: CreateOrganizationDto): Promise<NormalizedResponseDTO<Organization>> {
     const url = '/organizations';
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, organization);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, createOrganizationDto);
     return axiosResponse.data;
   }
 
@@ -659,6 +671,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getReportByTeamIdAndSlug(teamId: string, reportSlug: string): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/${teamId}/${reportSlug}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async getReports(args: { filter?: object; sort?: string; page?: number; per_page?: number }): Promise<NormalizedResponseDTO<ReportDTO[]>> {
     const qs = new URLSearchParams({
       page: (args?.page || 1).toString(),
@@ -673,6 +691,12 @@ export class Api {
 
   public async getPaginatedReports(query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/reports/paginated?${query}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async getUserReports(userId: string, query: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
+    const url = `/reports/user/${userId}?${query}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
@@ -1006,6 +1030,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getTeamBySlug(organizationId: string, teamSlug: string): Promise<NormalizedResponseDTO<Team>> {
+    const url = `/teams/${organizationId}/${teamSlug}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async createTeam(team: Team): Promise<NormalizedResponseDTO<Team>> {
     const url = '/teams';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.post(url, team);
@@ -1179,6 +1209,14 @@ export class Api {
 
   public async updateUserProfileImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
     const url = `/users/profile-picture`;
+    const formData = new FormData();
+    formData.append('file', file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
+    return axiosResponse.data;
+  }
+
+  public async updateUserBackgroundImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
+    const url = `/users/background-image`;
     const formData = new FormData();
     formData.append('file', file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
