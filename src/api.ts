@@ -2,6 +2,7 @@ import {
   ActionEnum,
   ActivityFeed,
   AddUserOrganizationDto,
+  CheckPermissionDto,
   Comment,
   CommentDto,
   CreateDiscussionRequestDTO,
@@ -305,6 +306,12 @@ export class Api {
   public async getUserPermissions(username: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
     const url = `/auth/user/${username}/permissions`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async checkPermission(checkPermissionDto: CheckPermissionDto): Promise<NormalizedResponseDTO<boolean>> {
+    const url = '/auth/check-permission';
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, checkPermissionDto);
     return axiosResponse.data;
   }
 
@@ -892,10 +899,9 @@ export class Api {
     const url = `/reports/ui/draft`;
     verbose(`Calling POST ${url} with...`);
     verbose(draft);
-    
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<DraftReport>> = 
-      await this.httpClient.post(url, draft);
-      
+
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<DraftReport>> = await this.httpClient.post(url, draft);
+
     return axiosResponse.data;
   }
 
