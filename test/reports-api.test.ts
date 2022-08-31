@@ -1,51 +1,44 @@
-import { Login, LoginProviderEnum, ReportDTO, NormalizedResponseDTO, PaginatedResponseDto, DraftReport, UserDTO, Organization } from '@kyso-io/kyso-model';
 import { Api } from '../src/api';
-import { logAsRey } from './test-helper';
 import { TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, TEST_REPORTS_PUBLIC_TEAM_FILE_ID } from './test.constants';
 
 describe('Reports test suite case', () => {
-    describe('Files', () => {
-        // it('createKysoReportAction with huge files', async () => {
-        //     const api: Api = new Api();
-            
-        //     api.configure("https://kyso.io/api/v1");
+  describe('Files', () => {
+    it('createKysoReportAction with huge files', async () => {
+      const api: Api = new Api();
 
-        //     const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_FILE_ID);
-            
-        //     expect(buffer).not.toBeNull();
-        //     expect(buffer).not.toBeUndefined();
+      api.configure('https://kyso.io/api/v1');
 
-        //     // Decode the buffer
-        //     const stringBuffer = Buffer.from(buffer).toString("utf-8")
-        //     const jsonBuffer = JSON.parse(stringBuffer);
+      const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_FILE_ID);
 
-        //     // Check that config_version is 1.11
-        //     expect(jsonBuffer).not.toBeNull();
-        //     expect(jsonBuffer).not.toBeUndefined();
-        //     expect(jsonBuffer.config_version).toBe("1.11");
-        // })
+      expect(buffer).not.toBeNull();
+      expect(buffer).not.toBeUndefined();
 
-        // it('should download an existing BIG file of a public report by unauthorized user with progress bar', async () => {
-        //     const api: Api = new Api();
-            
-        //     api.configure("https://kyso.io/api/v1");
+      // Decode the buffer
+      const stringBuffer = Buffer.from(buffer).toString('utf-8');
+      const jsonBuffer = JSON.parse(stringBuffer);
 
-        //     const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, {
-        //         transformResponse: (data) => {
-        //             expect(data).not.toBeNull();
-        //             expect(data).not.toBeUndefined();
+      // Check that config_version is 1.11
+      expect(jsonBuffer).not.toBeNull();
+      expect(jsonBuffer).not.toBeUndefined();
+      expect(jsonBuffer.config_version).toBe('1.11');
+    });
 
-        //             return data;
-        //         },
-        //       });
-            
-        //     expect(buffer).not.toBeNull();
-        //     expect(buffer).not.toBeUndefined();
-        // })
+    it('should download an existing BIG file of a public report by unauthorized user with progress bar', async () => {
+      const api: Api = new Api();
 
-        // TODO: remove in the near future
-        it('adding 1 + 2 should return 3', () => {
-            expect(1 + 2).toBe(3);
-        });
-    })
-})
+      api.configure('https://kyso.io/api/v1');
+
+      const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, {
+        transformResponse: data => {
+          expect(data).not.toBeNull();
+          expect(data).not.toBeUndefined();
+
+          return data;
+        },
+      });
+
+      expect(buffer).not.toBeNull();
+      expect(buffer).not.toBeUndefined();
+    });
+  });
+});
