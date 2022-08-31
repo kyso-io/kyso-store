@@ -5,25 +5,25 @@ import { TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, TEST_REPORTS_PUBLIC_TEAM_FILE_ID 
 
 describe('Reports test suite case', () => {
     describe('Files', () => {
-        it('createKysoReportAction with huge files', async () => {
-            const api: Api = new Api();
+        // it('createKysoReportAction with huge files', async () => {
+        //     const api: Api = new Api();
             
-            api.configure("https://kyso.io/api/v1");
+        //     api.configure("https://kyso.io/api/v1");
 
-            const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_FILE_ID);
+        //     const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_FILE_ID);
             
-            expect(buffer).not.toBeNull();
-            expect(buffer).not.toBeUndefined();
+        //     expect(buffer).not.toBeNull();
+        //     expect(buffer).not.toBeUndefined();
 
-            // Decode the buffer
-            const stringBuffer = Buffer.from(buffer).toString("utf-8")
-            const jsonBuffer = JSON.parse(stringBuffer);
+        //     // Decode the buffer
+        //     const stringBuffer = Buffer.from(buffer).toString("utf-8")
+        //     const jsonBuffer = JSON.parse(stringBuffer);
 
-            // Check that config_version is 1.11
-            expect(jsonBuffer).not.toBeNull();
-            expect(jsonBuffer).not.toBeUndefined();
-            expect(jsonBuffer.config_version).toBe("1.11");
-        })
+        //     // Check that config_version is 1.11
+        //     expect(jsonBuffer).not.toBeNull();
+        //     expect(jsonBuffer).not.toBeUndefined();
+        //     expect(jsonBuffer.config_version).toBe("1.11");
+        // })
 
         // it('should download an existing BIG file of a public report by unauthorized user with progress bar', async () => {
         //     const api: Api = new Api();
@@ -42,5 +42,10 @@ describe('Reports test suite case', () => {
         //     expect(buffer).not.toBeNull();
         //     expect(buffer).not.toBeUndefined();
         // })
+
+        // TODO: remove in the near future
+        it('adding 1 + 2 should return 3', () => {
+            expect(1 + 2).toBe(3);
+        });
     })
 })
