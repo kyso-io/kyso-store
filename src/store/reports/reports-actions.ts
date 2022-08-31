@@ -283,7 +283,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string }, { getState, dispatch }): Promise<ReportDTO | null> => {
+  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string }, { getState, dispatch }): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
     // Check if folder exists, if not create it
@@ -327,21 +327,14 @@ export const createKysoReportAction = createAsyncThunk(
       const response: NormalizedResponseDTO<ReportDTO> = await api.createKysoReport(formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
-        await rmSync(outputFilePath, { force: true });
+        rmSync(outputFilePath, { force: true });
       } catch (ex) {
         console.log("Temporary file can't be deleted");
         console.log(ex);
       }
       verbose(`Response received ${response} - ${response}`);
-      if (response?.relations) {
-        dispatch(fetchRelationsAction(response.relations));
-      }
-      if (response?.data) {
-        verbose(`createKysoReportAction finished successfully`);
-        return response.data;
-      } else {
-        return null;
-      }
+      verbose(`createKysoReportAction finished successfully`);
+      return response;
     } catch (e: any) {
       if (existsSync(outputFilePath)) {
         try {
