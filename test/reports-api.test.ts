@@ -25,22 +25,22 @@ describe('Reports test suite case', () => {
             expect(jsonBuffer.config_version).toBe("1.11");
         })
 
-        it('should download an existing BIG file of a public report by unauthorized user with progress bar', async () => {
-            const api: Api = new Api();
+        // it('should download an existing BIG file of a public report by unauthorized user with progress bar', async () => {
+        //     const api: Api = new Api();
             
-            api.configure("https://kyso.io/api/v1");
+        //     api.configure("https://kyso.io/api/v1");
 
-            const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, {
-                transformResponse: (data) => {
-                    expect(data).not.toBeNull();
-                    expect(data).not.toBeUndefined();
+        //     const buffer: Buffer = await api.getReportFileContent(TEST_REPORTS_PUBLIC_TEAM_BIG_FILE_ID, {
+        //         transformResponse: (data) => {
+        //             expect(data).not.toBeNull();
+        //             expect(data).not.toBeUndefined();
 
-                    return data;
-                },
-              });
+        //             return data;
+        //         },
+        //       });
             
-            expect(buffer).not.toBeNull();
-            expect(buffer).not.toBeUndefined();
-        })
+        //     expect(buffer).not.toBeNull();
+        //     expect(buffer).not.toBeUndefined();
+        // })
     })
 })
