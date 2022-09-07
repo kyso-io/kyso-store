@@ -6,6 +6,7 @@ include:
     - '/templates/npm-package.yml'
 
 e2e_test:
+  allow_failure: true
   stage: test
   image: registry.kyso.io/docker/node-docker-builder:16.16.0-bullseye-slim
   rules:
