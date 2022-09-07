@@ -24,6 +24,7 @@ import {
   Invitation,
   InviteUserDto,
   KysoSetting,
+  KysoSettingsEnum,
   KysoUserAccessToken,
   Login,
   LoginProviderEnum,
@@ -1292,5 +1293,21 @@ export class Api {
     const url = `/search-user/${id}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
+  }
+
+  // IMPORT S3 WEBHOOK
+  public async importS3Bucket(data: any): Promise<any> {
+    const publicSettings: NormalizedResponseDTO<KysoSetting[]> = await this.getPublicSettings();
+    
+    const webhookUrl: KysoSetting | undefined = publicSettings.data.find((x: KysoSetting) => x.key === KysoSettingsEnum.KYSO_WEBHOOK_URL);
+
+    if(webhookUrl) {
+      const url = `${webhookUrl}/hooks/s3import`;
+      const axiosResponse: AxiosResponse<any> = await this.httpClient.post(url, data);
+
+      return axiosResponse.data;
+    } else {
+      return "Provided data not valid";
+    }
   }
 }
