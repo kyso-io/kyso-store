@@ -1303,17 +1303,9 @@ export class Api {
 
   // IMPORT S3 WEBHOOK
   public async importS3Bucket(data: any): Promise<any> {
-    const publicSettings: NormalizedResponseDTO<KysoSetting[]> = await this.getPublicSettings();
-    
-    const webhookUrl: KysoSetting | undefined = publicSettings.data.find((x: KysoSetting) => x.key === KysoSettingsEnum.KYSO_WEBHOOK_URL);
+    const url = `/reports/import/office/s3`;
+    const axiosResponse: AxiosResponse<any> = await this.httpClient.post(url, data);
 
-    if(webhookUrl) {
-      const url = `${webhookUrl}/hooks/s3import`;
-      const axiosResponse: AxiosResponse<any> = await this.httpClient.post(url, data);
-
-      return axiosResponse.data;
-    } else {
-      return "Provided data not valid";
-    }
+    return axiosResponse.data;
   }
 }
