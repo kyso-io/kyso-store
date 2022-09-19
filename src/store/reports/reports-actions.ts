@@ -283,10 +283,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (
-    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; version: number; unmodifiedFiles: string[] },
-    { getState, dispatch }
-  ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
+  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string }, { getState, dispatch }): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
     // Check if folder exists, if not create it
@@ -327,8 +324,6 @@ export const createKysoReportAction = createAsyncThunk(
         filename: zipFileName,
         knownLength: size,
       });
-      formData.append('version', payload.version.toString());
-      formData.append('unmodifiedFiles', JSON.stringify(payload.unmodifiedFiles));
       const response: NormalizedResponseDTO<ReportDTO> = await api.createKysoReport(formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
@@ -339,6 +334,88 @@ export const createKysoReportAction = createAsyncThunk(
       }
       verbose(`Response received ${response} - ${response}`);
       verbose(`createKysoReportAction finished successfully`);
+      return response;
+    } catch (e: any) {
+      if (existsSync(outputFilePath)) {
+        try {
+          verbose(`Deleting temporary file at ${zipFileName}`);
+          rmSync(outputFilePath);
+        } catch (ex) {
+          console.log("Temporary file can't be deleted");
+          console.log(ex);
+        }
+      }
+      if (axios.isAxiosError(e)) {
+        verbose(e);
+        console.log(e.response?.data.message);
+        dispatch(setError(e.response?.data.message));
+      } else {
+        verbose(e);
+        dispatch(setError(e.toString()));
+      }
+      return null;
+    }
+  }
+);
+
+export const updateKysoReportAction = createAsyncThunk(
+  'reports/updateKysoReportAction',
+  async (
+    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[] },
+    { getState, dispatch }
+  ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
+    const zipFileName = `${uuidv4()}.zip`;
+    let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
+    // Check if folder exists, if not create it
+    if (!existsSync(outputFilePath)) {
+      mkdirSync(outputFilePath, {
+        recursive: true,
+      });
+    }
+    outputFilePath = join(outputFilePath, zipFileName);
+    try {
+      verbose('Starting updateKysoReportAction');
+      const { auth } = getState() as RootState;
+      const api: Api = new Api(auth.token, auth.organization, auth.team);
+      const formData: FormData = new FormData();
+      verbose(`outputFilePath ${outputFilePath}`);
+      const zip = new AdmZip();
+      verbose(`Adding files to zip`);
+      for (const file of payload.filePaths) {
+        let filename;
+        if (process.platform === 'win32') {
+          filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '\\', '') : file;
+        } else {
+          filename = payload?.basePath && payload.basePath.length > 0 ? file.replace(payload.basePath + '/', '') : file;
+        }
+        if (!lstatSync(file).isDirectory()) {
+          zip.addFile(slash(filename), readFileSync(file));
+        }
+      }
+      zip.writeZip(outputFilePath);
+      const size: number = statSync(outputFilePath).size;
+      const maxFileSize: number = parseFileSizeStr(payload.maxFileSizeStr);
+      if (size > maxFileSize) {
+        verbose(`You exceeded the maximum upload size permitted (${payload.maxFileSizeStr})`);
+        dispatch(setError(`You exceeded the maximum upload size permitted (${payload.maxFileSizeStr})`));
+        return null;
+      }
+      formData.append('file', createReadStream(outputFilePath), {
+        filename: zipFileName,
+        knownLength: size,
+      });
+      formData.append('version', payload.version.toString());
+      formData.append('unmodifiedFiles', JSON.stringify(payload.unmodifiedFiles));
+      const response: NormalizedResponseDTO<ReportDTO> = await api.updateKysoReport(payload.id, formData);
+      try {
+        verbose(`Deleting temporary file at ${zipFileName}`);
+        rmSync(outputFilePath, { force: true });
+      } catch (ex) {
+        console.log("Temporary file can't be deleted");
+        console.log(ex);
+      }
+      verbose(`Response received ${response} - ${response}`);
+      verbose(`updateKysoReportAction finished successfully`);
       return response;
     } catch (e: any) {
       if (existsSync(outputFilePath)) {
