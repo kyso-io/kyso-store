@@ -25,7 +25,6 @@ import {
   Invitation,
   InviteUserDto,
   KysoSetting,
-  KysoSettingsEnum,
   KysoUserAccessToken,
   Login,
   LoginProviderEnum,
@@ -775,6 +774,23 @@ export class Api {
     verbose(JSON.stringify(formData.getHeaders()));
 
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+        'content-length': formData.getLengthSync().toString(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
+  public async updateKysoReport(id: string, formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/kyso/${id}`;
+    verbose(`Calling POST ${url} with formData length ${formData.getLengthSync()}`);
+    verbose(`FormData info`);
+    verbose(JSON.stringify(formData));
+    verbose(`FormData headers`);
+    verbose(JSON.stringify(formData.getHeaders()));
+
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
         ...formData.getHeaders(),
         'content-length': formData.getLengthSync().toString(),
