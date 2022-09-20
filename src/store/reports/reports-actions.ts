@@ -361,7 +361,7 @@ export const createKysoReportAction = createAsyncThunk(
 export const updateKysoReportAction = createAsyncThunk(
   'reports/updateKysoReportAction',
   async (
-    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[] },
+    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[]; deletedFiles: string[] },
     { getState, dispatch }
   ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
@@ -406,6 +406,7 @@ export const updateKysoReportAction = createAsyncThunk(
       });
       formData.append('version', payload.version.toString());
       formData.append('unmodifiedFiles', JSON.stringify(payload.unmodifiedFiles));
+      formData.append('deletedFiles', JSON.stringify(payload.deletedFiles));
       const response: NormalizedResponseDTO<ReportDTO> = await api.updateKysoReport(payload.id, formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
