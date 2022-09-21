@@ -678,8 +678,11 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getReportByTeamIdAndSlug(teamId: string, reportSlug: string): Promise<NormalizedResponseDTO<ReportDTO>> {
-    const url = `/reports/${teamId}/${reportSlug}`;
+  public async getReportByTeamIdAndSlug(teamId: string, reportSlug: string, version?: number): Promise<NormalizedResponseDTO<ReportDTO>> {
+    let url = `/reports/${teamId}/${reportSlug}`;
+    if (version) {
+      url += `?version=${version}`;
+    }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
