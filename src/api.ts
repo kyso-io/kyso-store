@@ -127,6 +127,10 @@ export class Api {
     });
   }
 
+  public getHttpClient(): AxiosInstance {
+    return this.httpClient;
+  }
+
   public setToken(token: string | null): void {
     this.token = token;
   }
@@ -805,6 +809,16 @@ export class Api {
   public async createUiReport(formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
     const url = `/reports/ui`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, formData, {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    });
+    return axiosResponse.data;
+  }
+
+  public async updateUiReport(id: string, formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/kyso/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
       headers: {
         'content-type': 'multipart/form-data',
       },
