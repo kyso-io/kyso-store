@@ -1,6 +1,6 @@
 {
   "name": "@kyso-io/kyso-store",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,10 +9,11 @@
   "scripts": {
     "clean": "rimraf dist",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+    "lint": "eslint --ignore-path .eslintignore --fix --ext .js,.ts .",
     "tscBuild": "tsc --build",
     "build": "npm run clean && npm run tscBuild",
-    "prepare": "npm run build",
+    "check-types": "tsc --noEmit --pretty",
+    "prepare": "husky install && npm run build",
     "dev": "tsc --watch",
     "start": "tsc",
     "test": "jest --coverage",
@@ -32,6 +33,8 @@
   "devDependencies": {
     "@cucumber/cucumber": "^8.7.0",
     "@cucumber/pretty-formatter": "^1.0.0",
+    "@commitlint/cli": "^16.3.0",
+    "@commitlint/config-conventional": "^16.2.4",
     "@types/adm-zip": "^0.4.34",
     "@types/chai": "^4.3.3",
     "@types/cucumber": "^7.0.0",
@@ -45,6 +48,7 @@
     "eslint-config-prettier": "^8.3.0",
     "jest": "^28.1.3",
     "jest-html-reporters": "^3.0.10",
+    "husky": "^8.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.7",

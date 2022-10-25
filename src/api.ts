@@ -127,6 +127,10 @@ export class Api {
     });
   }
 
+  public getHttpClient(): AxiosInstance {
+    return this.httpClient;
+  }
+
   public setToken(token: string | null): void {
     this.token = token;
   }
@@ -157,7 +161,7 @@ export class Api {
       entityId?: string;
       action?: ActionEnum;
       sort?: string;
-    }
+    },
   ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/user/${username}?`;
     if (args.start_datetime) {
@@ -202,7 +206,7 @@ export class Api {
       entityId?: string;
       action?: ActionEnum;
       sort?: string;
-    }
+    },
   ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/organization/${organizationSlug}?`;
     if (args.start_datetime) {
@@ -244,7 +248,7 @@ export class Api {
       entityId?: string;
       action?: ActionEnum;
       sort?: string;
-    }
+    },
   ): Promise<NormalizedResponseDTO<ActivityFeed[]>> {
     let url = `/activity-feed/organization/${organizationSlug}/team/${teamSlug}?`;
     if (args.start_datetime) {
@@ -812,6 +816,16 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async updateUiReport(id: string, formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/kyso/${id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    });
+    return axiosResponse.data;
+  }
+
   public async updateMainFileReport(reportId: string, formData: FormData): Promise<NormalizedResponseDTO<ReportDTO>> {
     const url = `/reports/ui/main-file${reportId}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.put(url, formData, {
@@ -1181,7 +1195,7 @@ export class Api {
     }
     let userIdsQueryString = '';
     if (args.userIds && args.userIds.length > 0) {
-      userIdsQueryString = args.userIds.map(x => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
+      userIdsQueryString = args.userIds.map((x) => `userId=${x}`).reduce((prev, last) => prev + '&' + last);
     }
     let url = `/users?page=${args.page}&per_page=${args.per_page}&sort=${args.sort}${userIdsQueryString}`;
     if (args.search) {
