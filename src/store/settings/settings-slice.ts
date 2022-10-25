@@ -3,12 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchPublicKysoSettings } from './settings-actions';
 
 export type KysoSettingsState = {
-  publicSettings: KysoSetting[]
+  publicSettings: KysoSetting[];
 };
 
 const initialState: KysoSettingsState = {
-  publicSettings: []
-  
+  publicSettings: [],
 };
 
 const kysoSettingsSlice = createSlice({
@@ -24,7 +23,7 @@ const kysoSettingsSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(fetchPublicKysoSettings.fulfilled, (state: KysoSettingsState, action: ActionWithPayload<KysoSetting[]>) => {
       if (action && action.payload) {
         state.publicSettings = [...action.payload];
@@ -32,7 +31,6 @@ const kysoSettingsSlice = createSlice({
     });
   },
 });
-
 
 export const { setPublicSettings, resetSettingsSlice } = kysoSettingsSlice.actions;
 

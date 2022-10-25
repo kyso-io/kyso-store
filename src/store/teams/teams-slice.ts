@@ -33,7 +33,7 @@ const teamsSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(fetchTeamAction.fulfilled, (state: TeamsState, action: ActionWithPayload<Team>) => {
       if (action.payload?.id) {
         state.entities = {

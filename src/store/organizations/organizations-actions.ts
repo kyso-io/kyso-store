@@ -37,7 +37,7 @@ export const fetchOrganizationsAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchOrganizationAction = createAsyncThunk('organizations/fetchOrganization', async (organizationId: string, { getState, dispatch }): Promise<Organization | null> => {
@@ -106,7 +106,7 @@ export const updateOrganizationAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const updateOrganizationOptionsAction = createAsyncThunk(
@@ -132,7 +132,7 @@ export const updateOrganizationOptionsAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const fetchOrganizationMembersAction = createAsyncThunk('discussions/fetchOrganizationMembers', async (organizationId: string, { getState, dispatch }): Promise<OrganizationMember[]> => {
@@ -211,7 +211,7 @@ export const joinUserToOrganizationAction = createAsyncThunk(
       organizationName: string;
       invitationCode: string;
     },
-    { getState, dispatch }
+    { getState, dispatch },
   ): Promise<any> => {
     try {
       const { auth } = getState() as RootState;
@@ -227,7 +227,7 @@ export const joinUserToOrganizationAction = createAsyncThunk(
       }
       return false;
     }
-  }
+  },
 );
 
 export const removeUserFromOrganizationAction = createAsyncThunk(
@@ -253,7 +253,7 @@ export const removeUserFromOrganizationAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const updateMembersRolesToOrganizationAction = createAsyncThunk(
@@ -279,7 +279,7 @@ export const updateMembersRolesToOrganizationAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
@@ -305,7 +305,7 @@ export const deleteRoleToUserFromOrganizationAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const updateOrganizationPictureAction = createAsyncThunk(
@@ -331,7 +331,7 @@ export const updateOrganizationPictureAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const getOrganizationInfoAction = createAsyncThunk('organization/getOrganizationInfo', async (organizationId: string, { getState, dispatch }): Promise<OrganizationInfoDto[]> => {

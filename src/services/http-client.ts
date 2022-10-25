@@ -5,7 +5,7 @@ const httpClient: AxiosInstance = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: { 'Content-Type': 'application/json' },
   maxBodyLength: Infinity,
-  maxContentLength: Infinity
+  maxContentLength: Infinity,
 });
 
 /* Use axios-helper instead
@@ -41,7 +41,7 @@ httpClient.interceptors.response.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default httpClient;

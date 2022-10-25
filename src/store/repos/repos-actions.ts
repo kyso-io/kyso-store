@@ -30,7 +30,7 @@ export const fetchRepositoriesAction = createAsyncThunk(
       await dispatch(setRequestingRepos(false));
       return [];
     }
-  }
+  },
 );
 
 export const fetchRepositoryUserAction = createAsyncThunk('repos/fetchRepositoryUser', async (_, { getState, dispatch }): Promise<any> => {

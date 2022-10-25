@@ -3,10 +3,10 @@ import { ActionWithPayload } from '@kyso-io/kyso-model';
 
 export type ErrorState = {
   text: string | null;
-}
+};
 
 const initialState: ErrorState = {
-  text: null
+  text: null,
 };
 
 const errorSlice = createSlice({

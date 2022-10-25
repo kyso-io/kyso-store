@@ -44,7 +44,7 @@ export const fetchBitbucketRepositoriesAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchBitbucketUserAction = createAsyncThunk('bitbucket/fetchBitbucketUser', async (_, { getState, dispatch }): Promise<GithubAccount | null> => {
@@ -140,5 +140,5 @@ export const fetchBitbucketRepositoryTreeAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );

@@ -163,7 +163,7 @@ export const assignTagToEntityAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const unassignTagFromEntityAction = createAsyncThunk(
@@ -189,5 +189,5 @@ export const unassignTagFromEntityAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );

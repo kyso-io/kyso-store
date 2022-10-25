@@ -28,7 +28,7 @@ export const fetchInvitationsAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchInvitationAction = createAsyncThunk('tags/fetchInvitation', async (invitationId: string, { getState, dispatch }): Promise<Invitation | null> => {

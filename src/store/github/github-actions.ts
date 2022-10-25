@@ -45,7 +45,7 @@ export const fetchGithubRepositoriesAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchGithubUserAction = createAsyncThunk('github/fetchGithubUser', async (_, { getState, dispatch }): Promise<GithubAccount | null> => {
@@ -141,7 +141,7 @@ export const fetchGithubRepositoryTreeAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchGithubUserByAccessTokenAction = createAsyncThunk('github/fetchGithubUserByAccessToken', async (accessToken: string, { getState, dispatch }): Promise<any> => {

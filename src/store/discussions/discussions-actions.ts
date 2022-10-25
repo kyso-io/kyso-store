@@ -67,7 +67,7 @@ export const fetchDiscussionsOfATeam = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchDiscussionById = createAsyncThunk('discussions/fetchDiscussionById', async (payload: { discussionId: string }, { getState, dispatch }): Promise<Discussion | null> => {
@@ -134,7 +134,7 @@ export const updateDiscussion = createAsyncThunk(
     } catch (e: any) {
       return null;
     }
-  }
+  },
 );
 
 export const deleteDiscussion = createAsyncThunk('discussions/deleteDiscussion', async (discussionId: string, { getState, dispatch }): Promise<Discussion | null> => {

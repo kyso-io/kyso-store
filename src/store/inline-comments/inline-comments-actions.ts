@@ -40,7 +40,7 @@ export const createInlineCommentAction = createAsyncThunk(
     } catch (e: any) {
       return null;
     }
-  }
+  },
 );
 
 export const updateInlineCommentAction = createAsyncThunk(
@@ -61,7 +61,7 @@ export const updateInlineCommentAction = createAsyncThunk(
     } catch (e: any) {
       return null;
     }
-  }
+  },
 );
 
 export const deleteInlineCommentAction = createAsyncThunk('inline-comment/deleteInlineComment', async (inlineCommentId: string, { getState }): Promise<boolean | null> => {

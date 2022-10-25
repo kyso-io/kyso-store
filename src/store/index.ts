@@ -33,7 +33,7 @@ export const reducer = combineReducers({
 
 export const store: any = configureStore({
   reducer,
-  middleware: getDefaultMiddleware =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
     }),

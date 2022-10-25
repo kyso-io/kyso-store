@@ -315,7 +315,7 @@ export const updateRoleToMembersOfTeamAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
@@ -341,7 +341,7 @@ export const deleteRoleOfMembersOfTeamAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const updateTeamProfilePictureAction = createAsyncThunk('team/updateTeamProfilePicture', async (args: { teamId: string; file: File }, { getState, dispatch }): Promise<Team | null> => {

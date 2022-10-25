@@ -18,7 +18,8 @@
     "start": "tsc",
     "test": "jest --coverage",
     "cucumber": "./node_modules/.bin/cucumber-js -p default",
-    "test:verbose": "KYSO_CLI_VERBOSE=true jest --coverage"
+    "test:verbose": "KYSO_CLI_VERBOSE=true jest --coverage",
+    "prettier": "prettier --write \"./src/**/*.{ts,js}\""
   },
   "repository": {
     "type": "git",

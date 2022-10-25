@@ -69,7 +69,7 @@ const reposSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(fetchRepositoriesAction.fulfilled, (state: ReposState, action: ActionWithPayload<GithubRepository[]>) => {
       state.list = action.payload!;
       state.requesting = false;

@@ -73,7 +73,7 @@ export const fetchReportsAction = createAsyncThunk(
       await dispatch(setRequestingReports(false));
       return [];
     }
-  }
+  },
 );
 
 export const fetchReportByReportNameAndTeamName = createAsyncThunk(
@@ -99,7 +99,7 @@ export const fetchReportByReportNameAndTeamName = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const updateReportAction = createAsyncThunk('reports/updateReport', async (payload: { reportId: string; data: UpdateReportRequestDTO }, { getState, dispatch }): Promise<ReportDTO | null> => {
@@ -166,7 +166,7 @@ export const fetchReportsTreeAction = createAsyncThunk(
     } catch (e: any) {
       return [];
     }
-  }
+  },
 );
 
 export const deleteReportAction = createAsyncThunk('reports/deleteReport', async (reportId: string, { getState, dispatch }): Promise<Report | null> => {
@@ -355,14 +355,14 @@ export const createKysoReportAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const updateKysoReportAction = createAsyncThunk(
   'reports/updateKysoReportAction',
   async (
     payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[]; deletedFiles: string[] },
-    { getState, dispatch }
+    { getState, dispatch },
   ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
@@ -438,14 +438,14 @@ export const updateKysoReportAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
     args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null; authors: string[] },
-    { getState, dispatch }
+    { getState, dispatch },
   ): Promise<ReportDTO | null> => {
     try {
       const { auth } = getState() as RootState;
@@ -491,7 +491,7 @@ export const createKysoReportUIAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const updateMainFileReportAction = createAsyncThunk(
@@ -520,7 +520,7 @@ export const updateMainFileReportAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const importGithubRepositoryAction = createAsyncThunk(
@@ -546,7 +546,7 @@ export const importGithubRepositoryAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const importBitbucketRepositoryAction = createAsyncThunk(
@@ -572,7 +572,7 @@ export const importBitbucketRepositoryAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const importGitlabRepositoryAction = createAsyncThunk(
@@ -598,7 +598,7 @@ export const importGitlabRepositoryAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const pullReportAction = createAsyncThunk('reports/pullReport', async (payload: { reportName: string; teamName: string; version?: number }, { getState, dispatch }): Promise<Buffer | null> => {
@@ -656,7 +656,7 @@ export const updateReportPreviewPictureAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const deleteReportPreviewPictureAction = createAsyncThunk('user/deleteReportPreviewPicture', async (reportId: string, { dispatch, getState }): Promise<ReportDTO | null> => {
@@ -728,7 +728,7 @@ export const fetchReportVersionsAction = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 export const fetchEmbeddedReportAction = createAsyncThunk(
@@ -754,7 +754,7 @@ export const fetchEmbeddedReportAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
 
 export const checkReportExistsAction = createAsyncThunk('reports/checkReportExists', async (args: { teamId: string; reportName: string }, { getState, dispatch }): Promise<boolean> => {

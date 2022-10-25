@@ -1,9 +1,6 @@
-import { LoginProviderEnum } from '@kyso-io/kyso-model';
 import dotenv from 'dotenv';
 import {
-  loginAction,
   // fetchReportCommentsAction,
-  refreshUserAction,
   fetchPublicKysoSettings,
   store,
 } from './store';
@@ -15,7 +12,7 @@ dotenv.config({
 export const play = async () => {
   const { dispatch, getState } = store;
 
-  await(dispatch(fetchPublicKysoSettings()))
+  await dispatch(fetchPublicKysoSettings());
   //await dispatch(loginAction({ username: 'kylo@kyso.io', password: 'n0tiene', provider: LoginProviderEnum.KYSO, payload: null }));
   /*await dispatch(setOrganization('darkside'))
   await dispatch(setTeam('private-team'))*/
@@ -25,7 +22,7 @@ export const play = async () => {
   // await dispatch(fetchReportsAction())
   // await dispatch(fetchReportCommentsAction({ owner: 'rey', reportName: 'reys-report' }))
 
-  console.log(getState())
+  console.log(getState());
 };
 
 play();

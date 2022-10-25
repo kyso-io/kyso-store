@@ -105,7 +105,7 @@ const reportsSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(fetchReportAction.fulfilled, (state: ReportsState, action: ActionWithPayload<ReportDTO>) => {
       state.activeId = action.payload!.id;
       state.entities = {

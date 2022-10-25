@@ -17,7 +17,7 @@ export const fullTextSearchAction = createAsyncThunk(
       filterTags?: string[];
       filterPeople?: string[];
     },
-    { getState, dispatch }
+    { getState, dispatch },
   ): Promise<FullTextSearchDTO | null> => {
     try {
       const { auth } = getState() as RootState;
@@ -39,5 +39,5 @@ export const fullTextSearchAction = createAsyncThunk(
       }
       return null;
     }
-  }
+  },
 );
