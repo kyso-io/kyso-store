@@ -94,7 +94,7 @@ Feature:  Report - Delete report
         And In "public-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597c477d26f8fbbc9d8ba4"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a protected report being an authorized user who belongs to the org |api-tests|, is contributor and is the author
         Given As user "lo+ahsoka@dev.kyso.io"
@@ -102,7 +102,7 @@ Feature:  Report - Delete report
         And In "protected-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597caeb00fd5b902813aa9"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is contributor, is the author and belongs to the |private-channel|
         Given As user "lo+kylo@dev.kyso.io"
@@ -110,7 +110,7 @@ Feature:  Report - Delete report
         And In "private-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597d243ef740bde54aad46"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is contributor, is the author but doesn't belong to the |private-channel|
         Given As user "lo+ahsoka@dev.kyso.io"
@@ -126,7 +126,7 @@ Feature:  Report - Delete report
         And In "public-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597dfce86ab9f1dd20c5df"
-        Then Returns 201
+        Then Returns 200
            
     Scenario: Delete a protected report being an authorized user who belongs to the org |api-tests|, is channel admin and is not the author
 	    Given As user "lo+rey@dev.kyso.io"
@@ -134,7 +134,7 @@ Feature:  Report - Delete report
         And In "protected-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597e77de9ddb0aa5c03059"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is channel admin, belongs to the |private-channel| and is not the author
 	    Given As user "lo+baby_yoda@dev.kyso.io"
@@ -142,7 +142,7 @@ Feature:  Report - Delete report
         And In "private-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."63597f35e9f8e31a0642288c"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is channel admin, doesn't belong to the |private-channel| and is the author
 	    Given As user "lo+rey@dev.kyso.io"
@@ -158,7 +158,7 @@ Feature:  Report - Delete report
         And In "public-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."6359800d1a2d0631ffc9fe95"
-        Then Returns 201
+        Then Returns 200
            
     Scenario: Delete a protected report being an authorized user who belongs to the org |api-tests|, is channel admin and is not the author
         Given As user "lo+leia@dev.kyso.io"
@@ -166,15 +166,15 @@ Feature:  Report - Delete report
         And In "protected-channel" channel
         When Logs in into the API 
         And calls DELETE .api.v1.reports."635980ab77aa10746b01606e"
-        Then Returns 201
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is org admin, belongs to |private-channel| as channel admin, and is not the author
         Given As user "lo+amidala@dev.kyso.io"
         And In "api-tests" organization
         And In "private-channel" channel
         When Logs in into the API 
-        And calls DELETE .api.v1.reports."6359813ce4b9ea2012aea302"
-        Then Returns 201
+        And calls DELETE .api.v1.reports."6359813ce4b9ea2002aea302"
+        Then Returns 200
 
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is org admin, doesn't belong to |private-channel|, and is the author
         Given As user "lo+leia@dev.kyso.io"
