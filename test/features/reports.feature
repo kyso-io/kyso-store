@@ -168,7 +168,6 @@ Feature:  Report - Delete report
         And calls DELETE .api.v1.reports."635980ab77aa10746b01606e"
         Then Returns 200
 
-    @thisone
     Scenario: Delete a private report being an authorized user who belongs to the org |api-tests|, is org admin, belongs to |private-channel| as channel admin, and is not the author
         Given As user "lo+amidala@dev.kyso.io"
         And In "api-tests" organization
