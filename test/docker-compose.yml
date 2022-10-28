@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   kyso-mongo-test:
-    image: mongo:latest
+    image: mongo:4.4.15
     restart: always
     networks:
       - kyso-network

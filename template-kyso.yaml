@@ -1,4 +1,4 @@
-main: index.html
+main: cucumber.html
 title: "#TITLE"
 description: "#DESCRIPTION"
 organization: kyso-internal

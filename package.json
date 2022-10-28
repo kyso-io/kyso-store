@@ -16,7 +16,7 @@
     "prepare": "husky install && npm run build",
     "dev": "tsc --watch",
     "start": "tsc",
-    "test": "jest --coverage",
+    "test": "jest --coverage ; npm run cucumber",
     "cucumber": "./node_modules/.bin/cucumber-js -p default",
     "cucumber:local": "KYSO_API=http://localhost:4000/api/v1 npm run cucumber",
     "test:verbose": "KYSO_CLI_VERBOSE=true jest --coverage",
