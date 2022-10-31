@@ -260,7 +260,7 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string }, { getState, dispatch }): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
+  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; message: string }, { getState, dispatch }): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
     // Check if folder exists, if not create it
@@ -301,6 +301,7 @@ export const createKysoReportAction = createAsyncThunk(
         filename: zipFileName,
         knownLength: size,
       });
+      formData.append('message', payload.message ?? '');
       const response: NormalizedResponseDTO<ReportDTO> = await api.createKysoReport(formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
