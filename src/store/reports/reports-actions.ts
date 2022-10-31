@@ -1,4 +1,4 @@
-import { File as KysoFile, GithubBranch, GithubFileHash, KysoConfigFile, NormalizedResponseDTO, Report, ReportDTO, ReportType, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { File as KysoFile, GithubFileHash, KysoConfigFile, NormalizedResponseDTO, Report, ReportDTO, ReportType, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
@@ -122,29 +122,6 @@ export const updateReportAction = createAsyncThunk('reports/updateReport', async
       dispatch(setError(e.toString()));
     }
     return null;
-  }
-});
-
-export const fetchBranchesAction = createAsyncThunk('reports/fetchBranches', async (reportId: string, { getState, dispatch }): Promise<GithubBranch[]> => {
-  try {
-    const { auth } = getState() as RootState;
-    const api: Api = new Api(auth.token, auth.organization, auth.team);
-    const response: NormalizedResponseDTO<GithubBranch[]> = await api.getReportBranches(reportId);
-    if (response?.relations) {
-      dispatch(fetchRelationsAction(response.relations));
-    }
-    if (response?.data) {
-      return response.data;
-    } else {
-      return [];
-    }
-  } catch (e: any) {
-    if (axios.isAxiosError(e)) {
-      dispatch(setError(e.response?.data.message));
-    } else {
-      dispatch(setError(e.toString()));
-    }
-    return [];
   }
 });
 
@@ -361,7 +338,7 @@ export const createKysoReportAction = createAsyncThunk(
 export const updateKysoReportAction = createAsyncThunk(
   'reports/updateKysoReportAction',
   async (
-    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[]; deletedFiles: string[] },
+    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[]; deletedFiles: string[]; message: string },
     { getState, dispatch },
   ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
@@ -407,6 +384,7 @@ export const updateKysoReportAction = createAsyncThunk(
       formData.append('version', payload.version.toString());
       formData.append('unmodifiedFiles', JSON.stringify(payload.unmodifiedFiles));
       formData.append('deletedFiles', JSON.stringify(payload.deletedFiles));
+      formData.append('message', payload.message ?? '');
       const response: NormalizedResponseDTO<ReportDTO> = await api.updateKysoReport(payload.id, formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
@@ -444,7 +422,7 @@ export const updateKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null; authors: string[] },
+    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null; authors: string[]; message: string },
     { getState, dispatch },
   ): Promise<ReportDTO | null> => {
     try {
@@ -474,6 +452,7 @@ export const createKysoReportUIAction = createAsyncThunk(
       const blobZip = await zip.generateAsync({ type: 'blob' });
       const formData = new FormData();
       formData.append('file', blobZip);
+      formData.append('message', args.message ?? '');
       const response: NormalizedResponseDTO<ReportDTO> = await api.createUiReport(formData);
       if (response?.relations) {
         dispatch(fetchRelationsAction(response.relations));
