@@ -5,7 +5,6 @@ import listToKeyVal from '../../helpers/list-to-key-val';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import {
   deleteReportAction,
-  fetchBranchesAction,
   fetchFileContentAction,
   fetchReportAction,
   fetchReportsAction,
@@ -136,9 +135,6 @@ const reportsSlice = createSlice({
       if (!action.payload || !action.payload.id) return;
 
       state.activeId = action.payload!.id;
-    });
-    builder.addCase(fetchBranchesAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any[]>) => {
-      state.branches = action.payload!;
     });
     builder.addCase(fetchReportsTreeAction.fulfilled, (state: ReportsState, action: ActionWithPayload<any>) => {
       state.tree = action.payload!;

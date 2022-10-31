@@ -727,12 +727,6 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getReportBranches(reportId: string): Promise<NormalizedResponseDTO<GithubBranch[]>> {
-    const url = `/reports/${reportId}/branches`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<GithubBranch[]>> = await this.httpClient.get(url);
-    return axiosResponse.data;
-  }
-
   public async getReportFileTree(args: { reportId: string; filePath: string; version?: number }): Promise<NormalizedResponseDTO<GithubFileHash | GithubFileHash[]>> {
     let url = `/reports/${args.reportId}/tree?path=${args.filePath}`;
     if (args.version) {
