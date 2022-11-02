@@ -1,4 +1,4 @@
-import { File as KysoFile, GithubFileHash, KysoConfigFile, NormalizedResponseDTO, Report, ReportDTO, ReportType, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
+import { File as KysoFile, GithubFileHash, GitMetadata, KysoConfigFile, NormalizedResponseDTO, Report, ReportDTO, ReportType, UpdateReportRequestDTO } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
@@ -260,7 +260,10 @@ export const toggleUserStarReportAction = createAsyncThunk('reports/toggleUserSt
 
 export const createKysoReportAction = createAsyncThunk(
   'reports/createKysoReportAction',
-  async (payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; message: string }, { getState, dispatch }): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
+  async (
+    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; message: string; git_metadata: GitMetadata | null },
+    { getState, dispatch },
+  ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
     let outputFilePath: string = join(homedir(), '.kyso', 'tmp');
     // Check if folder exists, if not create it
@@ -302,6 +305,9 @@ export const createKysoReportAction = createAsyncThunk(
         knownLength: size,
       });
       formData.append('message', payload.message ?? '');
+      if (payload.git_metadata) {
+        formData.append('git_metadata', JSON.stringify(payload.git_metadata));
+      }
       const response: NormalizedResponseDTO<ReportDTO> = await api.createKysoReport(formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
@@ -339,7 +345,17 @@ export const createKysoReportAction = createAsyncThunk(
 export const updateKysoReportAction = createAsyncThunk(
   'reports/updateKysoReportAction',
   async (
-    payload: { filePaths: string[]; basePath: string | null; maxFileSizeStr: string; id: string; version: number; unmodifiedFiles: string[]; deletedFiles: string[]; message: string },
+    payload: {
+      filePaths: string[];
+      basePath: string | null;
+      maxFileSizeStr: string;
+      id: string;
+      version: number;
+      unmodifiedFiles: string[];
+      deletedFiles: string[];
+      message: string;
+      git_metadata: GitMetadata | null;
+    },
     { getState, dispatch },
   ): Promise<NormalizedResponseDTO<ReportDTO | ReportDTO[]> | null> => {
     const zipFileName = `${uuidv4()}.zip`;
@@ -386,6 +402,9 @@ export const updateKysoReportAction = createAsyncThunk(
       formData.append('unmodifiedFiles', JSON.stringify(payload.unmodifiedFiles));
       formData.append('deletedFiles', JSON.stringify(payload.deletedFiles));
       formData.append('message', payload.message ?? '');
+      if (payload.git_metadata) {
+        formData.append('git_metadata', JSON.stringify(payload.git_metadata));
+      }
       const response: NormalizedResponseDTO<ReportDTO> = await api.updateKysoReport(payload.id, formData);
       try {
         verbose(`Deleting temporary file at ${zipFileName}`);
@@ -423,7 +442,19 @@ export const updateKysoReportAction = createAsyncThunk(
 export const createKysoReportUIAction = createAsyncThunk(
   'reports/createKysoReportUI',
   async (
-    args: { title: string; organization: string; team: string; description: string; tags: string[]; files: File[]; mainContent: string | null; reportType: ReportType | null; authors: string[]; message: string },
+    args: {
+      title: string;
+      organization: string;
+      team: string;
+      description: string;
+      tags: string[];
+      files: File[];
+      mainContent: string | null;
+      reportType: ReportType | null;
+      authors: string[];
+      message: string;
+      git_metadata: GitMetadata | null;
+    },
     { getState, dispatch },
   ): Promise<ReportDTO | null> => {
     try {
@@ -454,6 +485,9 @@ export const createKysoReportUIAction = createAsyncThunk(
       const formData = new FormData();
       formData.append('file', blobZip);
       formData.append('message', args.message ?? '');
+      if (args.git_metadata) {
+        formData.append('git_metadata', JSON.stringify(args.git_metadata));
+      }
       const response: NormalizedResponseDTO<ReportDTO> = await api.createUiReport(formData);
       if (response?.relations) {
         dispatch(fetchRelationsAction(response.relations));
