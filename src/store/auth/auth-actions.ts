@@ -184,14 +184,14 @@ export const fetchDbVersionAction = createAsyncThunk('auth/fetchDbVersion', asyn
   }
 });
 
-export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (verifyEmailRequestDTO: VerifyEmailRequestDTO, { dispatch }): Promise<boolean> => {
+export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (verifyEmailRequestDTO: VerifyEmailRequestDTO, { dispatch }): Promise<string | null> => {
   try {
     const api: Api = new Api();
-    const response: NormalizedResponseDTO<boolean> = await api.verifyEmail(verifyEmailRequestDTO);
+    const response: NormalizedResponseDTO<string> = await api.verifyEmail(verifyEmailRequestDTO);
     if (response?.data) {
       return response.data;
     } else {
-      return false;
+      return null;
     }
   } catch (e: any) {
     if (axios.isAxiosError(e)) {
@@ -200,7 +200,7 @@ export const verifyEmailAction = createAsyncThunk('auth/verifyEmail', async (ver
     } else {
       dispatch(setError(e.toString()));
     }
-    return false;
+    return null;
   }
 });
 
