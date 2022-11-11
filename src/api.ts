@@ -18,7 +18,6 @@ import {
   FeedbackDto,
   File as KysoFile,
   FullTextSearchDTO,
-  GithubBranch,
   GithubEmail,
   GithubFileHash,
   InlineCommentDto,
@@ -337,9 +336,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async verifyEmail(verifyEmailRequestDTO: VerifyEmailRequestDTO): Promise<NormalizedResponseDTO<boolean>> {
+  public async verifyEmail(verifyEmailRequestDto: VerifyEmailRequestDTO): Promise<NormalizedResponseDTO<string>> {
     const url = '/auth/verify-email';
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, verifyEmailRequestDTO);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await this.httpClient.post(url, verifyEmailRequestDto);
     return axiosResponse.data;
   }
 
