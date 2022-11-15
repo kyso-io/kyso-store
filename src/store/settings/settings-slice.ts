@@ -1,5 +1,6 @@
-import { ActionWithPayload, KysoSetting } from '@kyso-io/kyso-model';
+import { KysoSetting } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchPublicKysoSettings } from './settings-actions';
 
 export type KysoSettingsState = {

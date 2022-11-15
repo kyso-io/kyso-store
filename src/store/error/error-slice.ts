@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ActionWithPayload } from '@kyso-io/kyso-model';
+import { ActionWithPayload } from '../../types/action-with-payload';
 
 export type ErrorState = {
   text: string | null;

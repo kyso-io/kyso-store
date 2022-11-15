@@ -461,16 +461,8 @@ export const createKysoReportUIAction = createAsyncThunk(
       const { auth } = getState() as RootState;
       const api: Api = new Api(auth.token, auth.organization, auth.team);
       const zip = new JSZip();
-      const kysoConfigFile: KysoConfigFile = {
-        main: '',
-        title: args.title,
-        description: args.description,
-        organization: args.organization,
-        team: args.team,
-        tags: args.tags,
-        type: args.reportType,
-        authors: args.authors,
-      };
+      const kysoConfigFile: KysoConfigFile = new KysoConfigFile('', args.title, args.description, args.organization, args.team, args.tags, args.reportType);
+      kysoConfigFile.authors = args.authors;
       if (args.mainContent && args.mainContent.length > 0) {
         const blobReadme: Blob = new Blob([args.mainContent], { type: 'plain/text' });
         zip.file('README.md', blobReadme);

@@ -1,8 +1,9 @@
 /* eslint-disable no-prototype-builtins */
-import { ActionWithPayload, Organization, Relations, Team } from '@kyso-io/kyso-model';
+import { Organization, Relations, Team } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { fetchTeamAction, updateTeamAction } from './teams-actions';
 
