@@ -1,5 +1,6 @@
-import { ActionWithPayload, Invitation } from '@kyso-io/kyso-model';
+import { Invitation } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { ActionWithPayload } from '../../types/action-with-payload';
 
 export type Invitations = {
   invitations: Invitation[];

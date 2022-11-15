@@ -1,8 +1,9 @@
-import { ActionWithPayload, Comment, Relations } from '@kyso-io/kyso-model';
+import { Comment, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import moment from 'moment';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { deleteCommentAction, fetchDiscussionComments, fetchReportCommentsAction, updateCommentAction } from './comments-actions';
 

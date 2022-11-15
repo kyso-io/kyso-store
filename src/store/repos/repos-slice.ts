@@ -1,5 +1,6 @@
-import { ActionWithPayload, GithubRepository, LoginProviderEnum } from '@kyso-io/kyso-model';
+import { GithubRepository, LoginProviderEnum } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRepositoriesAction, fetchRepositoryAction, fetchRepositoryTreeAction } from './repos-actions';
 
 export type ReposState = {

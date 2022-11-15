@@ -1,6 +1,7 @@
-import { ActionWithPayload, TokenPermissions } from '@kyso-io/kyso-model';
+import { TokenPermissions } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
+import { ActionWithPayload } from '../../types/action-with-payload';
 
 export type AuthState = {
   token: string | null;

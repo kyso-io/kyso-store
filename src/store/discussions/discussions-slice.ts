@@ -1,8 +1,9 @@
 /* eslint-disable no-prototype-builtins */
-import { ActionWithPayload, Discussion } from '@kyso-io/kyso-model';
+import { Discussion } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import listToKeyVal from '../../helpers/list-to-key-val';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchDiscussionById, fetchDiscussionsAction, fetchDiscussionsOfATeam, updateDiscussion } from './discussions-actions';
 
 export type DiscussionsState = {

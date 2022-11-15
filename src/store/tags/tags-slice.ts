@@ -1,5 +1,6 @@
-import { ActionWithPayload, Tag } from '@kyso-io/kyso-model';
+import { Tag } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { ActionWithPayload } from '../../types/action-with-payload';
 
 export type TagState = {
   tags: Tag[];

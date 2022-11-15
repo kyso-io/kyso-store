@@ -1,5 +1,6 @@
-import { ActionWithPayload, GithubRepository } from '@kyso-io/kyso-model';
+import { GithubRepository } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
+import { ActionWithPayload } from '../../types/action-with-payload';
 
 export type BitbucketRepositories = {
   repositories: GithubRepository[];

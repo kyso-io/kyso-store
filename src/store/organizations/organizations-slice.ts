@@ -1,7 +1,8 @@
-import { ActionWithPayload, Organization, Relations } from '@kyso-io/kyso-model';
+import { Organization, Relations } from '@kyso-io/kyso-model';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import slugify from '../../helpers/slugify';
+import { ActionWithPayload } from '../../types/action-with-payload';
 import { fetchRelationsAction } from '../relations/relations-actions';
 import { fetchOrganizationAction, updateOrganizationAction, updateOrganizationOptionsAction } from './organizations-actions';
 
