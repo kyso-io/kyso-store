@@ -1,12 +1,12 @@
 import { When } from '@cucumber/cucumber';
-import { NormalizedResponseDTO, Report } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, Comment } from '@kyso-io/kyso-model';
 import { TestContext } from './test-context';
 
-When('calls DELETE .api.v1.reports.{string}', async function (reportId) {
+When('calls DELETE .api.v1.comments.{string}', async function (commentId) {
   try {
-    const deletionResult: NormalizedResponseDTO<Report> = await TestContext.api.deleteReport(reportId);
+    const deletionResult: NormalizedResponseDTO<Comment> = await TestContext.api.deleteComment(commentId);
 
-    if (deletionResult.data.id === reportId) {
+    if (deletionResult.data.id === commentId) {
       // That means has been deleted
       TestContext.resultInUse = 200;
     } else {
