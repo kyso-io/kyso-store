@@ -45,7 +45,7 @@ Feature:  Comments - Delete comment
         Then Returns 403
 
     Scenario: Delete a comment in a private report being an authorized user who belongs to the org |api-tests|, is reader, is the author and belongs to |private-channel|
-        Given As user "lo+chewbacca@dev.kyso.io"
+        Given As user "lo+kylo@dev.kyso.io"
         And In "api-tests" organization
         And In "private-channel" channel
         When Logs in into the API 
