@@ -8,14 +8,14 @@ When('calls DELETE .api.v1.reports.{string}', async function (reportId) {
 
     if (deletionResult.data.id === reportId) {
       // That means has been deleted
-      TestContext.resultInUse = 200;
+      TestContext.resultStatusCodeInUse = 200;
     } else {
       // In other case put the result as null to force breaking the tests
-      TestContext.resultInUse = null;
+      TestContext.resultStatusCodeInUse = null;
     }
 
-    TestContext.resultInUse = 200;
+    TestContext.resultStatusCodeInUse = 200;
   } catch (ex: any) {
-    TestContext.resultInUse = ex.response.status;
+    TestContext.resultStatusCodeInUse = ex.response.status;
   }
 });
