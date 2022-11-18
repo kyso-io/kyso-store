@@ -44,10 +44,10 @@ When('Logs in into the API', async function () {
 });
 
 Then('Returns {int}', function (int) {
-  const resultCopy = TestContext.resultInUse;
+  const resultCopy = TestContext.resultStatusCodeInUse;
 
   // Clear for next executions
-  TestContext.resultInUse = null;
+  TestContext.resultStatusCodeInUse = null;
 
   assert.equal(int, resultCopy);
 });
