@@ -1334,4 +1334,33 @@ export class Api {
 
     return axiosResponse.data;
   }
+
+  // THEMES
+
+  public async downloadTheme(themeName: string): Promise<Buffer> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
+    return axiosResponse.data;
+  }
+
+  public async uploadTheme(themeName: string, file: File): Promise<NormalizedResponseDTO<boolean>> {
+    const formData = new FormData();
+    formData.append('name', themeName);
+    formData.append('file', file);
+    const url = `/themes`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData);
+    return axiosResponse.data;
+  }
+
+  public async setDefaultTheme(themeName: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.put(url);
+    return axiosResponse.data;
+  }
+
+  public async deleteTheme(themeName: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
+    return axiosResponse.data;
+  }
 }
