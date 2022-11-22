@@ -62,6 +62,7 @@ import {
 } from '@kyso-io/kyso-model';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
+import { ReadStream } from 'fs';
 import moment from 'moment';
 import { AuthState } from '.';
 import { verbose } from './helpers/logger-helper';
@@ -1343,12 +1344,16 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async uploadTheme(themeName: string, file: File): Promise<NormalizedResponseDTO<boolean>> {
+  public async uploadTheme(themeName: string, readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
     const formData = new FormData();
     formData.append('name', themeName);
-    formData.append('file', file);
+    formData.append('file', readStream);
     const url = `/themes`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
     return axiosResponse.data;
   }
 
