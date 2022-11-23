@@ -62,6 +62,7 @@ import {
 } from '@kyso-io/kyso-model';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
+import { ReadStream } from 'fs';
 import moment from 'moment';
 import { AuthState } from '.';
 import { verbose } from './helpers/logger-helper';
@@ -1332,6 +1333,39 @@ export class Api {
     const url = `/reports/import/office/s3`;
     const axiosResponse: AxiosResponse<any> = await this.httpClient.post(url, data);
 
+    return axiosResponse.data;
+  }
+
+  // THEMES
+
+  public async downloadTheme(themeName: string): Promise<Buffer> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
+    return axiosResponse.data;
+  }
+
+  public async uploadTheme(themeName: string, readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
+    const formData = new FormData();
+    formData.append('name', themeName);
+    formData.append('file', readStream);
+    const url = `/themes`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
+  public async setDefaultTheme(themeName: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.put(url);
+    return axiosResponse.data;
+  }
+
+  public async deleteTheme(themeName: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/themes/${themeName}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 }
