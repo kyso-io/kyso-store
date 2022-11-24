@@ -609,6 +609,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async exportOrganizationMembers(organizationId: string): Promise<Buffer> {
+    const url = `/organizations/${organizationId}/members/export`;
+    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
+    return axiosResponse.data;
+  }
+
   public async inviteNewUser(inviteUserDto: InviteUserDto): Promise<NormalizedResponseDTO<{ organizationMembers: OrganizationMember[]; teamMembers: TeamMember[] }>> {
     const url = '/organizations/invitation';
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ organizationMembers: OrganizationMember[]; teamMembers: TeamMember[] }>> = await this.httpClient.post(url, inviteUserDto);
@@ -1085,6 +1091,12 @@ export class Api {
   public async getTeamMembers(teamId: string): Promise<NormalizedResponseDTO<TeamMember[]>> {
     const url = `/teams/${teamId}/members`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamMember[]>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async exportTeamMembers(teamId: string): Promise<Buffer> {
+    const url = `/teams/${teamId}/members/export`;
+    const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
     return axiosResponse.data;
   }
 
