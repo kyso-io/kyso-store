@@ -23,6 +23,7 @@ import {
   InlineCommentDto,
   Invitation,
   InviteUserDto,
+  JoinCodes,
   KysoSetting,
   KysoUserAccessToken,
   Login,
@@ -48,6 +49,7 @@ import {
   TokenPermissions,
   UpdateDiscussionRequestDTO,
   UpdateInlineCommentDto,
+  UpdateJoinCodesDto,
   UpdateOrganizationDTO,
   UpdateOrganizationMembersDTO,
   UpdateReportRequestDTO,
@@ -677,6 +679,18 @@ export class Api {
   public async getOrganizationReports(organizationSlug: string, page: number, limit?: number, sort?: string): Promise<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> {
     const url = `/organizations/${organizationSlug}/reports?page=${page}&limit=${limit}&sort=${sort}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<ReportDTO>>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async createJoinCodes(organizationId: string, updateJoinCodesDto: UpdateJoinCodesDto): Promise<NormalizedResponseDTO<JoinCodes>> {
+    const url = `/organizations/${organizationId}/join-codes`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<JoinCodes>> = await this.httpClient.post(url, updateJoinCodesDto);
+    return axiosResponse.data;
+  }
+
+  public async updateJoinCodes(organizationId: string, updateJoinCodesDto: UpdateJoinCodesDto): Promise<NormalizedResponseDTO<JoinCodes>> {
+    const url = `/organizations/${organizationId}/join-codes`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<JoinCodes>> = await this.httpClient.patch(url, updateJoinCodesDto);
     return axiosResponse.data;
   }
 
