@@ -768,9 +768,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getReportFile(fileId: string): Promise<NormalizedResponseDTO<File>> {
+  public async getReportFile(fileId: string): Promise<NormalizedResponseDTO<KysoFile>> {
     const url = `/reports/file/${fileId}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<File>> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<KysoFile>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
