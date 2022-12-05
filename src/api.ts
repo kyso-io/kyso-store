@@ -763,8 +763,14 @@ export class Api {
   }
 
   public async getReportFileContent(fileId: string, config?: AxiosRequestConfig): Promise<Buffer> {
-    const url = `/reports/file/${fileId}`;
+    const url = `/reports/file-content/${fileId}`;
     const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, config);
+    return axiosResponse.data;
+  }
+
+  public async getReportFile(fileId: string): Promise<NormalizedResponseDTO<File>> {
+    const url = `/reports/file/${fileId}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<File>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
