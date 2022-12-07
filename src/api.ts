@@ -1281,11 +1281,35 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async uploadUserProfileImage(readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
+    const formData = new FormData();
+    formData.append('file', readStream);
+    const url = `/users/profile-picture`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
   public async updateUserBackgroundImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
     const url = `/users/background-image`;
     const formData = new FormData();
     formData.append('file', file);
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
+    return axiosResponse.data;
+  }
+
+  public async uploadUserBackgroundImage(readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
+    const formData = new FormData();
+    formData.append('file', readStream);
+    const url = `/users/background-image`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
     return axiosResponse.data;
   }
 
