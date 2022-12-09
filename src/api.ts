@@ -667,6 +667,18 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async uploadOrganizationImage(organizationId: string, readStream: ReadStream): Promise<NormalizedResponseDTO<Organization>> {
+    const formData = new FormData();
+    formData.append('file', readStream);
+    const url = `/organizations/${organizationId}/profile-picture`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
   public async getOrganizationsInfo(organizationId?: string): Promise<NormalizedResponseDTO<OrganizationInfoDto[]>> {
     let url = `/organizations/info`;
     if (organizationId) {
