@@ -196,11 +196,11 @@ export const removeAccountFromUser = createAsyncThunk('user/removeAccountFromUse
   }
 });
 
-export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (file: File, { dispatch, getState }): Promise<UserDTO | null> => {
+export const updateUserProfilePictureAction = createAsyncThunk('user/updateUserProfilePicture', async (args: { userId: string; file: File }, { dispatch, getState }): Promise<UserDTO | null> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
-    const response: NormalizedResponseDTO<UserDTO> = await api.updateUserProfileImage(file);
+    const response: NormalizedResponseDTO<UserDTO> = await api.updateUserProfileImage(args.userId, args.file);
     if (response?.relations) {
       dispatch(fetchRelationsAction(response.relations));
     }
