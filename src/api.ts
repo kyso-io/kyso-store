@@ -667,6 +667,18 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async uploadOrganizationImage(organizationId: string, readStream: ReadStream): Promise<NormalizedResponseDTO<Organization>> {
+    const formData = new FormData();
+    formData.append('file', readStream);
+    const url = `/organizations/${organizationId}/profile-picture`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Organization>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
   public async getOrganizationsInfo(organizationId?: string): Promise<NormalizedResponseDTO<OrganizationInfoDto[]>> {
     let url = `/organizations/info`;
     if (organizationId) {
@@ -1273,19 +1285,47 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async updateUserProfileImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
-    const url = `/users/profile-picture`;
+  public async updateUserProfileImage(userId: string, file: File): Promise<NormalizedResponseDTO<UserDTO>> {
     const formData = new FormData();
+    formData.append('userId', userId);
     formData.append('file', file);
+    const url = `/users/profile-picture`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
     return axiosResponse.data;
   }
 
-  public async updateUserBackgroundImage(file: File): Promise<NormalizedResponseDTO<UserDTO>> {
-    const url = `/users/background-image`;
+  public async uploadUserProfileImage(userId: string, readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
     const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('file', readStream);
+    const url = `/users/profile-picture`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
+    return axiosResponse.data;
+  }
+
+  public async updateUserBackgroundImage(userId: string, file: File): Promise<NormalizedResponseDTO<UserDTO>> {
+    const formData = new FormData();
+    formData.append('userId', userId);
     formData.append('file', file);
+    const url = `/users/background-image`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO>> = await this.httpClient.post(url, formData);
+    return axiosResponse.data;
+  }
+
+  public async uploadUserBackgroundImage(userId: string, readStream: ReadStream): Promise<NormalizedResponseDTO<boolean>> {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('file', readStream);
+    const url = `/users/background-image`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
     return axiosResponse.data;
   }
 
