@@ -959,6 +959,14 @@ export class Api {
     return axiosResponse.data;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async getJupyterDiff(reportId: string, sourceFileId: string, targetFileId: string): Promise<any> {
+    const url = `/reports/diff/${reportId}?sourceFileId=${sourceFileId}&targetFileId=${targetFileId}`;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const axiosResponse: AxiosResponse<any> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   // DRAFTS
 
   public async createUiDraftReport(draft: DraftReport): Promise<NormalizedResponseDTO<DraftReport>> {
