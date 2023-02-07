@@ -1,6 +1,6 @@
 {
   "name": "@kyso-io/kyso-store",
-  "version": "1.2.45",
+  "version": "1.2.46",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -31,7 +31,7 @@
     "registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
   },
   "peerDependencies": {
-    "@kyso-io/kyso-model": "1.2.36"
+    "@kyso-io/kyso-model": "1.2.38"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",
@@ -67,7 +67,7 @@
     "form-data": "^4.0.0",
     "jszip": "^3.7.1",
     "jwt-decode": "^3.1.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "original-fs": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "sha256-file": "^1.0.0",
