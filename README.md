@@ -1,4 +1,5 @@
 # kyso-store
+Centralized API client
 
 ## Environment variables
 KYSO_CLI_VERBOSE=true | false
