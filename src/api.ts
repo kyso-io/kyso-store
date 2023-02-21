@@ -706,6 +706,14 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async requestAccessToOrganization(organizationId: string): Promise<void> {
+    const url = `/organizations/${organizationId}/request-access`;
+
+    await this.httpClient.post(url);
+
+    return;
+  }
+
   // REPORTS
 
   public async getReportById(reportId: string): Promise<NormalizedResponseDTO<ReportDTO>> {
@@ -1225,6 +1233,14 @@ export class Api {
     }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamInfoDto[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
+  }
+
+  public async requestAccessToTeam(teamId: string): Promise<void> {
+    const url = `/teams/${teamId}/request-access`;
+
+    await this.httpClient.post(url);
+
+    return;
   }
 
   // USERS
