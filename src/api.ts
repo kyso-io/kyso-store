@@ -1434,6 +1434,12 @@ export class Api {
 
   // THEMES
 
+  public async getAvailableThemes(): Promise<NormalizedResponseDTO<string[]>> {
+    const url = `/themes`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string[]>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async downloadTheme(themeName: string): Promise<Buffer> {
     const url = `/themes/${themeName}`;
     const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
