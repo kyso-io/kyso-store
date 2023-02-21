@@ -714,7 +714,7 @@ export class Api {
     return;
   }
 
-  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<string>> {
+  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<any>> {
     const url = `/organizations/${organizationSlug}/team/${teamSlug}/visibility`;
 
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await this.httpClient.get(url);
