@@ -983,6 +983,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async getLinesOfReportFile(fileId: string, beginLine: number, endLine: number): Promise<NormalizedResponseDTO<string>> {
+    const url = `/reports/lines?fileId=${fileId}&beginLine=${beginLine}&endLine=${endLine}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   // DRAFTS
 
   public async createUiDraftReport(draft: DraftReport): Promise<NormalizedResponseDTO<DraftReport>> {
