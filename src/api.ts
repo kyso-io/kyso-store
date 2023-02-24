@@ -36,6 +36,7 @@ import {
   OrganizationOptions,
   PaginatedResponseDto,
   Report,
+  ReportAnalytics,
   ReportDTO,
   RepositoryProvider,
   SearchUser,
@@ -986,6 +987,17 @@ export class Api {
   public async getLinesOfReportFile(fileId: string, beginLine: number, endLine: number): Promise<NormalizedResponseDTO<string>> {
     const url = `/reports/lines?fileId=${fileId}&beginLine=${beginLine}&endLine=${endLine}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async onSharedReport(reportId: string): Promise<void> {
+    const url = `/reports/${reportId}/on-shared`;
+    await this.httpClient.post(url);
+  }
+
+  public async getReportAnalytics(reportId: string): Promise<NormalizedResponseDTO<ReportAnalytics>> {
+    const url = `/reports/${reportId}/analytics`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportAnalytics>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
