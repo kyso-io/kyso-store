@@ -715,9 +715,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<{ id: string; visiblity: TeamVisibilityEnum }>> {
+  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<{ id: string; visibility: TeamVisibilityEnum }>> {
     const url = `/organizations/${organizationSlug}/team/${teamSlug}/visibility`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ id: string; visiblity: TeamVisibilityEnum }>> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ id: string; visibility: TeamVisibilityEnum }>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
