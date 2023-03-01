@@ -39,6 +39,7 @@ import {
   ReportAnalytics,
   ReportDTO,
   RepositoryProvider,
+  RequestAccess,
   SearchUser,
   SearchUserDto,
   SignUpDto,
@@ -47,6 +48,7 @@ import {
   Team,
   TeamInfoDto,
   TeamMember,
+  TeamVisibilityEnum,
   TokenPermissions,
   UpdateDiscussionRequestDTO,
   UpdateInlineCommentDto,
@@ -707,19 +709,15 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async requestAccessToOrganization(organizationId: string): Promise<void> {
-    const url = `/organizations/${organizationId}/request-access`;
-
-    await this.httpClient.post(url);
-
-    return;
+  public async requestAccessToOrganization(organizationSlug: string): Promise<NormalizedResponseDTO<RequestAccess>> {
+    const url = `/organizations/${organizationSlug}/request-access`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<RequestAccess>> = await this.httpClient.post(url);
+    return axiosResponse.data;
   }
 
-  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<any>> {
+  public async getTeamVisibility(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<{ id: string; visiblity: TeamVisibilityEnum }>> {
     const url = `/organizations/${organizationSlug}/team/${teamSlug}/visibility`;
-
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<string>> = await this.httpClient.get(url);
-
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ id: string; visiblity: TeamVisibilityEnum }>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
@@ -1261,12 +1259,10 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async requestAccessToTeam(teamId: string): Promise<void> {
-    const url = `/teams/${teamId}/request-access`;
-
-    await this.httpClient.post(url);
-
-    return;
+  public async requestAccessToTeam(organizationSlug: string, teamSlug: string): Promise<NormalizedResponseDTO<RequestAccess>> {
+    const url = `/teams/${organizationSlug}/${teamSlug}/request-access`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<RequestAccess>> = await this.httpClient.post(url);
+    return axiosResponse.data;
   }
 
   // USERS
