@@ -58,11 +58,13 @@ import {
   UpdateReportRequestDTO,
   UpdateTeamMembersDTO,
   UpdateTeamRequest,
+  UpdateUserNotificationsSettings,
   UpdateUserRequestDTO,
   User,
   UserAccount,
   UserChangePasswordDTO,
   UserDTO,
+  UserNotificationsSettings,
   VerifyEmailRequestDTO,
 } from '@kyso-io/kyso-model';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -1420,6 +1422,51 @@ export class Api {
   public async changePassword(userChangePasswordDto: UserChangePasswordDTO): Promise<NormalizedResponseDTO<boolean>> {
     const url = `/users/change-password`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, userChangePasswordDto);
+    return axiosResponse.data;
+  }
+
+  // USERS NOTIFICATIONS SETTINGS
+
+  public async getUserNotificationsSetting(): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
+    const url = `/notifications-settings`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async updateUserNotificationsSettingsGlobal(updateUserNotificationsSettings: UpdateUserNotificationsSettings): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
+    const url = `/notifications-settings`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
+    return axiosResponse.data;
+  }
+
+  public async updateUserNotificationsSettingsOrganization(
+    organization_id: string,
+    updateUserNotificationsSettings: UpdateUserNotificationsSettings,
+  ): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
+    const url = `/notifications-settings/${organization_id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
+    return axiosResponse.data;
+  }
+
+  public async updateUserNotificationsSettingsOrganizationChannel(
+    organization_id: string,
+    channel_id: string,
+    updateUserNotificationsSettings: UpdateUserNotificationsSettings,
+  ): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
+    const url = `/notifications-settings/${organization_id}/${channel_id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
+    return axiosResponse.data;
+  }
+
+  public async deleteUserNotificationsSettingsOrganization(organization_id: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/notifications-settings/${organization_id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
+    return axiosResponse.data;
+  }
+
+  public async deleteUserNotificationsSettingsOrganizationChannel(organization_id: string, channel_id: string): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/notifications-settings/${organization_id}/${channel_id}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 
