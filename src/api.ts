@@ -1428,13 +1428,13 @@ export class Api {
   // USERS NOTIFICATIONS SETTINGS
 
   public async getUserNotificationsSetting(): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
-    const url = `/notifications-settings`;
+    const url = `/users-notifications-settings`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
   public async updateUserNotificationsSettingsGlobal(updateUserNotificationsSettings: UpdateUserNotificationsSettings): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
-    const url = `/notifications-settings`;
+    const url = `/users-notifications-settings`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
     return axiosResponse.data;
   }
@@ -1443,7 +1443,7 @@ export class Api {
     organization_id: string,
     updateUserNotificationsSettings: UpdateUserNotificationsSettings,
   ): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
-    const url = `/notifications-settings/${organization_id}`;
+    const url = `/users-notifications-settings/${organization_id}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
     return axiosResponse.data;
   }
@@ -1453,19 +1453,19 @@ export class Api {
     channel_id: string,
     updateUserNotificationsSettings: UpdateUserNotificationsSettings,
   ): Promise<NormalizedResponseDTO<UserNotificationsSettings>> {
-    const url = `/notifications-settings/${organization_id}/${channel_id}`;
+    const url = `/users-notifications-settings/${organization_id}/${channel_id}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserNotificationsSettings>> = await this.httpClient.put(url, updateUserNotificationsSettings);
     return axiosResponse.data;
   }
 
   public async deleteUserNotificationsSettingsOrganization(organization_id: string): Promise<NormalizedResponseDTO<boolean>> {
-    const url = `/notifications-settings/${organization_id}`;
+    const url = `/users-notifications-settings/${organization_id}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 
   public async deleteUserNotificationsSettingsOrganizationChannel(organization_id: string, channel_id: string): Promise<NormalizedResponseDTO<boolean>> {
-    const url = `/notifications-settings/${organization_id}/${channel_id}`;
+    const url = `/users-notifications-settings/${organization_id}/${channel_id}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
