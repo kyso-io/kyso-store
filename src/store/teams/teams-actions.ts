@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO, Report, Team, TeamInfoDto, TeamMember, TeamsInfoQuery, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, PaginatedResponseDto, Report, Team, TeamInfoDto, TeamMember, TeamsInfoQuery, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState, setError } from '..';
@@ -410,22 +410,18 @@ export const uploadMarkdownImageAction = createAsyncThunk('team/uploadMarkdownIm
   }
 });
 
-export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (teamsInfoQuery: TeamsInfoQuery, { getState, dispatch }): Promise<TeamInfoDto[]> => {
+export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (teamsInfoQuery: TeamsInfoQuery, { getState, dispatch }): Promise<PaginatedResponseDto<TeamInfoDto> | null> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
-    const response: NormalizedResponseDTO<TeamInfoDto[]> = await api.getTeamsInfo(teamsInfoQuery);
-    if (response?.data) {
-      return response.data;
-    } else {
-      return [];
-    }
+    const response: NormalizedResponseDTO<PaginatedResponseDto<TeamInfoDto>> = await api.getTeamsInfo(teamsInfoQuery);
+    return response?.data ? response.data : null;
   } catch (e: any) {
     if (axios.isAxiosError(e)) {
       dispatch(setError(e.response?.data.message));
     } else {
       dispatch(setError(e.toString()));
     }
-    return [];
+    return null;
   }
 });
