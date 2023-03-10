@@ -1253,7 +1253,7 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getTeamsInfo(teamsInfoQuery: TeamsInfoQuery): Promise<NormalizedResponseDTO<TeamInfoDto[]>> {
+  public async getTeamsInfo(teamsInfoQuery: TeamsInfoQuery): Promise<NormalizedResponseDTO<PaginatedResponseDto<TeamInfoDto>>> {
     const urlSearchParams: URLSearchParams = new URLSearchParams();
     urlSearchParams.append('organizationId', teamsInfoQuery.organizationId);
     urlSearchParams.append('page', teamsInfoQuery.page.toString());
@@ -1265,7 +1265,7 @@ export class Api {
       urlSearchParams.append('search', teamsInfoQuery.search);
     }
     const url = `/teams/info?${urlSearchParams.toString()}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamInfoDto[]>> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<TeamInfoDto>>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
