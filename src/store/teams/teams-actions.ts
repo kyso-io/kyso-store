@@ -1,4 +1,4 @@
-import { NormalizedResponseDTO, Report, Team, TeamInfoDto, TeamMember, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
+import { NormalizedResponseDTO, Report, Team, TeamInfoDto, TeamMember, TeamsInfoQuery, UpdateTeamMembersDTO, UpdateTeamRequest } from '@kyso-io/kyso-model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState, setError } from '..';
@@ -410,11 +410,11 @@ export const uploadMarkdownImageAction = createAsyncThunk('team/uploadMarkdownIm
   }
 });
 
-export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (teamId: string, { getState, dispatch }): Promise<TeamInfoDto[]> => {
+export const getTeamsInfoAction = createAsyncThunk('team/getTeamsInfo', async (teamsInfoQuery: TeamsInfoQuery, { getState, dispatch }): Promise<TeamInfoDto[]> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token, auth.organization, auth.team);
-    const response: NormalizedResponseDTO<TeamInfoDto[]> = await api.getTeamsInfo(teamId);
+    const response: NormalizedResponseDTO<TeamInfoDto[]> = await api.getTeamsInfo(teamsInfoQuery);
     if (response?.data) {
       return response.data;
     } else {

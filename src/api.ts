@@ -48,6 +48,7 @@ import {
   Team,
   TeamInfoDto,
   TeamMember,
+  TeamsInfoQuery,
   TeamVisibilityEnum,
   TokenPermissions,
   UpdateDiscussionRequestDTO,
@@ -1252,11 +1253,18 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getTeamsInfo(teamId?: string): Promise<NormalizedResponseDTO<TeamInfoDto[]>> {
-    let url = `/teams/info`;
-    if (teamId) {
-      url = `${url}?teamId=${teamId}`;
+  public async getTeamsInfo(teamsInfoQuery: TeamsInfoQuery): Promise<NormalizedResponseDTO<TeamInfoDto[]>> {
+    const urlSearchParams: URLSearchParams = new URLSearchParams();
+    urlSearchParams.append('organizationId', teamsInfoQuery.organizationId);
+    urlSearchParams.append('page', teamsInfoQuery.page.toString());
+    urlSearchParams.append('limit', teamsInfoQuery.limit.toString());
+    if (teamsInfoQuery.teamId) {
+      urlSearchParams.append('teamId', teamsInfoQuery.teamId);
     }
+    if (teamsInfoQuery.search) {
+      urlSearchParams.append('search', teamsInfoQuery.search);
+    }
+    const url = `/teams/info?${urlSearchParams.toString()}`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<TeamInfoDto[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
