@@ -1237,7 +1237,9 @@ export class Api {
 
   public async updateTeamImage(teamId: string, file: File): Promise<NormalizedResponseDTO<Team>> {
     const url = `/teams/${teamId}/profile-picture`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.post(url, file);
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<Team>> = await this.httpClient.post(url, formData);
     return axiosResponse.data;
   }
 
