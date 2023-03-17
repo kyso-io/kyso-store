@@ -1095,9 +1095,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async tagExists(name: string): Promise<NormalizedResponseDTO<boolean>> {
-    const url = `/tags/check/${name}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.get(url);
+  public async tagExists(tag: Tag): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/tags/exists`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, tag);
     return axiosResponse.data;
   }
 
