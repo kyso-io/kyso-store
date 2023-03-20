@@ -18,6 +18,7 @@ import {
   FeedbackDto,
   File as KysoFile,
   FullTextSearchDTO,
+  GitCommit,
   GithubEmail,
   GithubFileHash,
   InlineCommentDto,
@@ -956,12 +957,12 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async getReportVersions(reportId: string, sort: string): Promise<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> {
+  public async getReportVersions(reportId: string, sort: string): Promise<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number; git_commit: GitCommit }[]>> {
     const qs = new URLSearchParams({
       sort: sort && sort.length > 0 ? sort : '-created_at',
     });
     const url = `/reports/${reportId}/versions?${qs.toString()}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number }[]>> = await this.httpClient.get(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<{ version: number; created_at: Date; num_files: number; git_commit: GitCommit }[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
@@ -1095,9 +1096,9 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async tagExists(name: string): Promise<NormalizedResponseDTO<boolean>> {
-    const url = `/tags/check/${name}`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.get(url);
+  public async tagExists(tag: Tag): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/tags/exists`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, tag);
     return axiosResponse.data;
   }
 

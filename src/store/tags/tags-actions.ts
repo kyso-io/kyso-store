@@ -74,11 +74,11 @@ export const fetchTagAction = createAsyncThunk('tags/fetchTags', async (tagId: s
   }
 });
 
-export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (tagName: string, { getState, dispatch }): Promise<boolean> => {
+export const checkTagNameAction = createAsyncThunk('tags/checkTagName', async (tag: Tag, { getState, dispatch }): Promise<boolean> => {
   try {
     const { auth } = getState() as RootState;
     const api: Api = new Api(auth.token);
-    const response: NormalizedResponseDTO<boolean> = await api.tagExists(tagName);
+    const response: NormalizedResponseDTO<boolean> = await api.tagExists(tag);
     if (response?.data) {
       return response.data;
     } else {
