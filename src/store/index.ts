@@ -56,7 +56,6 @@ export * from './discussions/discussions-actions';
 export * from './discussions/discussions-slice';
 export * from './error/error-slice';
 export * from './feedback/feedback-actions';
-export * from './full-search/full-search-actions';
 export * from './github/github-actions';
 export * from './github/github-repositories-slice';
 export * from './inline-comments/inline-comments-actions';

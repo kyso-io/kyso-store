@@ -472,11 +472,14 @@ export class Api {
     type: ElasticSearchIndex;
     terms: string;
     page: number;
-    perPage?: number;
-    filterOrgs?: string[];
-    filterTeams?: string[];
-    filterTags?: string[];
-    filterPeople?: string[];
+    perPage: number;
+    filterOrgs: string[];
+    filterTeams: string[];
+    filterTags: string[];
+    filterPeople: string[];
+    filterFileTypes: string[];
+    orderBy: string;
+    order: 'asc' | 'desc';
   }): Promise<NormalizedResponseDTO<FullTextSearchDTO>> {
     let url = `/search?type=${args.type}&terms=${args.terms}&page=${args.page}`;
     if (args.perPage) {
@@ -493,6 +496,15 @@ export class Api {
     }
     if (args.filterPeople && args.filterPeople.length > 0) {
       url += `&filter.people=${args.filterPeople.join(',')}`;
+    }
+    if (args.filterFileTypes && args.filterFileTypes.length > 0) {
+      url += `&filter.fileTypes=${args.filterFileTypes.join(',')}`;
+    }
+    if (args.orderBy) {
+      url += `&orderBy=${args.orderBy}`;
+    }
+    if (args.order) {
+      url += `&order=${args.order}`;
     }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<FullTextSearchDTO>> = await this.httpClient.get(url);
     return axiosResponse.data;
