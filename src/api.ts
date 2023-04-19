@@ -512,8 +512,11 @@ export class Api {
 
   // INLINE COMMENTS
 
-  public async getInlineComments(reportId: string): Promise<NormalizedResponseDTO<InlineCommentDto[]>> {
-    const url = `/inline-comments/${reportId}`;
+  public async getInlineComments(reportId: string, fileId?: string): Promise<NormalizedResponseDTO<InlineCommentDto[]>> {
+    let url = `/inline-comments/${reportId}`;
+    if (fileId) {
+      url += `?file_id=${fileId}`;
+    }
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<InlineCommentDto[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
