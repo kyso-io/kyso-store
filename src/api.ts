@@ -16,7 +16,6 @@ import {
   EmailUserChangePasswordDTO,
   EntityEnum,
   FeedbackDto,
-  File as KysoFile,
   FullTextSearchDTO,
   GitCommit,
   GithubEmail,
@@ -25,6 +24,7 @@ import {
   Invitation,
   InviteUserDto,
   JoinCodes,
+  File as KysoFile,
   KysoSetting,
   KysoUserAccessToken,
   Login,
@@ -49,8 +49,8 @@ import {
   Team,
   TeamInfoDto,
   TeamMember,
-  TeamsInfoQuery,
   TeamVisibilityEnum,
+  TeamsInfoQuery,
   TokenPermissions,
   UpdateDiscussionRequestDTO,
   UpdateInlineCommentDto,
@@ -511,6 +511,12 @@ export class Api {
   }
 
   // INLINE COMMENTS
+
+  public async searchInlineComments(urlSearchParams: URLSearchParams): Promise<NormalizedResponseDTO<PaginatedResponseDto<InlineCommentDto>>> {
+    const url = `/inline-comments/search?${urlSearchParams.toString()}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<PaginatedResponseDto<InlineCommentDto>>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
 
   public async getInlineComments(reportId: string, fileId?: string): Promise<NormalizedResponseDTO<InlineCommentDto[]>> {
     let url = `/inline-comments?reportId=${reportId}`;
@@ -1454,6 +1460,12 @@ export class Api {
   public async changePassword(userChangePasswordDto: UserChangePasswordDTO): Promise<NormalizedResponseDTO<boolean>> {
     const url = `/users/change-password`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, userChangePasswordDto);
+    return axiosResponse.data;
+  }
+
+  public async getUsersSameOrganizations(): Promise<NormalizedResponseDTO<UserDTO[]>> {
+    const url = `/users/same-organizations`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
 
