@@ -518,6 +518,12 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async countOpenedInlineComments(): Promise<NormalizedResponseDTO<number>> {
+    const url = `/inline-comments/count-opened`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<number>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async getInlineComments(reportId: string, fileId?: string): Promise<NormalizedResponseDTO<InlineCommentDto[]>> {
     let url = `/inline-comments?reportId=${reportId}`;
     if (fileId) {
