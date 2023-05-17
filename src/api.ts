@@ -956,8 +956,11 @@ export class Api {
     return axiosResponse.data;
   }
 
-  public async downloadReport(reportId: string): Promise<Buffer> {
-    const url = `/reports/${reportId}/download`;
+  public async downloadReport(reportId: string, version?: number): Promise<Buffer> {
+    let url = `/reports/${reportId}/download`;
+    if (version) {
+      url = `${url}?version=${version}`;
+    }
     const axiosResponse: AxiosResponse<Buffer> = await this.httpClient.get(url, { responseType: 'arraybuffer' });
     return axiosResponse.data;
   }
