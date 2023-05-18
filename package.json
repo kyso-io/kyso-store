@@ -1,6 +1,6 @@
 {
   "name": "@kyso-io/kyso-store",
-  "version": "1.2.83",
+  "version": "1.2.84",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
