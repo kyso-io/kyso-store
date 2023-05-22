@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ActionEnum,
   ActivityFeed,
@@ -1014,10 +1015,14 @@ export class Api {
     return axiosResponse.data;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async getFileVersions(reportId: string, fileName: string): Promise<NormalizedResponseDTO<File[]>> {
+    const url = `/reports/${reportId}/file-versions?fileName=${fileName}`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<File[]>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
   public async getJupyterDiff(reportId: string, sourceFileId: string, targetFileId: string): Promise<any> {
     const url = `/reports/diff/${reportId}?sourceFileId=${sourceFileId}&targetFileId=${targetFileId}`;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const axiosResponse: AxiosResponse<any> = await this.httpClient.get(url);
     return axiosResponse.data;
   }
