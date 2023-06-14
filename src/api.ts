@@ -30,6 +30,7 @@ import {
   KysoUserAccessToken,
   Login,
   LoginProviderEnum,
+  MoveReportDto,
   NormalizedResponseDTO,
   Organization,
   OrganizationAuthOptions,
@@ -1041,6 +1042,12 @@ export class Api {
   public async getReportAnalytics(reportId: string): Promise<NormalizedResponseDTO<ReportAnalytics>> {
     const url = `/reports/${reportId}/analytics`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportAnalytics>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async moveReport(moveReportDto: MoveReportDto): Promise<NormalizedResponseDTO<ReportDTO>> {
+    const url = `/reports/move`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<ReportDTO>> = await this.httpClient.post(url, moveReportDto);
     return axiosResponse.data;
   }
 
