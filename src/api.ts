@@ -14,6 +14,7 @@ import {
   Discussion,
   DraftReport,
   ElasticSearchIndex,
+  EmailInUseDTO,
   EmailUserChangePasswordDTO,
   EntityEnum,
   FeedbackDto,
@@ -1486,6 +1487,12 @@ export class Api {
   public async getUsersSameOrganizations(): Promise<NormalizedResponseDTO<UserDTO[]>> {
     const url = `/users/same-organizations`;
     const axiosResponse: AxiosResponse<NormalizedResponseDTO<UserDTO[]>> = await this.httpClient.get(url);
+    return axiosResponse.data;
+  }
+
+  public async emailInUse(emailInUseDTO: EmailInUseDTO): Promise<NormalizedResponseDTO<boolean>> {
+    const url = `/users/email-in-use`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<boolean>> = await this.httpClient.post(url, emailInUseDTO);
     return axiosResponse.data;
   }
 
