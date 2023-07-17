@@ -1,6 +1,6 @@
 {
   "name": "@kyso-io/kyso-store",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -31,7 +31,7 @@
     "registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
   },
   "peerDependencies": {
-    "@kyso-io/kyso-model": "2.0.10"
+    "@kyso-io/kyso-model": "2.0.15"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",
