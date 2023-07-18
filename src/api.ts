@@ -369,13 +369,13 @@ export class Api {
 
   public async setUserAsGlobalAdmin(userId: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
     const url = `/auth/user/${userId}/global-admin`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.post(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.put(url);
     return axiosResponse.data;
   }
 
   public async removeUserAsGlobalAdmin(userId: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
     const url = `/auth/user/${userId}/global-admin`;
-    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.post(url);
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.delete(url);
     return axiosResponse.data;
   }
 
