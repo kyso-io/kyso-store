@@ -367,6 +367,18 @@ export class Api {
     return axiosResponse.data;
   }
 
+  public async setUserAsGlobalAdmin(userId: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
+    const url = `/auth/user/${userId}/global-admin`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.post(url);
+    return axiosResponse.data;
+  }
+
+  public async removeUserAsGlobalAdmin(userId: string): Promise<NormalizedResponseDTO<TokenPermissions>> {
+    const url = `/auth/user/${userId}/global-admin`;
+    const axiosResponse: AxiosResponse<NormalizedResponseDTO<TokenPermissions>> = await this.httpClient.post(url);
+    return axiosResponse.data;
+  }
+
   // COMMENTS
 
   public async getReportComments(reportId: string, sort?: string): Promise<NormalizedResponseDTO<Comment[]>> {
