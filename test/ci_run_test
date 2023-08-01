@@ -182,7 +182,8 @@ if [ "$ACCESS_TOKEN_AUTOMATIC_TESTING" ]; then
     echo "Logging with: $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME"
 
     echo "Creating report..."
-    npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
+    # npx kyso login --provider kyso --kysoInstallUrl https://kyso.io --username $ACCESS_TOKEN_AUTOMATIC_TESTING_USERNAME --token $ACCESS_TOKEN_AUTOMATIC_TESTING
+    npx kyso login --provider kyso --kysoInstallUrl https://dev.kyso.io --username kyle@kyso.io --token f1e6148c-5457-4f5a-9785-7c8a9a3e4213
     echo "Creating kyso.yaml file"
     sed -i 's/#TITLE/'"$TITLE"'/g' template-kyso.yaml
     sed -i 's/#DESCRIPTION/'"$DESCRIPTION"'/g' template-kyso.yaml

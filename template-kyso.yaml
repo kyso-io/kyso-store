@@ -1,6 +1,6 @@
 main: cucumber.html
 title: "#TITLE"
 description: "#DESCRIPTION"
-organization: kyso-internal
-team: test-reports
+organization: kyso-demos
+team: product-analytics
 type: website
