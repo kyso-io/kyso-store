@@ -25,10 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.kyso.io/kyso-io/libs/kyso-store.git"
-  },
-  "publishConfig": {
-    "registry": "https://gitlab.kyso.io/api/v4/projects/9/packages/npm/"
+    "url": "https://github.com/kyso-io/kyso-store.git"
   },
   "peerDependencies": {
     "@kyso-io/kyso-model": "2.0.21"
